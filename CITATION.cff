@@ -1,0 +1,27 @@
+cff-version: 1.0.0
+message: "If you use this software, please cite it as below."
+authors:
+    orcid: "https://orcid.org/0000-0001-9529-7705"
+  - family-names: "Willet"
+    given-names: "Cali"
+    orcid: "https://orcid.org/0000-0001-8449-1502"
+  - family-names: "Martinez"
+    given-names: "Elena"
+    orcid: ""
+  - family-names: "Sukumar"
+    given-names: "Smitha"
+    orcid: ""
+  - family-names: "Alder"
+    given-names: "Christina"
+    orcid: ""
+  - family-names: "Chew"
+    given-names: "Tracy"
+    orcid: "https://orcid.org/0000-0001-9529-7705"
+  - family-names: "Sadsad"
+    given-names: "Rosemarie"
+    orcid: "https://orcid.org/0000-0003-2488-953X"
+title: "Shotgun-Metagenomics-Analysis"
+version: 1.0
+doi: 
+date-released: 
+url: "https://github.com/Sydney-Informatics-Hub/Shotgun-Metagenomics-Analysis"
