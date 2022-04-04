@@ -1,7 +1,6 @@
 cff-version: 1.0.0
 message: "If you use this software, please cite it as below."
 authors:
-    orcid: "https://orcid.org/0000-0001-9529-7705"
   - family-names: "Willet"
     given-names: "Cali"
     orcid: "https://orcid.org/0000-0001-8449-1502"
