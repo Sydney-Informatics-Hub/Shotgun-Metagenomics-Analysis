@@ -84,3 +84,7 @@ Update the name of your reference fastq in the `bbmap_prep.pbs` script (and BBto
 #### Host contamination removal
 
 TBC 1/4/22... 
+
+## Cite us to support us!
+
+Willet, C., Martinez, E., Sukumar, S., Alder, C., Lydecker, H., Wang, F., Chew, T., & Sadsad, R. Shotgun-Metagenomics-Analysis (Version 1.0) [Computer software]. https://doi.org/10.48546/workflowhub.workflow.327.1
