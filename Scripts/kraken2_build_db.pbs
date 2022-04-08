@@ -1,0 +1,50 @@
+#!/bin/bash
+
+#########################################################
+#
+# Platform: NCI Gadi HPC
+# Description: see https://github.com/Sydney-Informatics-Hub/Shotgun-Metagenomics-Analysis
+#
+# Author/s: Cali Willet
+# cali.willet@sydney.edu.au
+#
+# If you use this script towards a publication, please acknowledge the
+# Sydney Informatics Hub (or co-authorship, where appropriate).
+#
+# Suggested acknowledgement:
+# The authors acknowledge the scientific and technical assistance
+# <or e.g. bioinformatics assistance of <PERSON>> of Sydney Informatics
+# Hub and resources and services from the National Computational
+# Infrastructure (NCI), which is supported by the Australian Government
+# with access facilitated by the University of Sydney.
+#
+#########################################################
+
+#PBS -P <project>
+#PBS -N kdb
+#PBS -l walltime=02:00:00
+#PBS -l ncpus=48
+#PBS -l mem=192GB
+#PBS -q normal
+#PBS -W umask=022
+#PBS -l wd
+#PBS -o ./Logs/kraken2_build_db.o
+#PBS -e ./Logs/kraken2_build_db.e
+#PBS -lstorage=scratch/<project>
+
+module load kraken2/2.1.1
+
+dt=`date '+%d-%m-%Y'`
+
+DB_NAME=kraken2_standard_db_build_${dt}
+
+kraken2-build \
+	--standard \
+	--threads $NCPUS \
+	--db $DB_NAME
+
+
+
+
+
+
