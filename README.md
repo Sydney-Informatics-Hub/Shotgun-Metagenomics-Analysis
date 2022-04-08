@@ -88,6 +88,7 @@ The BBtools masked reference and index will be created in ./ref.
 
 #### Host contamination removal
 
+<<<<<<< HEAD
 Run host contamination removal over each fastq pair in parallel. 
 
 The below script assumes your R1 fastq files matchthe following pattern: ` *_R1_*.fastq.gz`. Please check, and if this pattern does not apply to your data, please edit the corresponding line within the make inputs script.
@@ -201,3 +202,10 @@ The output will be a new filtered contig fasta file in the Assembly directory, e
 
   
  
+=======
+TBC 1/4/22... 
+
+## Cite us to support us!
+
+Willet, C., Martinez, E., Sukumar, S., Alder, C., Lydecker, H., Wang, F., Chew, T., & Sadsad, R. Shotgun-Metagenomics-Analysis (Version 1.0) [Computer software]. https://doi.org/10.48546/workflowhub.workflow.327.1
+>>>>>>> 6a80c0ccaa37868ba8638a9998cc833f406a0e9c
