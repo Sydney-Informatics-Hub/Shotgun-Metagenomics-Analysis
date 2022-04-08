@@ -1,12 +1,12 @@
-#! /bin/bash
+#!/bin/bash
 
 #########################################################
 #
 # Platform: NCI Gadi HPC
 # Description: see https://github.com/Sydney-Informatics-Hub/Shotgun-Metagenomics-Analysis
 #
-# Author/s: Tracy Chew
-# tracy.chew@sydney.edu.au
+# Author/s: Cali Willet
+# cali.willet@sydney.edu.au
 #
 # If you use this script towards a publication, please acknowledge the
 # Sydney Informatics Hub (or co-authorship, where appropriate).
@@ -20,17 +20,27 @@
 #
 #########################################################
 
-path=$1
+set -e
 
-fastqs=$(find $path -type f -name "*f*q.gz")
-fastqs=($fastqs)
+prefix=$1
 
-echo "$(date): Found ${#fastqs[@]} *fastq.gz files. Creating symlinks in ./Fastq directory"
+fq1=$(ls ${prefix}*R1*.fastq.gz)
+fq2=$(ls ${prefix}*R2*.fastq.gz)
 
-for fastqpath in ${fastqs[@]}
-do
-	fastq=$(basename ${fastqpath})
-	ln -f -s $fastqpath ./Fastq/$fastq
-done
+prefix=$(basename $prefix)
 
+out=./Target_reads/${prefix}.interleaved.extracted.fq.gz
+log=./Logs/Remove_host/${prefix}.bbmap.log
 
+# BBmap will look in ./ref for the reference index (created by bbmap_prep.pbs)
+# Script tool is  used to force log to end up in the right place
+
+script -c "bbmap.sh \
+	-Xmx42g \
+	in=${fq1} \
+	in2=${fq2} \
+	outu=${out} \
+	threads=$NCPUS \
+	overwrite=t \	
+	usejni=t \
+	unpigz=t" ${log}

@@ -21,33 +21,46 @@
 #########################################################
 
 #PBS -P <project>
-#PBS -N bb-prep
-#PBS -l walltime=02:00:00
-#PBS -l ncpus=48
-#PBS -l mem=192GB
+#PBS -N remhost
+#PBS -l walltime=08:00:00
+#PBS -l ncpus=144
+#PBS -l mem=570GB
 #PBS -q normal
 #PBS -W umask=022
 #PBS -l wd
-#PBS -o ./Logs/bbmap_prep.o
-#PBS -e ./Logs/bbmap_prep.e
+#PBS -o ./Logs/remove_host.o
+#PBS -e ./Logs/remove_host.e
 #PBS -lstorage=scratch/<project>
 
+module load openmpi/4.0.2
+module load nci-parallel/1.0.0
+module load bbtools/37.98
 
-module load bbtools/37.98 # this is not a gloabl app - please self-install 
+set -e
 
-mkdir -p ./ref
+SCRIPT=./Scripts/remove_host.sh  
+INPUTS=./Inputs/remove_host.inputs
+ 
+NCPUS=12 
 
-reference=<reference> # full path and filename of your host species reference genome sequence (.fasta format)
+mkdir -p Target_reads ./Logs/Remove_host
 
-#repeat mask the reference:
-bbmask.sh \
-	in=${reference} \
-	out=./ref/${reference}-BBmasked \
-	overwrite=t
-		
-#index the reference:
-bbmap.sh -Xmx161g \
-	ref=./ref/${reference}-BBmasked
+#########################################################
+# Do not edit below this line  
+#########################################################
+
+if [[ $PBS_QUEUE =~ bw-exec ]]; then CPN=28; else CPN=48; fi
+M=$(( CPN / NCPUS )) #tasks per node
+
+sed "s|^|${SCRIPT} |" ${INPUTS} > ${PBS_JOBFS}/input-file
+
+mpirun --np $((M * PBS_NCPUS / CPN)) \
+        --map-by node:PE=${NCPUS} \
+        nci-parallel \
+        --verbose \
+        --input-file ${PBS_JOBFS}/input-file
+
+
 
 
 

@@ -23,12 +23,11 @@ bash ./Scripts/setup_fastq.sh </path/to/your/parent/fastq/directory>
 The only required input configuration file should be named <cohort>.config, where <cohort> is the name of the current batch of samples you are processing, or some other meaningful name to your project; it will be used to name output files. The config file should be placed inside the $workdir/Inputs directory, and include the following columns, in this order:
 
 ```
-1. Sample ID - used to identify the sample, eg if you have 3 lanes of sequencing per sample, erach of those 6 fastq files should contain this ID that si in column 1
+1. Sample ID - used to identify the sample, eg if you have 3 lanes of sequencing per sample, each of those 6 fastq files should contain this ID that is in column 1
 2. Lab Sample ID - can be the same as column 1, or different if you have reason to change the IDs eg if the seq centre applies an in-house ID. Please make sure IDs are unique within column 1 and unique within column 2
-3. Group - eg different time points or treatment groups. If no specific group structure is relevant, please set this to 1 (do not leave blank!) 
 3. Platform - should be Illumina; other sequencing platforms are not tested on this workflow
 4. Sequencing centre name
-5. Library - eg if you have 2 sequencing libraries for the same sample. Can be left blank, or assigned to 1. Blank will be assigned libray ID of 1 during processing.
+5. Group - eg different time points or treatment groups. If no specific group structure is relevant, can be left blank 
 ```
 
 Please do not have spaces in any of the values for the config file. 
@@ -70,17 +69,135 @@ Will be added at a later date. This is highly dependent on the quality of your d
 
 ### Part 2. Removal of host contamination. 
 
-If you have metagenomic data extracted from a host, you will need a copy of the host reference genome sequence in order to remove any DNA sequences belonging to the host. Even if your wetlab protocol included a host removal step, it is still important to run bioinformatic host removal.
+If you have metagenomic data extracted from a host (eg tissue, saliva), you will need a copy of the host reference genome sequence in order to remove any DNA sequences belonging to the host. Even if your wetlab protocol included a host removal step, it is still important to run bioinformatic host removal.
 
 
 #### Prepare the reference
-Ensure you have a copy of the reference genome (or symlink) in ./Fasta. This workflow requires BBtools(tested with version 37.98). As of writing, BBtools is not available as a global app on Gadi. Please install locally and make "module loadable", or else edit the scripts to point directly to your local BBtools installation.
+If you ran `create_project.sh` you would have been asked for the full path to your host reference genome. This will add the reference to the `bbmap_prep.pbs` script below. If you did not run `create_project.sh` you will need to manually add the full path to your host reference sequence in the below BBtools scripts.
 
-BBtools repeat masking will use all available threads on machine and 85% of available mem by default. For a mammalian genome, 2 hours on one Gadi 'normal' node is sufficient for repeat masking. 
+This step repeat-masks the reference and creates the required BBtools index. If you are unsure whether your genome is already repeat-masked, you can run the script as-is, as there is no problem caused by running bbmask over an already-masked reference.
 
-Update the name of your reference fastq in the `bbmap_prep.pbs` script (and BBtools, see note above), then run:
+This workflow requires BBtools (tested with version 37.98). As of writing, BBtools is not available as a global app on Gadi. Please install locally and make "module loadable", or else edit the scripts to point directly to your local BBtools installation.
+
+BBtools repeat masking will use all available threads on machine and 85% of available mem by default. 
+
+To run:
 `qsub ./Scripts/bbmap_prep.pbs`
+
+The BBtools masked reference and index will be created in ./ref. 
 
 #### Host contamination removal
 
-TBC 1/4/22... 
+Run host contamination removal over each fastq pair in parallel. 
+
+The below script assumes your R1 fastq files matchthe following pattern: ` *_R1_*.fastq.gz`. Please check, and if this pattern does not apply to your data, please edit the corresponding line within the make inputs script.
+
+Make the remove_host parallel inputs file by running (from `workdir`):
+`bash ./Scripts/remove_host_make_input.sh`
+
+The number of remove host tasks to run should be equal to the number of fastq pairs that you have. If this is not the case, please check 1) that the above pattern matches your fastq filenames, or 2) that your fastq files are all within ./Fastq, with no fastq files nested within subdirectories.
+
+Edit the resource requests in `remove_host_run_parallel.pbs` according to your number of fastq file pairs, data size and host. 
+
+- 12 CPUs and 48 GB RAM per task is recommended for mammalian host
+- Please note that if you alter NCPUS from the pre-set value of 12, you should also edit the -Xmx value in `remove_host.sh`, which is optimally set to 42 GB or mammalian host removal
+- 3 hours walltime is adequate for most samples with 2 x 2 GB fastq files, however occasioanlly, samples may require a longer walltime. These can be collected and resubmitted. 
+- Example: 40 pairs fastq.gz, each file = 2 GB ( 4 GB per sample), mammalian host = 12 CPU per task, total 40 x 12 =  480 CPUs (10 nodes) for 3 hours to run all samples in parallel, or 240 CPUs (5 nodes) at 6 hours walltime.  
+
+Then submit:
+`qsub remove_host_run_parallel.pbs`
+
+After this job has completed, run the below script to find failed tasks:
+`bash remove_host_find_failed_tasks.sh`
+ 
+Update the resource requests in `remove_host_failed_run_parallel.pbs`, ensuring to increase the walltime sufficiently, then submit with `qsub`.
+
+The output of remove host will be fastq in ./Target_reads that has the host-derived DNA removed, leaving only putative microbial reads for downstream analysis. 
+
+#### Metagenome assembly
+
+This analysis takes the target (host-removed) reads and assembles them into contigs with Megahit. Later, contigs are used as input to other parts of the workflow. Not all analyses require contigs (for example Bracken abundance estimation and Humann2 functional profiling take reads as input) so you may omit assembly depending on your particular analytical needs.
+
+The number of parallel tasks is equal to the number of samples. A sample may have multiple pairs of input fastq. The `assemble.sh` script will find all fastq pairs belonging to a sample using the sample ID. So it is critical that your sample IDs are unique within the cohort (see note in config section above).
+
+Samples with 3-4 GB total target read fastq.gz using 24 CPU should complete in approximately 1.75 hours.
+
+Make inputs (just a list of samples):
+`bash assemble_make_inputs.sh`
+
+Adjust resource requests and then submit:
+`qsub assemble_run_parallel.pbs`
+
+The output of this analysis will be fasta assemblies for each sample within `Assembly` directory, eg the assembled contigs for Sample1 will be ./Assembly/Sample1/Sample1.contigs.fa.
+
+#### Align target reads to assemblies
+
+Mapping the target reads back to the assembled contigs is a useful way of assessing the read support for each contig. We use this method to filter away contigs with very low mapping support.
+
+The number of parallel tasks is equal to the number of samples. A sample may have multiple pairs of input fastq. The `align_reads_to_contigs.sh` script will find all fastq pairs belonging to a sample using the sample ID. So it is critical that your sample IDs are unique within the cohort (see note in config section above).
+
+Metadata is added to the BAM from 2 places: 1) Platform and sequencing centre are derived from the config, and 2) flowcell and lane are derived from the fastq read IDs. The method of extracting flowcell and lane assumes standard illumina read ID format (flowcell in field 3 and lane in field 4 of a colon (:) delimited string. If this is not correct, please update the method of extracting flowcell and lane from part 3 'Align' in `align_reads_to_contigs.sh`.
+
+Make the inputs:
+`bash align_reads_to_contigs_make_input.sh`
+
+Adjust the resources depending on the number of parallel tasks and sample size. Example of 3-4 GB target fastq.gz per sample requires 35 minutes on 12 CPU. Submit:
+`qsub align_reads_to_contigs_run_parallel.pbs`
+
+Output will be created in `./Align_to_assembly/<sampleDir>`. 
+
+#### Calculate contig read coverage
+
+This step computes the read coverage metrics across the contigs from the sorted BAM files created in the preceding step.
+
+Running the make_input script will ask the user to input the minimum base and mapping quality scores to use for coverage calculation. Values of 20 for both is a fair start. It is not recommended to use values below 20, however you may wish to use higher values for more stringent filtering. 
+
+The coverage calculation takes ~ 2.5 minutes for a 3.5 GB BAM file.
+
+As usual, make the inputs file:
+`bash contig_coverage_make_input.sh`
+
+adjust the resources, then submit:
+`contig_coverage_run_parallel.pbs`
+
+The output coverage file will be sent to the same output directory as above, and will be used to filter away contigs with low mapping support at the next step.
+
+#### Filter contigs
+
+Contigs with low mapping support are filtered away here. You can customise this filtering step depending on how strict you want your final contigs list to be. The included script uses a lenient approach to filtering, simply removing contigs where the mean mapping depth/sequence coverage across the contig is less than 1.
+
+The script `filter_contigs.sh` can be customised to filter on any of the following parameters (from SAMtools coverage man page): 
+
+| Column | Description                                          |
+| ------ | ---------------------------------------------------- |
+| 1      | Reference name / chromosome                          |
+| 2      | Start position                                       |
+| 3      | End position (or sequence length)                    |
+| 4      | Number reads aligned to the region (after filtering) |
+| 5      | Number of covered bases with depth >= 1              |
+| 6      | Proportion of covered bases \[0..1\]                 |
+| 7      | Mean depth of coverage                               |
+| 8      | Mean baseQ in covered region                         |
+| 9      | Mean mapQ of selected reads                          |
+
+The default filter uses the following `awk` syntax to apply the read depth 1 filter:
+`awk '$7>=1' $cov`
+
+This takes all rows from the file $cov where the value in column 7 is greater than or equal to 1. To expand the filter to include for example only contigs of length at least 10,000 bp, adjust the `awk` command to this:
+`awk '$7>=1 && $3>=10000' $cov`
+
+Add as many filters as desired. 
+
+There is no need to make an inputs file for this step, as the inputs made for the contig coverage step above will be used. 
+
+Adjust the resource requests depending on the number of samples and their data size. Assemblies of around 300 MB take only 10 seconds to filter, however with large numbers of samples this can add up so running on the login node is not recommended.
+
+Then submit:
+`qsub filter_contigs_run_parallel.pbs`
+
+The output will be a new filtered contig fasta file in the Assembly directory, eg for Sample1,  the output will be ./Assembly/Sample1/Sample1.filteredContigs.fa
+
+
+
+  
+ 

@@ -1,12 +1,12 @@
-#! /bin/bash
+#!/bin/bash
 
 #########################################################
 #
 # Platform: NCI Gadi HPC
 # Description: see https://github.com/Sydney-Informatics-Hub/Shotgun-Metagenomics-Analysis
 #
-# Author/s: Tracy Chew
-# tracy.chew@sydney.edu.au
+# Author/s: Cali Willet
+# cali.willet@sydney.edu.au
 #
 # If you use this script towards a publication, please acknowledge the
 # Sydney Informatics Hub (or co-authorship, where appropriate).
@@ -20,17 +20,15 @@
 #
 #########################################################
 
-path=$1
 
-fastqs=$(find $path -type f -name "*f*q.gz")
-fastqs=($fastqs)
+grep "exited with status 0" ./Logs/remove_host.e | awk '{print $11}' | sort  > ./Inputs/remove_host_passed
 
-echo "$(date): Found ${#fastqs[@]} *fastq.gz files. Creating symlinks in ./Fastq directory"
+sort ./Inputs/remove_host.inputs > ./Inputs/remove_host.inputs-sorted
 
-for fastqpath in ${fastqs[@]}
-do
-	fastq=$(basename ${fastqpath})
-	ln -f -s $fastqpath ./Fastq/$fastq
-done
+grep -v -f  ./Inputs/remove_host_passed ./Inputs/remove_host.inputs-sorted > ./Inputs/remove_host.inputs-failed
 
+\rm -rf ./Inputs/remove_host.inputs-sorted ./Inputs/remove_host_passed
 
+rerun=$(wc -l < ./Inputs/remove_host.inputs-failed )
+
+echo There are $rerun remove host tasks to rerun

@@ -1,12 +1,12 @@
-#! /bin/bash
+#!/bin/bash
 
 #########################################################
 #
 # Platform: NCI Gadi HPC
 # Description: see https://github.com/Sydney-Informatics-Hub/Shotgun-Metagenomics-Analysis
 #
-# Author/s: Tracy Chew
-# tracy.chew@sydney.edu.au
+# Author/s: Cali Willet
+# cali.willet@sydney.edu.au
 #
 # If you use this script towards a publication, please acknowledge the
 # Sydney Informatics Hub (or co-authorship, where appropriate).
@@ -20,17 +20,24 @@
 #
 #########################################################
 
-path=$1
+sample=$1
 
-fastqs=$(find $path -type f -name "*f*q.gz")
-fastqs=($fastqs)
+# Create comma-delimited list of interleaved fastq for megahit
+interleaved=$(ls ./Target_reads/*${sample}*.interleaved.extracted.fq.gz | tr '\n' , | sed 's/,$//')
 
-echo "$(date): Found ${#fastqs[@]} *fastq.gz files. Creating symlinks in ./Fastq directory"
+#megahit will terminate with exit status 1 if outdir exists. If dir exists, use a dir with timedata to ensure uniqueness. 
+outdir=./Assembly/${sample}
 
-for fastqpath in ${fastqs[@]}
-do
-	fastq=$(basename ${fastqpath})
-	ln -f -s $fastqpath ./Fastq/$fastq
-done
+if [ -d "$outdir" ]
+then
+  dt=`date '+%d-%m-%Y_%H:%M:%S'`
+  outdir=./Assembly/${sample}_${dt}
+fi
+
+megahit \
+        --12 $interleaved \
+        -o $outdir \
+        -t $NCPUS \
+        --out-prefix $sample
 
 

@@ -1,12 +1,12 @@
-#! /bin/bash
+#!/bin/bash
 
 #########################################################
 #
 # Platform: NCI Gadi HPC
 # Description: see https://github.com/Sydney-Informatics-Hub/Shotgun-Metagenomics-Analysis
 #
-# Author/s: Tracy Chew
-# tracy.chew@sydney.edu.au
+# Author/s: Cali Willet
+# cali.willet@sydney.edu.au
 #
 # If you use this script towards a publication, please acknowledge the
 # Sydney Informatics Hub (or co-authorship, where appropriate).
@@ -20,17 +20,13 @@
 #
 #########################################################
 
-path=$1
+config=<config>
+inputs=./Inputs/assemble.inputs
 
-fastqs=$(find $path -type f -name "*f*q.gz")
-fastqs=($fastqs)
+rm -f $inputs
 
-echo "$(date): Found ${#fastqs[@]} *fastq.gz files. Creating symlinks in ./Fastq directory"
+awk 'NR>1 {print $2}' $config > $inputs	
 
-for fastqpath in ${fastqs[@]}
-do
-	fastq=$(basename ${fastqpath})
-	ln -f -s $fastqpath ./Fastq/$fastq
-done
-
+tasks=`wc -l < $inputs`
+printf "Number of metagenomic assembly tasks to run: ${tasks}\n"
 

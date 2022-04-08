@@ -1,12 +1,12 @@
-#! /bin/bash
+#!/bin/bash
 
 #########################################################
 #
 # Platform: NCI Gadi HPC
 # Description: see https://github.com/Sydney-Informatics-Hub/Shotgun-Metagenomics-Analysis
 #
-# Author/s: Tracy Chew
-# tracy.chew@sydney.edu.au
+# Author/s: Cali Willet
+# cali.willet@sydney.edu.au
 #
 # If you use this script towards a publication, please acknowledge the
 # Sydney Informatics Hub (or co-authorship, where appropriate).
@@ -20,17 +20,25 @@
 #
 #########################################################
 
-path=$1
+set -e
 
-fastqs=$(find $path -type f -name "*f*q.gz")
-fastqs=($fastqs)
+sample=`echo $1 | cut -d ',' -f 1` 
+mapq=`echo $1 | cut -d ',' -f 2` # minimum mapping quality, -q
+baseQ=`echo $1 | cut -d ',' -f 3` # minimum base quality, -Q 
 
-echo "$(date): Found ${#fastqs[@]} *fastq.gz files. Creating symlinks in ./Fastq directory"
+assdir=./Assembly
+outdir=./Align_to_assembly
 
-for fastqpath in ${fastqs[@]}
-do
-	fastq=$(basename ${fastqpath})
-	ln -f -s $fastqpath ./Fastq/$fastq
-done
+contigs=${assdir}/${sample}/${sample}.contigs.fa
+sampledir=${outdir}/${sample}
+bam=${sampledir}/${sample}.sort.bam
+
+samtools coverage \
+	-q ${mapq} -Q ${baseQ} \
+	--reference ${contigs} \
+	-o ${sampledir}/${sample}.q${mapq}Q${baseQ}.cov \
+	${final}
+
+
 
 
