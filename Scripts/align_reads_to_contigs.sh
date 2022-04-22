@@ -22,14 +22,7 @@
 
 set -e
 
-sample=`echo $1 | cut -d ',' -f 1` 
-platform=`echo $1 | cut -d ',' -f 2`
-centre=`echo $1 | cut -d ',' -f 3`
-lib=`echo $1 | cut -d ',' -f 4` 
 
-assdir=./Assembly
-fastqdir=./Target_reads
-outdir=./Align_to_assembly
 
 contigs=${assdir}/${sample}/${sample}.contigs.fa
 sampledir=${outdir}/${sample}
