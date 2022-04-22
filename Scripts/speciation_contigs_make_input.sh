@@ -21,21 +21,22 @@
 #########################################################
 
 config=<config>
-inputs=./Inputs/align_reads_to_contigs.inputs
+inputs=./Inputs/speciation_contigs.inputs
 
-rm -f $inputs
+rm -rf ${inputs} ${inputs}-unsorted
 
 awk 'NR>1' ${config} | while read LINE
 do 
-        sample=`echo $LINE | cut -d ' ' -f 1`
-        labSampleID=`echo $LINE | cut -d ' ' -f 2`
-        platform=`echo $LINE | cut -d ' ' -f 4`
-	centre=`echo $LINE | cut -d ' ' -f 5`
-        lib=1
-	
-	printf "${labSampleID},${platform},${centre},${lib}\n" >> $inputs
+	sample=`echo $LINE | cut -d ' ' -f 1`
+	assembly=./Assembly/${sample}/${sample}.filteredContigs.fa
+	bytes=$( wc -c ${assembly} | awk '{print $1}')
+	printf "${sample}\t${bytes}\n" >> ${inputs}-unsorted
 done
 
+# Reverse numeric sort on bytes
+sort -rnk 2  ${inputs}-unsorted > ${inputs}
+rm -rf ${inputs}-unsorted
+
 tasks=`wc -l < $inputs`
-printf "Number of alignment tasks to run: ${tasks}\n"
+printf "Number of speciation tasks to run: ${tasks}\n"
 

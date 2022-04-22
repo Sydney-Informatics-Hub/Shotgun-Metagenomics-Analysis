@@ -35,7 +35,7 @@ Please do not have spaces in any of the values for the config file.
 
 #### 1.3 General setup
 
-All scripts will need to be updated to reflect your NCI project code at the `-P <project>` and `-l \<storage\> directive. Running the script `create_project.sh` and following the prompts will complete some of the setup for you. 
+All scripts will need to be updated to reflect your NCI project code at the `-P <project>` and `-l \<storage\>` directive. Running the script `create_project.sh` and following the prompts will complete some of the setup for you. 
 
 Note that you will need to manually edit the PBS resource requests for each PBS script depending on the size of your input data; guidelines/example resources will be given at each step to help you do this. As the 'sed' commands within this script operate on .sh and .pbs files, this setup script has been intentionally named .bash (easiest solution).
 
@@ -62,13 +62,13 @@ bash ./Scripts/fastqc_make_inputs.sh
 
 Edit the resource requests in `fastqc_run_parallel.pbs` according to your number of fastq files and their size, then submit:
 ```
-qsub fastqc_run_parallel.pbs
+qsub ./Scripts/fastqc_run_parallel.pbs
 ```
 
 To ease manual inspection of the fastQC output, running `multiqc` is recommended. This will collate the individual fastQC reports into one report. This can be done on the login node for small sample numbers, or using the below script for larger cohorts. Edit the PBS directives, then run:
 
 ```
-qsub multiqc.pbs
+qsub ./Scripts/multiqc.pbs
 ```
 
 Save a copy of ./MultiQC/multiqc_report.html to your local disk then open in a web browser to inspect the results. 
@@ -120,12 +120,12 @@ Edit the resource requests in `remove_host_run_parallel.pbs` according to your n
 
 Then submit:
 ```
-qsub remove_host_run_parallel.pbs
+qsub ./Scripts/remove_host_run_parallel.pbs
 ```
 
 After this job has completed, run the below script to find failed tasks:
 ```
-bash remove_host_find_failed_tasks.sh
+bash ./Scripts/remove_host_find_failed_tasks.sh
 ```
  
 Update the resource requests in `remove_host_failed_run_parallel.pbs`, ensuring to increase the walltime sufficiently, then submit with `qsub`.
@@ -145,12 +145,12 @@ Samples with 3-4 GB total target read fastq.gz using 24 CPU should complete in a
 
 Make inputs file:
 ```
-bash assemble_make_inputs.sh
+bash ./Scripts/assemble_make_inputs.sh
 ```
 
 Adjust resource requests and then submit:
 ```
-qsub assemble_run_parallel.pbs
+qsub ./Scripts/assemble_run_parallel.pbs
 ```
 
 The output of this analysis will be fasta assemblies for each sample within the `Assembly` directory, eg the assembled contigs for Sample1 will be `./Assembly/Sample1/Sample1.contigs.fa`.
@@ -165,12 +165,12 @@ Metadata is added to the BAM from 2 places: 1) Platform and sequencing centre ar
 
 Make the inputs:
 ```
-bash align_reads_to_contigs_make_input.sh
+bash ./Scripts/align_reads_to_contigs_make_input.sh
 ```
 
 Adjust the resources depending on the number of parallel tasks and sample size. Example of 3-4 GB target fastq.gz per sample requires 35 minutes on 12 CPU. Submit:
 ```
-qsub align_reads_to_contigs_run_parallel.pbs
+qsub ./Scripts/align_reads_to_contigs_run_parallel.pbs
 ```
 
 Output will be created in `./Align_to_assembly/<sampleDir>`. 
@@ -183,14 +183,14 @@ Running the make_input script will ask the user to input the minimum base and ma
 
 The coverage calculation takes ~ 2.5 minutes for a 3.5 GB BAM file.
 
-Make the inputs file,entering your chosen quality values when prompted:
+Make the inputs file, entering your chosen quality values when prompted:
 ```
-bash contig_coverage_make_input.sh
+bash ./Scripts/contig_coverage_make_input.sh
 ```
 
 Adjust the resources, then submit:
 ```
-qsub contig_coverage_run_parallel.pbs
+qsub ./Scripts/contig_coverage_run_parallel.pbs
 ```
 
 The output coverage file will be sent to the same output directory as above, and will be used to filter away contigs with low mapping support at the next step.
@@ -199,7 +199,7 @@ The output coverage file will be sent to the same output directory as above, and
 
 Contigs with low mapping support are filtered away here. You can customise this filtering step depending on how strict you want your final assembly to be. The included script defaults to a lenient approach to filtering, simply removing contigs where the mean mapping depth/sequence coverage across the contig is less than 1.
 
-The script `filter_contigs.sh` can be customised to filter on any of the following parameters (from SAMtools coverage `man` page): 
+The script `./Scripts/filter_contigs.sh` can be customised to filter on any of the following parameters (from SAMtools coverage `man` page): 
 
 | Column | Description                                          |
 | ------ | ---------------------------------------------------- |
@@ -231,7 +231,7 @@ Adjust the resource requests depending on the number of samples and their data s
 
 Then submit:
 ```
-qsub filter_contigs_run_parallel.pbs
+qsub ./Scripts/filter_contigs_run_parallel.pbs
 ```
 
 The output will be a new filtered contig fasta file in the `Assembly directory`, eg for Sample1,  the output will be `./Assembly/Sample1/Sample1.filteredContigs.fa`.
@@ -244,21 +244,21 @@ There is no need to create an inputs file as the inputs sample list from the ass
 
 Adjust the resources then submit:
 ```
-qsub  target_reads_and_assembly_summaries_run_parallel.pbs
+qsub ./Scripts/target_reads_and_assembly_summaries_run_parallel.pbs
 ```
 
 This job will create a temp file `./Assembly/<sample>/<sample>.summary.txt` for each sample that will be deleted at the next step, which collates these into one per-cohort summary TSV, with one sample per row.
 
 Collate the summaries:
 ```
-bash target_reads_and_assembly_summaries_collate.sh
+bash ./Scripts/target_reads_and_assembly_summaries_collate.sh
 ```
 
 
 ### Part 4. Speciation and abundance
 This analysis determines the species present within each sample, and their abundance. The analysis can be performed on the target read (host removed) data, or on the filtered contigs from Part 3 Assembly, or both. Abundance estimation with Bracken is usually performed on reads, as per the guidelines for that software. Performing speciation on contigs is useful for Part 5. Antimicrobial resistance genes and Part 6. Insertion sequence elements, as it enables us to assign a species to genes/elements detected on the contigs. 
 
-This part requires kraken2 (tested with v.2.1.1) and bracken2 (tested with v.2.6.0). At the time of writing, **kraken2 and bracken2 are not global apps on Gadi** so please self-install and make "module loadable" or update the scripts to use your local installation. 
+This part requires kraken2 (tested with v.2.0.8-beta), bracken2 (tested with v.2.6.0) and kronatools (tested with v.2.7.1) (as well as BBtools, used earlier). At the time of writing, **kraken2, bracken2, kronatools and BBtools are not global apps on Gadi** so please self-install and make "module loadable" or update the scripts to use your local installation. 
 
 
 #### 4.1 Build the kraken2 database
@@ -269,36 +269,93 @@ Since the NCBI RefSeq collection is constantly updated, the build date is includ
 
 After ensuring your `module load kraken2` command works or updating the script to include the full path to your local kraken2 installation, run the build script:
 ```
-qsub kraken2_build_db.pbs
+qsub ./Scripts/kraken2_build_db.pbs
 ```
 
 The database will be created in `./kraken2_standard_db_build_<date>`. Please ensure you have ample disk space (~ 150 GB required at the time of writing).  
 
-#### 4.2 Speciation (reads)
+#### 4.2 Speciation 
+
+This step uses the above database to identify which species each of the target reads ("reads" step) or filtered contigs ("contigs" step) likely belongs to. Because many bacteria contain identical or highly similar sequences, reads cannot always be assigned to the level of species - in such cases, kraken2 assigns the read to the lowest common ancestor of all species that share that sequence.
+
+Kraken2 does multithread, however benchmarking on Gadi revealed the threading was very inefficient (eg E < 10% for 24 CPU per task on normal queue). However, each task requires more RAM than can be provided by a single CPU, so more than 1 CPU per task must be assigned in order to avoid task failures due to insufficient memory.
+
+For samples with ~6 GB input fastq.gz, a minimum of ~ 60 GB is required - this can be achieved with 2 x `hugemem` queue CPUs per sample, 16 x `normal` queue CPUs per sample, or 7 x `normalbw` queue (256 GB nodes) CPUs per sample. The `hugemem` queue yields the optimal CPU efficiency (~87%) however if the other queues have more availability at the time of job submission, setting up for the less utilised queues is preferable. The 'memory mapping' parameter of kraken2 is not recommended here - it uses less memory, however is vastly slower (at least 20 times slower...)
+
+Kraken2 is quite fast - walltimes on the above tested CPU/queue values were < 15 minutes for samples with ~6 GB input target gzipped fastq. 
+
+##### 4.2.1 Speciation (reads)
+
+Target reads have been output as interleaved, for compatibility with humann2 (functional profiling step). Reformat the reads into paired with BBtools for compatibility with kraken2: 
+
+Make inputs (a sample list, sorted by sample input fastq largest to smallest to aid improved parallel efficiency):
+```
+bash ./Scripts/deinterleave_target_reads_make_input.sh
+```
+
+The following script uses bbtools to reformat the interleaved reads to paired and pigz to gzip the output. The reformat step does not multithread but the pigz compression step does, and is the slower part. A sample with 2 pairs of fastq totalling ~ 6 GB takes ~12 minutes and 16 GB RAM on 4 'normal' CPUs and ~ 9 minutes and 18 GB  RAM on 6 CPUs. The output will be sent to `Target_reads_paired`. For samples with multiple lanes of fastq, they retain multiple lanes of fastq (ie, we do not concatenate them). Kraken2 can accept multiple pairs of fastq as input by listing them concurrently. All fastq files containing the ID used in column 1 of the sample config file will be collected into a list as total input for that sample, so if you haven't done so by now, please check that these IDs are unique among the samples and among the fastq file names. 
+
+Edit the resource directives, then submit:
+```
+qsub ./Scripts/deinterleave_target_reads_run_parallel.pbs
+```
+
+There is no need to make a new inputs file for kraken2, as the same size-sorted list used in the above deinterlave step will be used.  
+
+Edit the script `./Scripts/speciation_reads.sh` to the name of your database created at step 4.1. 
+
+
+Adjust the resources, noting the RAM and CPU notes described above. Request all of the jobfs for the whole nodes you are using. Then submit:
+```
+qsub ./Scripts/speciation_reads_run_parallel.pbs
+```
+
+Output will be in the `Speciation_reads` directory, with per-sample directories containing Kraken2 output, report, and Krona plot html file that can be viewed interactively in a web browser.  
+
+##### 4.2.2 Speciation (contigs)
+
+The inputs file sorts the samples in order of their asembly size, largest to smallest. This is to increase parallel job efficiency, if the number of consecutively running tasks is less than the total number of tasks. 
+
+```
+bash speciation_contigs_make_input.sh
+```
+
+Edit the script `./Scripts/speciation_reads.sh` to the name of your database created at step 4.1.
+
+Adjust the resources, noting the RAM and CPU notes described above. Request all of the jobfs for the whole nodes you are using. Then submit:
+```
+qsub ./Scripts/speciation_contigs_run_parallel.pbs
+```
+
+Output will be in the `Speciation_contigs` directory, with per-sample directories containing Kraken2 output, report, and Krona plot html file that can be viewed interactively in a web browser.  
 
 
 
-#### 4.3 Abundance (reads)
+#### 4.3 Abundance
 
 
-
-#### 4.4 Speciation (contigs)
-
+##### 4.3.1 Abundance (reads)
 
 
-#### 4.5 Abundance (contigs)
+##### 4.3.1 Abundance (contigs)
+
+Note the tool was written to estimate abundance using read data not contig data; however depending on the nature of your research project, estimating the abundance based on assembled contigs may be meaningful.
 
 
 
 ### Part 5. Antimicrobial resistance genes
 
 
-
-### Part 6. Insertion seqeunce (IS) elements
-
+### Part 6. Gene prediction
 
 
-### Part 7. Functional profiling
+### Part 7. Resistome calculation
+
+
+### Part 8. Insertion seqeunce (IS) elements
+
+
+### Part 9. Functional profiling
 
   
 ### References/software used
