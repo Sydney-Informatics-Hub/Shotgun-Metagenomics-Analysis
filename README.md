@@ -71,7 +71,7 @@ To ease manual inspection of the fastQC output, running `multiqc` is recommended
 qsub ./Scripts/multiqc.pbs
 ```
 
-Save a copy of ./MultiQC/multiqc_report.html to your local disk then open in a web browser to inspect the results. 
+Save a copy of `./MultiQC/multiqc_report.html` to your local disk then open in a web browser to inspect the results. 
 
 #### 1.5 Quality filtering and trimming
 
@@ -96,7 +96,7 @@ To run:
 qsub ./Scripts/bbmap_prep.pbs
 ```
 
-The BBtools masked reference and index will be created in ./ref. 
+The BBtools masked reference and index will be created in `./ref`. 
 
 #### 2.2 Host contamination removal
 
@@ -130,7 +130,7 @@ bash ./Scripts/remove_host_find_failed_tasks.sh
  
 Update the resource requests in `remove_host_failed_run_parallel.pbs`, ensuring to increase the walltime sufficiently, then submit with `qsub`.
 
-The output of remove host will be fastq in ./Target_reads that has the host-derived DNA removed, leaving only putative microbial reads for downstream analysis. 
+The output of remove host will be interleaved fastq in `./Target_reads` that has the host-derived DNA removed, leaving only putative microbial reads for downstream analysis. 
 
 
 ### Part 3. Metagenome assembly
@@ -365,10 +365,9 @@ Collate Kraken2 'contigs' output into per-group files:
 ```
 perl ./Scripts/collate_speciation_or_abundance_with_groups.pl ./Speciation_contigs/Kraken2_contigs_allSamples.txt
 ```
-The output will be a per-group collated Kraken2 TSV file within the Speciation_reads or Speciation_contigs directory.
+The output will be a per-group collated Kraken2 TSV file within the `./Speciation_reads` or `./Speciation_contigs` directory.
 
 
- 
 
 #### 4.3 Abundance
 
@@ -443,7 +442,7 @@ Collate Braken2 'contigs' output:
 perl ./Scripts/collate_abundance.pl contigs
 ```
 
-The output will be an 'allSample.txt' file within the Abundance_reads or Abundance_contigs directory. 
+The output will be an 'allSample.txt' file within the `./Abundance_reads` or `./Abundance_contigs` directory. 
 
 
 If the cohort has groups (eg treatment groups or timepoints) and these are specified in column 5 of the sample config file, the below script can be run to additionally create a per-group TSV of the Bracken2 output. Provide the name of the collated output file as the first and only command line argument:
@@ -454,12 +453,12 @@ Collate Bracken2 'reads' output into per-group files:
 perl ./Scripts/collate_speciation_or_abundance_with_groups.pl ./Abundance_reads/Bracken2_reads_allSamples.txt
 ```
 
-Collate Kraken2 'contigs' output into per-group files:
+Collate Bracken2 'contigs' output into per-group files:
 
 ```
 perl ./Scripts/collate_speciation_or_abundance_with_groups.pl ./Abundance_contigs/Bracken2_contigs_allSamples.txt
 ```
-The output will be a per-group collated Bracken2 TSV file within the Abundance_reads or Abundance_contigs directory.
+The output will be a per-group collated Bracken2 TSV file within the `Abundance_reads` or `Abundance_contigs` directory.
 
 
 
@@ -475,7 +474,7 @@ The output will be a per-group collated Bracken2 TSV file within the Abundance_r
 ### Part 8. Insertion seqeunce (IS) elements
 This step annotates putative insertion sequence elements on the filtered assemblies using [Prokka annotation tool](https://github.com/tseemann/prokka) and [ISfinder sequence database](https://github.com/thanhleviet/ISfinder-sequences).
 
-First, download the ISfinder database to your `workdir` or other location:
+First, download the ISfinder database to your workdir:
 ```
 git clone https://github.com/thanhleviet/ISfinder-sequences.git
 ```
@@ -492,7 +491,7 @@ Submit all samples with:
 bash IS_annotation_run_loop.sh
 ```
 
-Output will be Prokka annotation files in per-sample directories within ./Insertion_sequences with PBS logs written to ./Logs/IS.
+Output will be Prokka annotation files in per-sample directories within `./Insertion_sequences` with PBS logs written to `./Logs/IS`.
 
 The following scripts will annotate the putative IS seqeunces with contig ID and species, filtering for only the passenger or transposase genes from the Prokka GFF file.
 
@@ -508,12 +507,12 @@ If the cohort has groups (eg treatment groups or timepoints) and these are speci
 perl collate_IS_annotation_with_species_by_groups.pl
 ```
 
-Output will be TSV files in `/Insertion_sequences/Filtered_IS_with_species`, per sample, per cohort, and per group if relevant. 
+Output will be TSV files in `./Insertion_sequences/Filtered_IS_with_species`, per sample, per cohort, and per group if relevant. 
 
 ### Part 9. Functional profiling
 Profile the presence/absence and abundance of microbial pathways in the metagenomes using HUMAnN 2 and metaphlan2. These are not global apps on Gadi, so please install and also [download the Chocophlan and Uniref90 databases](https://github.com/biobakery/humann/tree/2.9#5-download-the-databases).
 
-Humann2 has extremely variable run times that cannot be predicted by eg data szie, so samples are run via a loop rather than using parallel mode. Working space utilises `jobfs` (up to 300 GB per ~ 6 GB sample during testing) and copies the key output files to `<workdir>/Functional_profiling` before the job ends. Humann2 does not consider pairing information for paired read data, and accepts only one input file, so interleaved or concatenated paired iput is required. For samples with >1 fastq file input, the script will concatenate the temp input data using jobfs.  
+Humann2 has extremely variable run times that cannot be predicted by eg data size, so samples are run via a loop rather than using parallel mode. Working space utilises `jobfs` (up to 300 GB per ~ 6 GB sample during testing) and copies the key output files to `<workdir>/Functional_profiling` before the job ends. Humann2 does not consider pairing information for paired read data, and accepts only one input file, so interleaved or concatenated paired input is required. For samples with >1 fastq file input, the script will concatenate the temp input data using jobfs.  
 
 Humann2 does have a `resume` flag, however this necessitates that temp files are not written to jobfs, which is wiped upon job completion. If you encounter a sample that dies on walltime very much longer than the other samples, it may be worth resubmitting that sample without utilising jobfs (by editing the script to write to workdir rather than jobfs) so that resume can be utilised for potential further failed runs. 
 
@@ -523,28 +522,29 @@ After checking that your module load commands work and that the path variables f
 bash functional_profiling_run_loop.sh
 ```
 
-Output will be in per-sample directories within ./Functional_profiling, with humann2 and PBS logs written to ./Logs/humann2.
+Output will be in per-sample directories within `./Functional_profiling`, with humann2 and PBS logs written to `./Logs/humann2`.
 
 
 ### Software used
-[abricate/0.9.9](https://github.com/tseemann/abricate)
-[bbtools/37.98](https://jgi.doe.gov/data-and-tools/software-tools/bbtools/)
-[bracken/2.6.0](https://github.com/jenniferlu717/Bracken)
-[bwa/0.7.17](https://github.com/lh3/bwa) 
-[fastqc/0.11.7](https://github.com/s-andrews/FastQC)
-[gatk/4.1.5.0](https://github.com/broadinstitute/gatk)
-[humann2/2.8.2](https://github.com/biobakery/humann)
-[kraken2/2.0.8-beta](https://github.com/DerrickWood/kraken2)
-[megahit/1.2.8](https://github.com/voutcn/megahit)
-[metaphlan2/2.7.8](https://github.com/biobakery/MetaPhlAn2)
-[multiqc/1.9](https://github.com/ewels/MultiQC)
-[nci-parallel/1.0.0a](https://opus.nci.org.au/display/Help/nci-parallel)
-[openmpi/4.1.0](https://github.com/open-mpi)
-[prokka/1.14.6](https://github.com/tseemann/prokka)
-[python3](https://github.com/python/cpython)
-[sambamba/0.7.0](https://github.com/biod/sambamba)
-[samtools/1.10](https://github.com/samtools/samtools)
-[seqtk/1.3](https://github.com/lh3/seqtk)
+-[abricate/0.9.9](https://github.com/tseemann/abricate)
+-[bbtools/37.98](https://jgi.doe.gov/data-and-tools/software-tools/bbtools/)
+-[bracken/2.6.0](https://github.com/jenniferlu717/Bracken)
+-[bwa/0.7.17](https://github.com/lh3/bwa) 
+-[fastqc/0.11.7](https://github.com/s-andrews/FastQC)
+-[gatk/4.1.5.0](https://github.com/broadinstitute/gatk)
+-[humann2/2.8.2](https://github.com/biobakery/humann)
+-[kraken2/2.0.8-beta](https://github.com/DerrickWood/kraken2)
+-[kronatools/2.7.1](https://github.com/marbl/Krona)
+-[megahit/1.2.8](https://github.com/voutcn/megahit)
+-[metaphlan2/2.7.8](https://github.com/biobakery/MetaPhlAn2)
+-[multiqc/1.9](https://github.com/ewels/MultiQC)
+-[nci-parallel/1.0.0a](https://opus.nci.org.au/display/Help/nci-parallel)
+-[openmpi/4.1.0](https://github.com/open-mpi)
+-[prokka/1.14.6](https://github.com/tseemann/prokka)
+-[python3](https://github.com/python/cpython)
+-[sambamba/0.7.0](https://github.com/biod/sambamba)
+-[samtools/1.10](https://github.com/samtools/samtools)
+-[seqtk/1.3](https://github.com/lh3/seqtk)
 
 
 
