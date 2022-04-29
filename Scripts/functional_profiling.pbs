@@ -1,0 +1,80 @@
+#!/bin/bash
+
+#########################################################
+#
+# Platform: NCI Gadi HPC
+# Description: see https://github.com/Sydney-Informatics-Hub/Shotgun-Metagenomics-Analysis
+#
+# Author/s: Cali Willet; Tracy Chew
+# cali.willet@sydney.edu.au; tracy.chew@sydney.edu.au
+#
+# If you use this script towards a publication, please acknowledge the
+# Sydney Informatics Hub (or co-authorship, where appropriate).
+#
+# Suggested acknowledgement:
+# The authors acknowledge the scientific and technical assistance
+# <or e.g. bioinformatics assistance of <PERSON>> of Sydney Informatics
+# Hub and resources and services from the National Computational
+# Infrastructure (NCI), which is supported by the Australian Government
+# with access facilitated by the University of Sydney.
+#
+#########################################################
+
+#PBS -P <project>
+#PBS -l walltime=24:00:00
+#PBS -l ncpus=28
+#PBS -l mem=128GB
+#PBS -q normalbw
+#PBS -l jobfs=400GB
+#PBS -W umask=022
+#PBS -l wd
+#PBS -lstorage=scratch/<project>
+
+
+module load metaphlan2/2.7.8 
+module load humann2/2.8.2
+
+base=$(which humann2)
+uniref=${base/%bin\/humann2/uniref90_diamond}
+choco=${base/%bin\/humann2/chocophlan}
+
+out=${PBS_JOBFS}/${sample}
+final_out=./Functional_profiling/${sample}
+mkdir -p ${out} ${final_out}
+
+logfile=./Logs/humann2/${sample}.log
+rm -rf ${logfile}
+
+# humann2 does not consider pairing and takes only one input - concat the fastq if multiple inputs per sample, using jobfs for temp
+fastq=$(ls ./Target_reads/${sample}*.interleaved.extracted.fq.gz)
+fastq=($fastq)
+input_fastq=${PBS_JOBFS}/${sample}/${sample}.input.fastq
+
+if [ ${#fastq[@]} -gt 1 ]
+then 
+        # Concatenate multiple fastq files per sample:
+        zcat ./Target_reads/${sample}*.interleaved.extracted.fq.gz > $input_fastq
+else 
+        # Rename single fastq per sample for downstream compatibility:
+        input_fastq=${fastq[0]}
+fi
+
+humann2 --threads ${NCPUS} \
+	--input ${input_fastq} \
+	--output ${out} \
+	--metaphlan-options "--bowtie2db /scratch/er01/apps/metaphlan2/2.7.8/metaphlan_databases/db_v20" \
+	--protein-database $uniref \
+	--nucleotide-database $choco >>${logfile} 2>&1
+	
+# Copy required files from jobfs to workdir:
+cp ${out}/${sample}*genefamilies.tsv ${out}/${sample}*pathcoverage.tsv  ${out}/${sample}*pathabundance.tsv $final_out	
+	
+
+### Use this strategy if outdir is NOT jobfs:
+# Add --resume flag to humann2 command
+# If 0 exit status, clean up tmp dir created which can be quite large
+#exit_status=$?
+#if [ $exit_status -eq 0 ]; then
+#	rm -rf ../Functional_profiling/${sample}/*t*mp*	
+#fi
+#exit $exit_status

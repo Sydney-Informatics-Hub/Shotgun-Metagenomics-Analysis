@@ -401,8 +401,8 @@ The following Bracken2 parameters are set by default in the script - please upda
 ```
 KMER_LEN=35
 READ_LEN=150
-CLASSIFICATION_LVL=S #default=S (species)
-THRESHOLD=10 #Default=10
+CLASSIFICATION_LVL=S 
+THRESHOLD=10 
 ```
 
 Update the script  with the name and path of your Kraken2 database created at step 4.1, ajust the walltime depending on your number of samples, then submit:
@@ -416,7 +416,7 @@ qsub ./Scripts/bracken_est_abundance.pbs
 
 Note the tool was written to estimate abundance using read data not contig data; however depending on the nature of your research project, estimating the abundance based on assembled contigs may be meaningful.
 
-There is no separate script for this step, so either copy and `sed` the copy, or `sed` the original script to run the analysis on Kraken2 contig data:
+There is no separate script for this step, so either copy the script and `sed` the copy, or `sed` the original script to run the analysis on Kraken2 contig data:
 
 ```
 sed -i 's/reads/contigs/g' ./Scripts/bracken_est_abundance.pbs
@@ -476,8 +476,21 @@ The output will be a per-group collated Bracken2 TSV file within the Abundance_r
 
 
 ### Part 9. Functional profiling
+Profile the presence/absence and abundance of microbial pathways in the metagenomes using HUMAnN 2 and metaphlan2. These are not global apps on Gadi, so please install and also [download the Chocophlan and Uniref90 databases](https://github.com/biobakery/humann/tree/2.9#5-download-the-databases).
 
-  
+Humann2 has extremely variable run times that cannot be predicted by eg data szie, so samples are run via a loop rather than using parallel mode. Working space utilises `jobfs` (up to 300 GB per ~ 6 GB sample during testing) and copies the key output files to `<workdir>/Functional_profiling` before the job ends. Humann2 does not consider pairing information for paired read data, and accepts only one input file, so interleaved or concatenated paired iput is required. For samples with >1 fastq file input, the script will concatenate the temp input data using jobfs.  
+
+Humann2 does have a `resume` flag, however this necessitates that temp files are not written to jobfs, which is wiped upon job completion. If you encounter a sample that dies on walltime very much longer than the other samples, it may be worth resubmitting that sample without utilising jobfs (by editing the script to write to workdir rather than jobfs) so that resume can be utilised for potential further failed runs. 
+
+After checking that your module load commands work and that the path variables for the required Uniref and Chocophlan databases are correct for your installation, submit the serial per-sample PBS jobs using the loop script:
+
+``` 
+bash functional_profiling_run_loop.sh
+```
+
+Output will be in per-sample directories within ./Functional_profiling, with humann2 logs written to per-sample directories in ./Logs/humann2.
+
+
 ### References/software used
 
  
