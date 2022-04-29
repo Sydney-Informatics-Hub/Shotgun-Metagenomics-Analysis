@@ -261,28 +261,29 @@ This analysis determines the species present within each sample, and their abund
 This part requires kraken2 (tested with v.2.0.8-beta), bracken2 (tested with v.2.6.0) and kronatools (tested with v.2.7.1) (as well as BBtools, used earlier). At the time of writing, **kraken2, bracken2, kronatools and BBtools are not global apps on Gadi** so please self-install and make "module loadable" or update the scripts to use your local installation. 
 
 
-#### 4.1 Build the kraken2 database
+#### 4.1 Build the Kraken2 database
 
 The included script builds the 'standard' database, which includes NCBI taxonomic information and all RefSeq complete genomes for bacteria, archaea, virus, as well as human and some known vectors. Given the memory capacity of Gadi, the use of 'MiniKraken' databases is not recommended. 
 
 Since the NCBI RefSeq collection is constantly updated, the build date is included in the database name. 
 
-After ensuring your `module load kraken2` command works or updating the script to include the full path to your local kraken2 installation, run the build script:
+The database will be created in `./kraken2_standard_db_build_<date>`. Please ensure you have ample disk space (~ 150 GB required at the time of writing). Change the path to specify a different database location if desired.   
+
+Ensure your `module load kraken2` command works before running the below script: 
 ```
 qsub ./Scripts/kraken2_build_db.pbs
 ```
 
-The database will be created in `./kraken2_standard_db_build_<date>`. Please ensure you have ample disk space (~ 150 GB required at the time of writing).  
 
 #### 4.2 Speciation 
 
 This step uses the above database to identify which species each of the target reads ("reads" step) or filtered contigs ("contigs" step) likely belongs to. Because many bacteria contain identical or highly similar sequences, reads cannot always be assigned to the level of species - in such cases, kraken2 assigns the read to the lowest common ancestor of all species that share that sequence.
 
-Kraken2 does multithread, however benchmarking on Gadi revealed the threading was very inefficient (eg E < 10% for 24 CPU per task on normal queue). However, each task requires more RAM than can be provided by a single CPU, so more than 1 CPU per task must be assigned in order to avoid task failures due to insufficient memory.
+Kraken2 does multithread, however benchmarking on Gadi revealed the threading was very inefficient (eg E < 10% for 24 CPU per task on normal queue). However, each task requires more RAM than can be provided by a single CPU, so more than 1 CPU per task must be assigned in order to avoid task failures due to insufficient memory. The 'memory mapping' parameter of kraken2 is not recommended here - it uses less memory, however is vastly slower (by AT LEAST 20 times).
 
-For samples with ~6 GB input fastq.gz, a minimum of ~ 60 GB is required - this can be achieved with 2 x `hugemem` queue CPUs per sample, 16 x `normal` queue CPUs per sample, or 7 x `normalbw` queue (256 GB nodes) CPUs per sample. The `hugemem` queue yields the optimal CPU efficiency (~87%) however if the other queues have more availability at the time of job submission, setting up for the less utilised queues is preferable. The 'memory mapping' parameter of kraken2 is not recommended here - it uses less memory, however is vastly slower (at least 20 times slower...)
+For the 'standard' database created in the step above, a minimum of ~ 60 GB is required - this can be achieved with 2 x `hugemem` queue CPUs per sample, 16 x `normal` queue CPUs per sample, or 7 x `normalbw` queue (256 GB nodes) CPUs per sample. The `hugemem` queue yields the optimal CPU efficiency (~87%) however if the other queues have more availability at the time of job submission, setting up for the less utilised queues is preferable. 
 
-Kraken2 is quite fast - walltimes on the above tested CPU/queue values were < 15 minutes for samples with ~6 GB input target gzipped fastq. 
+Kraken2 is fast - walltimes on the above tested CPU/queue values were < 15 minutes for samples with ~6 GB input target gzipped fastq. 
 
 ##### 4.2.1 Speciation (reads)
 
@@ -293,7 +294,7 @@ Make inputs (a sample list, sorted by sample input fastq largest to smallest to 
 bash ./Scripts/deinterleave_target_reads_make_input.sh
 ```
 
-The following script uses bbtools to reformat the interleaved reads to paired and pigz to gzip the output. The reformat step does not multithread but the pigz compression step does, and is the slower part. A sample with 2 pairs of fastq totalling ~ 6 GB takes ~12 minutes and 16 GB RAM on 4 'normal' CPUs and ~ 9 minutes and 18 GB  RAM on 6 CPUs. The output will be sent to `Target_reads_paired`. For samples with multiple lanes of fastq, they retain multiple lanes of fastq (ie, we do not concatenate them). Kraken2 can accept multiple pairs of fastq as input by listing them concurrently. All fastq files containing the ID used in column 1 of the sample config file will be collected into a list as total input for that sample, so if you haven't done so by now, please check that these IDs are unique among the samples and among the fastq file names. 
+The following script uses BBtools to reformat the interleaved reads to paired and pigz to gzip the output. The reformat step does not multithread but the pigz compression step does, and is the slower part. A sample with 2 pairs of fastq totalling ~ 6 GB takes ~12 minutes and 16 GB RAM on 4 'normal' CPUs and ~ 9 minutes and 18 GB  RAM on 6 CPUs. The output will be sent to `Target_reads_paired`. For samples with multiple lanes of fastq, they retain multiple lanes of fastq (ie, we do not concatenate them). Kraken2 can accept multiple pairs of fastq as input by listing them concurrently. All fastq files containing the ID used in column 1 of the sample config file will be collected into a list as total input for that sample, so if you haven't done so by now, please check that these IDs are unique among the samples and among the fastq file names. 
 
 Edit the resource directives, then submit:
 ```
@@ -305,7 +306,7 @@ There is no need to make a new inputs file for kraken2, as the same size-sorted 
 Edit the script `./Scripts/speciation_reads.sh` to the name of your database created at step 4.1. 
 
 
-Adjust the resources, noting the RAM and CPU notes described above. Request all of the jobfs for the whole nodes you are using. Then submit:
+Adjust the resources, noting the RAM and CPU examples described above. Request all of the jobfs for the whole nodes you are using. Then submit:
 ```
 qsub ./Scripts/speciation_reads_run_parallel.pbs
 ```
@@ -330,16 +331,135 @@ qsub ./Scripts/speciation_contigs_run_parallel.pbs
 Output will be in the `Speciation_contigs` directory, with per-sample directories containing Kraken2 output, report, and Krona plot html file that can be viewed interactively in a web browser.  
 
 
+##### 4.2.3 Collate speciation output
+
+Format Kraken2 output into one file for all samples in cohort. 
+
+The below script creates a single TSV file of the Kraken2 output for all samples in the cohort. It collects column 1 ("Percentage of fragments covered by the clade rooted at this taxon") and column 6 (scientific name). Column headings are sample IDs and row headings are scientific names. The sample ID in column 2 of the config is used to name the samples. Collating the Kraken2 output in this way makes downstream customised analysis and interrogation more straightforward. 
+
+The script can collate Kraken2 output from either reads or contigs analysis, by parsing these as variable names on the command line.
+
+Collate Kraken2 'reads' output:
+
+```
+perl ./Scripts/collate_speciation.pl reads
+```
+
+Collate Kraken2 'contigs' output:
+
+```
+perl ./Scripts/collate_speciation.pl contigs
+```
+The output will be an 'allSample.txt' file within the Speciation_reads or Speciation_contigs directory. 
+
+If the cohort has groups (eg treatment groups or timepoints) and these are specified in column 5 of the sample config file, the below script can be run to additionally create a per-group TSV of the Kraken2 output. Provide the name of the collated output file as the first and only command line argument:
+
+
+Collate Kraken2 'reads' output into per-group files:
+```
+perl ./Scripts/collate_speciation_or_abundance_with_groups.pl ./Speciation_reads/Kraken2_reads_allSamples.txt
+```
+
+Collate Kraken2 'contigs' output into per-group files:
+
+```
+perl ./Scripts/collate_speciation_or_abundance_with_groups.pl ./Speciation_contigs/Kraken2_contigs_allSamples.txt
+```
+The output will be a per-group collated Kraken2 TSV file within the Speciation_reads or Speciation_contigs directory.
+
+
+ 
 
 #### 4.3 Abundance
 
+Abundance estimation generates a profile of the microbiota per patient. Since the number of reads classified to species level is far lower than the total reads, Kraken2 cannot indicate the abundance of species in the sample. Bracken2 probabilistically redistributes reads in the taxonomic tree as classified by Kraken2, so make sure to run Kraken2 step first. 
+Bracken2 uses Bayes theorem to redistribute reads that have not been assigned to the level of species by Kraken2. Reads assigned above the level of species are distributed down to species, and reads below the level of species (eg strain level) are distributed up to species. 
 
-##### 4.3.1 Abundance (reads)
+
+##### 4.3.1 Generate the Bracken2 database
+
+Update the script `bracken_db_build.pbs` with the name and path of your Kraken2 database created at step 4.1. 
+
+The following Bracken2 parameters are set by default in the script - please update these to values better suited to your data if required:
+```
+KMER_LEN=35
+READ_LEN=150
+```
+
+Ensure your `module load` commands work before running the below script:
+
+```
+qsub ./Sripts/bracken_db_build.pbs
+```
+
+##### 4.3.2 Abundance (reads)
+
+Compute species abundance estimates using target reads as input with Bracken2. This step is very fast (~ 2 seconds per sample with 'standard' database and ~ 6 GB traget fastq.gz) so abundance is computed per sample in series rather than in parallel.
+
+The following Bracken2 parameters are set by default in the script - please update these to values better suited to your data if required:
+
+```
+KMER_LEN=35
+READ_LEN=150
+CLASSIFICATION_LVL=S #default=S (species)
+THRESHOLD=10 #Default=10
+```
+
+Update the script  with the name and path of your Kraken2 database created at step 4.1, ajust the walltime depending on your number of samples, then submit:
+
+```
+qsub ./Scripts/bracken_est_abundance.pbs
+```
 
 
-##### 4.3.1 Abundance (contigs)
+##### 4.3.3 Abundance (contigs)
 
 Note the tool was written to estimate abundance using read data not contig data; however depending on the nature of your research project, estimating the abundance based on assembled contigs may be meaningful.
+
+There is no separate script for this step, so either copy and `sed` the copy, or `sed` the original script to run the analysis on Kraken2 contig data:
+
+```
+sed -i 's/reads/contigs/g' ./Scripts/bracken_est_abundance.pbs
+qsub ./Scripts/bracken_est_abundance.pbs
+```
+
+##### 4.3.4 Collate abundance output
+
+Format Bracken2 output into one file for all samples in cohort.
+
+The below script creates a single TSV file of the Bracken2 output for all samples in the cohort. It collects column 1 (scientific name) and column 7 (fraction total reads). Column headings are sample IDs and row headings are scientific names. The sample ID in column 2 of the config is used to name the samples. Collating the Bracken2 output in this way makes downstream customised analysis and interrogation more straightforward. 
+
+The script can collate Bracken2 output from either reads or contigs analysis, by parsing these as variable names on the command line.
+
+Collate Bracken2 'reads' output:
+
+```
+perl ./Scripts/collate_abundance.pl reads
+```
+
+Collate Braken2 'contigs' output:
+
+```
+perl ./Scripts/collate_abundance.pl contigs
+```
+
+The output will be an 'allSample.txt' file within the Abundance_reads or Abundance_contigs directory. 
+
+
+If the cohort has groups (eg treatment groups or timepoints) and these are specified in column 5 of the sample config file, the below script can be run to additionally create a per-group TSV of the Bracken2 output. Provide the name of the collated output file as the first and only command line argument:
+
+
+Collate Bracken2 'reads' output into per-group files:
+```
+perl ./Scripts/collate_speciation_or_abundance_with_groups.pl ./Abundance_reads/Bracken2_reads_allSamples.txt
+```
+
+Collate Kraken2 'contigs' output into per-group files:
+
+```
+perl ./Scripts/collate_speciation_or_abundance_with_groups.pl ./Abundance_contigs/Bracken2_contigs_allSamples.txt
+```
+The output will be a per-group collated Bracken2 TSV file within the Abundance_reads or Abundance_contigs directory.
 
 
 

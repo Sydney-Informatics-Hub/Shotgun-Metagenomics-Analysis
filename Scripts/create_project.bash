@@ -5,8 +5,8 @@
 # Platform: NCI Gadi HPC
 # Description: see https://github.com/Sydney-Informatics-Hub/Shotgun-Metagenomics-Analysis
 #
-# Author/s: Cali Willet
-# cali.willet@sydney.edu.au
+# Author/s: Cali Willet; Tracy Chew
+# cali.willet@sydney.edu.au; tracy.chew@sydney.edu.au
 #
 # If you use this script towards a publication, please acknowledge the
 # Sydney Informatics Hub (or co-authorship, where appropriate).
@@ -62,7 +62,8 @@ if [ -f $config ]
 then
 	echo Using config $config
 	sed -i "s/^cohort=.*/cohort=${cohort}/" ./Scripts/*.sh
-	sed -i "s/^cohort=.*/cohort=${cohort}/" ./Scripts/*.pbs 	
+	sed -i "s/^cohort=.*/cohort=${cohort}/" ./Scripts/*.pbs 
+	sed -i "s/^cohort=.*/cohort=${cohort}/" ./Scripts/*.pl	
 	echo
 else
 	echo $config does not exist - please fix. Aborting.
