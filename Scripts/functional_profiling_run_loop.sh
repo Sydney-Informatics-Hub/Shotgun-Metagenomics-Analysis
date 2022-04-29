@@ -20,7 +20,7 @@
 #
 #########################################################
 
-config=./Inputs/<cohort>.config)
+config=./Inputs/<cohort>.config
 
 logdir=./Logs/humann2
 mkdir -p ${logdir}

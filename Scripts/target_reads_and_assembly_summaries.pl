@@ -29,7 +29,7 @@ my $out = "./Assembly/$sample\/$sample\.summary.txt";
 open (O, ">$out") || die "$! write $out\n";
  
 #Get raw reads from FastQC:
-my @pairs = split(' ', `ls /scratch/qq47/ADL6685_complete_analysis_SetD/Fastq/$sample*_R1*.fastq.gz`); 
+my @pairs = split(' ', `ls ./Fastq/$sample*_R1*.fastq.gz`); 
 my $raw_reads = 0; 
 foreach my $pair (@pairs) {
 	chomp $pair; 
@@ -66,7 +66,7 @@ my $av_bp = $cols[15];
 my $N50 = $cols[18];
 	
 #Filtered contigs count:
-my $filt = `grep ">" /scratch/qq47/ADL6685_complete_analysis_SetD/Assembly\/$sample\/$sample\.filteredContigs.fa | wc -l`;
+my $filt = `grep ">" ./Assembly\/$sample\/$sample\.filteredContigs.fa | wc -l`;
 chomp $filt;
 	
 print O "$sample\t$raw_reads\t$target_reads\t$host\t$contigs\t$tot_bp\t$max_bp\t$av_bp\t$N50\t$filt\n"; 	 

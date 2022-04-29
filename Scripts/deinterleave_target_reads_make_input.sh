@@ -20,7 +20,7 @@
 #
 #########################################################
 
-config=<config>
+config=./Inputs/<cohort>.config
 inputs=./Inputs/deinterleave_target_reads.inputs
 
 rm -rf ${inputs} ${inputs}-unsorted

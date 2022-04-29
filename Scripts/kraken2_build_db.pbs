@@ -32,7 +32,7 @@
 #PBS -e ./Logs/kraken2_build_db.e
 #PBS -lstorage=scratch/<project>
 
-module load kraken2/2.1.1
+module load kraken2/2.0.8-beta
 
 dt=`date '+%d-%m-%Y'`
 

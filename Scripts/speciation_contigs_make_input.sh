@@ -20,7 +20,7 @@
 #
 #########################################################
 
-config=<config>
+config=./Inputs/<cohort>.config
 inputs=./Inputs/speciation_contigs.inputs
 
 rm -rf ${inputs} ${inputs}-unsorted

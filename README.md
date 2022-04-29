@@ -473,7 +473,42 @@ The output will be a per-group collated Bracken2 TSV file within the Abundance_r
 
 
 ### Part 8. Insertion seqeunce (IS) elements
+This step annotates putative insertion sequence elements on the filtered assemblies using [Prokka annotation tool](https://github.com/tseemann/prokka) and [ISfinder sequence database](https://github.com/thanhleviet/ISfinder-sequences).
 
+First, download the ISfinder database to your `workdir` or other location:
+```
+git clone https://github.com/thanhleviet/ISfinder-sequences.git
+```
+
+At the time of writing, Prokka is not a global app on Gadi so please install and test. Run `prokka --depends` to ensure you have all dependencies. During testing, we found two required perl modules not globally installed (XML::Simple and bioperl) so if you are using a self-install Prokka app, ensure to also install these Perl modules and add them to the path in the '.base' module load file. 
+
+You may also need to manually update the `tbl2asn` file, which NCBI has set to expire. See [known issue](https://github.com/tseemann/prokka/issues/139) for discussion and solution. 
+
+Prokka multithreads but the CPU efficiency is low when all samples are run in a parallel job (7-13% during testing at 12-24 CPU per task). Walltimes can be unpredictably long - up to 11 hours for ~ 6 GB input fastq.gz samples. This is because Prokka was not designed to annotate large metagenomes. To increase overall efficiency, a serial submission loop is utilised rather than the parallel mode.  
+
+Submit all samples with:
+ 
+``` 
+bash IS_annotation_run_loop.sh
+```
+
+Output will be Prokka annotation files in per-sample directories within ./Insertion_sequences with PBS logs written to ./Logs/IS.
+
+The following scripts will annotate the putative IS seqeunces with contig ID and species, filtering for only the passenger or transposase genes from the Prokka GFF file.
+
+Create new per-sample and per-cohort output with contig and species: 
+
+```
+perl collate_IS_annotation_with_species.pl
+```
+
+If the cohort has groups (eg treatment groups or timepoints) and these are specified in column 5 of the sample config file, the below script can be run to additionally create a per-group TSV of the IS annotation with species output:
+
+```
+perl collate_IS_annotation_with_species_by_groups.pl
+```
+
+Output will be TSV files in `/Insertion_sequences/Filtered_IS_with_species`, per sample, per cohort, and per group if relevant. 
 
 ### Part 9. Functional profiling
 Profile the presence/absence and abundance of microbial pathways in the metagenomes using HUMAnN 2 and metaphlan2. These are not global apps on Gadi, so please install and also [download the Chocophlan and Uniref90 databases](https://github.com/biobakery/humann/tree/2.9#5-download-the-databases).
@@ -488,11 +523,38 @@ After checking that your module load commands work and that the path variables f
 bash functional_profiling_run_loop.sh
 ```
 
-Output will be in per-sample directories within ./Functional_profiling, with humann2 logs written to per-sample directories in ./Logs/humann2.
+Output will be in per-sample directories within ./Functional_profiling, with humann2 and PBS logs written to ./Logs/humann2.
 
 
-### References/software used
+### Software used
+[abricate/0.9.9](https://github.com/tseemann/abricate)
+[bbtools/37.98](https://jgi.doe.gov/data-and-tools/software-tools/bbtools/)
+[bracken/2.6.0](https://github.com/jenniferlu717/Bracken)
+[bwa/0.7.17](https://github.com/lh3/bwa) 
+[fastqc/0.11.7](https://github.com/s-andrews/FastQC)
+[gatk/4.1.5.0](https://github.com/broadinstitute/gatk)
+[humann2/2.8.2](https://github.com/biobakery/humann)
+[kraken2/2.0.8-beta](https://github.com/DerrickWood/kraken2)
+[megahit/1.2.8](https://github.com/voutcn/megahit)
+[metaphlan2/2.7.8](https://github.com/biobakery/MetaPhlAn2)
+[multiqc/1.9](https://github.com/ewels/MultiQC)
+[nci-parallel/1.0.0a](https://opus.nci.org.au/display/Help/nci-parallel)
+[openmpi/4.1.0](https://github.com/open-mpi)
+[prokka/1.14.6](https://github.com/tseemann/prokka)
+[python3](https://github.com/python/cpython)
+[sambamba/0.7.0](https://github.com/biod/sambamba)
+[samtools/1.10](https://github.com/samtools/samtools)
+[seqtk/1.3](https://github.com/lh3/seqtk)
 
+
+
+
+ 
+ 
+ 
+ 
+ 
+ 
  
 ======= 
 

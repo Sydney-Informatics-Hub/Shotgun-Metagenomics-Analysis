@@ -34,7 +34,7 @@
 
 
 module load openmpi/4.0.2
-module load nci-parallel/1.0.0
+module load nci-parallel/1.0.0a
 module load bbtools/37.98
 
 set -e

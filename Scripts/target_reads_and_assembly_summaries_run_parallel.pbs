@@ -33,7 +33,7 @@
 #PBS -lstorage=scratch/<project>
 
 module load openmpi/4.0.2
-module load nci-parallel/1.0.0
+module load nci-parallel/1.0.0a
 
 set -e
 

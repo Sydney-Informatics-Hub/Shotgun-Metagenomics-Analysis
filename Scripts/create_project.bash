@@ -61,9 +61,7 @@ config=./Inputs/${cohort}.config
 if [ -f $config ] 
 then
 	echo Using config $config
-	sed -i "s/^cohort=.*/cohort=${cohort}/" ./Scripts/*.sh
-	sed -i "s/^cohort=.*/cohort=${cohort}/" ./Scripts/*.pbs 
-	sed -i "s/^cohort=.*/cohort=${cohort}/" ./Scripts/*.pl	
+	sed -i "s/<cohort>/${cohort}/" ./Scripts/*.sh ./Scripts/*.pbs ./Scripts/*.pl
 	echo
 else
 	echo $config does not exist - please fix. Aborting.

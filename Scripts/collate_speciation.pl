@@ -27,12 +27,13 @@ use strict;
 
 
 my $set = $ARGV[0]; chomp $set; # do for contigs and reads separately
+my $cohort = '<cohort>'; 
 my $config = './Inputs/<cohort>.config'; 
 my $kdir = "./Speciation_$set";
 
 my @samples = split(' ', `awk 'NR>1 {print \$2}' $config`); 
 
-my $out_all = "$kdir\/Kraken2_$set\_allSamples.txt";
+my $out_all = "$kdir\/Kraken2_$cohort\_$set\_allSamples.txt";
 
 # Collect data to hash
 my $krakhash = {};

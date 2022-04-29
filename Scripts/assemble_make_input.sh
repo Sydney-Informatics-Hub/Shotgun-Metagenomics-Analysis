@@ -20,7 +20,7 @@
 #
 #########################################################
 
-config=<config>
+config=./Inputs/<cohort>.config
 inputs=./Inputs/assemble.inputs
 
 rm -f $inputs

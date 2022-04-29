@@ -37,7 +37,7 @@ module load python3/3.7.4 kraken2/2.0.8-beta bracken/2.6.0
 src=$(which bracken)
 src=${src/%bracken/src}
 
-config=<cohort>.config
+config=./Inputs/<cohort>.config
 
 KRAKEN_DB=kraken2_standard_db_build_<date> ###UPDATE TO YOUR KRAKEN2 DB
 KMER_LEN=35

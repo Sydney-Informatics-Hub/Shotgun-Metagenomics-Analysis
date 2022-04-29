@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#########################################################
+ #########################################################
 #
 # Platform: NCI Gadi HPC
 # Description: see https://github.com/Sydney-Informatics-Hub/Shotgun-Metagenomics-Analysis
@@ -18,24 +18,20 @@
 # Infrastructure (NCI), which is supported by the Australian Government
 # with access facilitated by the University of Sydney.
 #
-#########################################################
+#########################################################    
 
 config=./Inputs/<cohort>.config
-inputs=./Inputs/align_reads_to_contigs.inputs
 
-rm -f $inputs
+logdir=./Logs/IS
+mkdir -p ${logdir} ./Insertion_sequences
 
 awk 'NR>1' ${config} | while read LINE
 do 
-        sample=`echo $LINE | cut -d ' ' -f 1`
-        labSampleID=`echo $LINE | cut -d ' ' -f 2`
-        platform=`echo $LINE | cut -d ' ' -f 4`
-	centre=`echo $LINE | cut -d ' ' -f 5`
-        lib=1
-	
-	printf "${labSampleID},${platform},${centre},${lib}\n" >> $inputs
+        sample=`echo $LINE | cut -d ' ' -f 2`
+        echo Submitting IS annotation for $sample
+        qsub -N IS-${sample} -o ${logdir}/${sample}.o -e ${logdir}/${sample}.e -v sample="$sample" ./Scripts/IS_annotation.pbs
+        sleep 1
+        echo
 done
 
-tasks=`wc -l < $inputs`
-printf "Number of alignment tasks to run: ${tasks}\n"
 

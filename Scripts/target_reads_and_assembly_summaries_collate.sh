@@ -20,8 +20,8 @@
 #
 #########################################################
 
-config=<config>
-cohort=$(echo $config | sed 's/.config//')
+cohort=<cohort>
+config=./Inputs/${cohort}.config
 out=./${cohort}_target_reads_and_assembly_summary.txt
 
 printf "#Sample\tRaw_reads\tTarget_reads\t%%_host\tNum_contgs\tTot_bp\tMax_bp\tMean_bp\tN50\tFiltered_contigs\n" > $out

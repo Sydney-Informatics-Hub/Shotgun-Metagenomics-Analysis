@@ -26,10 +26,11 @@ use strict;
 my $set = $ARGV[0]; chomp $set; # do reads and contigs separately
 
 my $dir = "./Abundance_$set";
+my $cohort = '<cohort>'; 
 my $config = './Inputs/<cohort>.config';
 my @samples = split(' ', `awk 'NR>1 {print \$2}' $config`); 
 
-my $out_all = "$dir\/Bracken2_$set\_allSamples.txt";
+my $out_all = "$dir\/Bracken2_$cohort\_$set\_allSamples.txt";
 
 my $brakhash = {};
 my $sciformathash = {}; 
