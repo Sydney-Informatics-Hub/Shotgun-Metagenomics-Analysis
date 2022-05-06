@@ -1,0 +1,555 @@
+#Curated_gene_name	Resistance_Mechanism	Drug_Class	Gene_names_variation	GNV_2	GNV_3	GNV_4	GNV_5	GNV_6	GNV_7	GNV_8	GNV_9	GNV_1	GNV_11	GNV_12
+aac(3)-II	inactivation	Aminoglycoside	aac(3)-II											
+AAC(3)-IId	inactivation	Aminoglycoside	aac(3)-IId_1											
+aac(6')_Serra	inactivation	Aminoglycoside	aac(6')_Serra											
+AAC(6')-Ic	inactivation	Aminoglycoside	aac(6')-Ic_1											
+AAC(6')-Ie-APH(2'')-Ia	inactivation	Aminoglycoside	aac(6')-aph(2'')_1											
+AAC(6')-Ii	inactivation	Aminoglycoside	aac(6')-Ii_1											
+aac(6')-Iid	inactivation	Aminoglycoside	aac(6')-Iid	aac(6')-Iid_1	AAC(6')-lid									
+AAC(6')-Iih	inactivation	Aminoglycoside	aac(6')-Iih_1											
+AAC(6')-Iy	inactivation	Aminoglycoside	aac(6')-Iaa_1											
+AAC(6')-Iz	inactivation	Aminoglycoside	aac(6')-Iz_1											
+aacA-ACI7	inactivation	Aminoglycoside	aacA-ACI7	aac(6')-Iw_1	AAC(6')-Iw									
+aacA-ENT1	inactivation	Aminoglycoside	aacA-ENT1											
+aacA-ENT2	inactivation	Aminoglycoside	aacA-ENT2											
+aadA1	inactivation	Aminoglycoside	aadA1											
+aadA2	inactivation	Aminoglycoside	aadA2_1											
+aadA27	inactivation	Aminoglycoside	aadA27											
+aadA5	inactivation	Aminoglycoside	aadA5	aadA5_1										
+aadA6	inactivation	Aminoglycoside	aad(6)	aadA6_1										
+aadS	inactivation	Aminoglycoside	aadS											
+AbaF	efflux	MDR	Acinetobacter_baumannii_AbaF											
+AbaQ	efflux	MDR	Acinetobacter_baumannii_AbaQ											
+abeM	efflux	MDR	abeM											
+abeS	efflux	MDR	abeS											
+acrA	efflux	MDR	Enterobacter_cloacae_acrA	Escherichia_coli_acrA	Klebsiella_pneumoniae_acrA									
+acrB	efflux	MDR	acrB											
+acrD	efflux	MDR	acrD											
+acrE	efflux	MDR	acrE											
+acrF	efflux	MDR	acrF											
+acrS	efflux	MDR	acrS											
+adeA	efflux	Tetracycline	adeA											
+adeB	efflux	MDR	adeB											
+adeC	efflux	Tetracycline	adeC											
+adeF	efflux	MDR	adeF											
+adeG	efflux	MDR	adeG											
+adeH	efflux	MDR	adeH											
+adeI	efflux	MDR	adeI											
+adeJ	efflux	MDR	adeJ											
+adeK	efflux	MDR	adeK											
+adeL	efflux	MDR	adeL											
+adeN	efflux	MDR	adeN											
+adeR	efflux	MDR	adeR											
+adeS	efflux	MDR	adeS											
+ampC	inactivation	Beta-Lactam	Escherichia_coli_ampC1_beta-lactamase	Escherichia_coli_ampC										
+ampH	inactivation	Beta-Lactam	Escherichia_coli_ampH											
+amrA	efflux	Aminoglycoside	amrA											
+amrB	efflux	Aminoglycoside	amrB											
+AmvA	efflux	MDR	Acinetobacter_baumannii_AmvA											
+ant(3'')-IIa	inactivation	Aminoglycoside	ant(3'')-IIa	ANT(3'')-IIa	ant(3'')-Ia_1									
+ANT(3'')-IIc	inactivation	Aminoglycoside	ant(3'')-IIc											
+ant(6)-Ia	inactivation	Aminoglycoside	ANT(6)-Ia	ant(6)-Ia_1	ant(6)-Ia_2									
+ant(9)-Ia	inactivation	Aminoglycoside	ant(9)-Ia_1											
+APH(2'')-If	inactivation	Aminoglycoside	aph(2'')-If											
+aph(2'')-Ih	inactivation	Aminoglycoside	APH(2'')-Ih											
+aph(3')-Ia	inactivation	Aminoglycoside	APH(3')-Ia											
+APH(3')-Ib	inactivation	Aminoglycoside	aph(3')-Ia_1	aph(3')-Ia_2	aph(3')-Ia_3	aph(3')-Ia_5	aph(3')-Ia_7							
+aph(3'')-Ib	inactivation	Aminoglycoside	aph(3'')-Ib_2	aph(3'')-Ib_5	APH(3'')-Ib									
+APH(3')-IIb	inactivation	Aminoglycoside	aph(3')-IIb_2	APH(3')-IIb										
+aph(3')-IIc	inactivation	Aminoglycoside	aph(3')-IIc_1	APH(3')-IIc	aph(6)-Smalt									
+APH(3')-IIIa	inactivation	Aminoglycoside	APH(3')-IIIa											
+APH(3')-VI	inactivation	Aminoglycoside	aph(3')-VI_1	APH(3')-VI										
+APH(3')-VIa	inactivation	Aminoglycoside	aph(3')-VIa_1											
+aph(3')-VIb	inactivation	Aminoglycoside	aph(3')-VIb	aph(3')-VIb_1										
+APH(6)-Id	inactivation	Aminoglycoside	aph(6)-Id	aph(6)-Id_1	aph(6)-Id_4	APH(6)-Id								
+arlR	efflux	MDR	arlR											
+arlS	efflux	MDR	arlS											
+ArmR	efflux	MDR	ArmR											
+arnA	efflux	Peptide	arnA											
+arr	inactivation	Rifampicin	arr-269927220											
+AxyX	efflux	MDR	AxyX											
+AxyY	efflux	MDR	AxyY											
+bacA	target alteration	Peptide	bacA											
+baeR	efflux	MDR	baeR											
+baeS	efflux	MDR	baeS											
+basS	efflux	Peptide	basS											
+bcr-1	efflux	MDR	bcr-1											
+bla1	inactivation	Beta-Lactam	bcl	BLA-1										
+bla2	inactivation	Beta-Lactam	BcII	blaHERA-5										
+bla-A	inactivation	Beta-Lactam	blaA_2	blaA_Yent										
+blaACC-1a	inactivation	Beta-Lactam	blaACC-1a	blaACC-1a_1										
+blaACI-1	inactivation	Beta-Lactam	blaACI-1_1											
+blaACT-1	inactivation	Beta-Lactam	blaACT-1_1	ACT-1										
+blaACT-10	inactivation	Beta-lactam	blaACT-10	blaACT10-1	ACT-10									
+blaACT-12	inactivation	Beta-Lactam	blaACT-12_1	ACT-12										
+blaACT-13	inactivation	Beta-Lactam	blaACT-6_1	ACT-13										
+blaACT-15	inactivation	Beta-Lactam	ACT-15											
+blaACT-17	inactivation	Beta-Lactam	ACT-17											
+blaACT-2	inactivation	Beta-Lactam	blaACT-2_1	ACT-2										
+blaACT-23	inactivation	Beta-Lactam	ACT-22	ACT-23										
+blaACT-28	inactivation	Beta-Lactam	blaACT-9_1	ACT-28										
+blaACT-34	inactivation	Beta-lactam	blaACT-34											
+blaACT-37	inactivation	Beta-Lactam	ACT-37											
+blaACT-39	inactivation	Beta-Lactam	ACT-18											
+blaACT-4	inactivation	Beta-Lactam	BlaACT-4_2	ACT-4										
+blaACT-44	inactivation	Beta-Lactam	blaACT-44	ACT-7										
+blaACT-5	inactivation	Beta-Lactam	blaACT-5	ACT-29										
+blaACT-50	inactivation	Beta-Lactam	ACT-29											
+blaACT-52	inactivation	Beta-Lactam	blaACT-52											
+blaACT-55	inactivation	Beta-Lactam	blaACT-55	blaACT-7_1	ACT-27									
+blaACT-59	inactivation	Beta-Lactam	ACT-18											
+blaACT-67	inactivation	Beta-Lactam	blaACT-67	ACT-23										
+blaACT-8	inactivation	Beta-Lactam	ACT-8											
+blaACT-9	inactivation	Beta-Lactam	ACT-9											
+blaADC-12	inactivation	Beta-Lactam	ADC-6											
+blaADC-120	inactivation	Beta-lactam	blaADC-120	ADC-6										
+blaADC-130	inactivation	Beta-Lactam	ADC-68											
+blaADC-135	inactivation	Beta-Lactam	ADC-15											
+blaADC-154	inactivation	Beta-Lactam	ADC-5											
+blaADC-156	inactivation	Beta-Lactam	blaADC-156											
+blaADC-18	inactivation	Beta-Lactam	ADC-18	blaADC-25_1										
+blaADC-19	inactivation	Beta-Lactam	ADC-19											
+blaADC-32	inactivation	Beta-Lactam	ADC-7	ADC-2	blaADC-25_1									
+blaADC-70	inactivation	Beta-Lactam	ADC-42											
+blaADC-8	inactivation	Beta-Lactam	ADC-8											
+blaBKC-1	inactivation	Beta-Lactam	BKC-1	blaBKC-1_1										
+blaBPU-1	inactivation	Beta-Lactam	BPU-1											
+bla-C	inactivation	Beta-Lactam	bla-C											
+blaCARB-16	inactivation	Beta-Lactam	blaCARB-16_1	CARB-16										
+blaCARB-8	inactivation	Beta-Lactam	CARB-8	blaCARB-8_1										
+blaCFE-1	inactivation	Beta-Lactam	CFE-1	blaCFE-1_1										
+blaCGA-1	inactivation	Beta-Lactam	CGA-1											
+blaCGB-1	inactivation	Beta-Lactam	CGB-1_beta-lactamase	blaCGB-1_1										
+blaCIA-3	inactivation	Beta-Lactam	CIA-3											
+blaCIA-4	inactivation	Beta-Lactam	CIA-4											
+blaCMY-150	inactivation	Beta-Lactam	blaCMY-150	blaCMY-150_1										
+blaCMY-159	inactivation	Beta-Lactam	blaCMY-159											
+blaCMY-48	inactivation	Beta-Lactam	blaCMY-48	blaCMY-48_1	CMY-48									
+blaCMY-51	inactivation	Beta-Lactam	blaCMY-51_1	CMY-51										
+blaCMY-72	inactivation	Beta-lactam	blaCMY-72	blaCMY-72_1	CMY-72									
+blaCMY-82	inactivation	Beta-lactam	blaCMY-82_1	blaCMY-83	CMY-82									
+blaCPS-1	inactivation	Beta-Lactam	CPS-1											
+blaCSA-2	inactivation	Beta-lactam	blaCSA-2											
+blaCSP-1	inactivation	Beta-Lactam	blaSPU-1_1											
+blaCTX-M-115	inactivation	Beta-Lactam	CTX-M-115											
+blaCTX-M-177	inactivation	Beta-Lactam	blaCTX-M-177_1											
+blaCTX-M-75	inactivation	Beta-Lactam	CTX-M-75											
+blaEBR-1	inactivation	Beta-Lactam	blaEBR-1_1	EBR-1_beta-lactamase										
+blaEC	inactivation	Beta-Lactam	blaEC											
+blaEC-13	inactivation	Beta-lactam	blaEC-13											
+blaEC-18	inactivation	Beta-Lactam	blaEC-18											
+blaEC-5	inactivation	Beta-Lactam	blaEC-5											
+blaESP-1	inactivation	Beta-Lactam	ESP-1											
+blaFOX-4	inactivation	Beta-Lactam	FOX-4	blaFOX-4_1										
+blaGOB-7	inactivation	Beta-Lactam	GOB-7	blaGOB-7_1										
+blaGPC-1	inactivation	Beta-Lactam	blaGPC-1											
+blaHER-1	inactivation	Beta-lactam	blaHER-1	blaHERA-1_1	HERA-1									
+blaHER-5	inactivation	Beta-Lactam	blaHER-5											
+blaI	inactivation	Beta-Lactam	blaI_of_Z	blaPC1	blaZ_26	blaZ	blaZ-mecC							
+blaIND-1	inactivation	Beta-lactam	blaIND-1	blaIND-1_1	IND-1									
+blaIND-11	inactivation	Beta-Lactam	blaIND-2c_1	IND-11										
+blaIND-2	inactivation	Beta-Lactam	blaIND-2_2											
+blaIND-2a	inactivation	Beta-Lactam	blaIND-2a_4	IND-2a										
+blaL1	inactivation	Beta-Lactam	blaL1_3	L1_beta-lactamase										
+blaL2	inactivation	Beta-Lactam	blaL2											
+blaLEN-1	inactivation	Beta-Lactam	blaLEN-16_1	LEN-16										
+blaLEN-10	inactivation	Beta-lactam	blaLEN-10	blaLEN-16_1	LEN-16									
+blaLEN-13	inactivation	Beta-Lactam	blaLEN24_1	LEN-24										
+blaLEN-2	inactivation	Beta-Lactam	LEN-2	blaLEN2_1										
+blaLEN-5	inactivation	Beta-Lactam	blaLEN-5											
+blaMIR-10	inactivation	Beta-Lactam	MIR-10											
+blaMIR-15	inactivation	Beta-Lactam	MIR-15	blaMIR-5_1										
+blaMIR-18	inactivation	Beta-Lactam	blaMIR-6_1	MIR-12										
+blaMIR-22	inactivation	Beta-Lactam	MIR-17	blaMIR-1_1										
+blaMIR-3	inactivation	Beta-Lactam	MIR-3	blaMIR-3_1										
+blaMIR-6	inactivation	Beta-lactam	blaMIR-6	MIR-6										
+blaMIR-9	inactivation	Beta-lactam	blaMIR-9	blasMIR-1_1	MIR-9									
+blaMOX-12	inactivation	Beta-Lactam	MOX-5	blaMOX-5_1										
+blaMOX-13	inactivation	Beta-Lactam	MOX-6	blaMOX-6_1										
+blaMOX-8	inactivation	Beta-Lactam	MOX-8	blaMOX-4_1										
+blaOCH-5	inactivation	Beta-Lactam	OCH-5	blaOCH-5_1										
+blaORN-1	inactivation	Beta-lactam	blaORN-1	blaPla1a_1										
+blaOXA-1	inactivation	Beta-Lactam	OXA-1	blaOXA-1_1										
+blaOXA-120	inactivation	Beta-Lactam	OXA-120	blaOXA-120_1										
+blaOXA-134	inactivation	Beta-Lactam	OXA-134	blaOXA-134_1										
+blaOXA-211	inactivation	Beta-Lactam	blaOXA-211_1	OXA-211										
+blaOXA-212	inactivation	Beta-Lactam	blaOXA-212_1	OXA-212										
+blaOXA-217	inactivation	Beta-lactam	blaOXA-217	blaOXA-217_1	OXA-217									
+blaOXA-275	inactivation	Beta-Lactam	blaOXA-275_1	OXA-275										
+blaOXA-276	inactivation	Beta-Lactam	blaOXA-276_1	OXA-276										
+blaOXA-278	inactivation	Beta-Lactam	OXA-278	blaOXA-278_1										
+blaOXA-28	inactivation	Beta-Lactam	blaOXA-28_1	OXA-28										
+blaOXA-280	inactivation	Beta-lactam	blaOXA-280	blaOXA-280_1	OXA-280									
+blaOXA-281	inactivation	Beta-lactam	blaOXA-281	blaOXA-281_1	OXA-281									
+blaOXA-282	inactivation	Beta-Lactam	blaOXA-282_1	OXA-282										
+blaOXA-283	inactivation	Beta-Lactam	blaOXA-283_1	OXA-283										
+blaOXA-284	inactivation	Beta-Lactam	blaOXA-284_1	OXA-284										
+blaOXA-285	inactivation	Beta-Lactam	OXA-285	blaOXA-285_1										
+blaOXA-293	inactivation	Beta-lactam	blaOXA-293	OXA-293										
+blaOXA-309	inactivation	Beta-lactam	blaOXA-309	blaOXA-309_1	OXA-309									
+blaOXA-333	inactivation	Beta-lactam	blaOXA-333	blaOXA-333_1	OXA-333									
+blaOXA-334	inactivation	Beta-Lactam	blaOXA-334_1	OXA-334										
+blaOXA-355	inactivation	Beta-Lactam	OXA-355	blaOXA-355_1										
+blaOXA-361	inactivation	Beta-Lactam	OXA-361	blaOXA-361_1										
+blaOXA-362	inactivation	Beta-Lactam	blaOXA-362_1	OXA-362										
+blaOXA-395	inactivation	Beta-Lactam	blaOXA-395_1											
+blaOXA-417	inactivation	Beta-Lactam	OXA-417	blaOXA-417_1										
+blaOXA-427	inactivation	Beta-Lactam	OXA-427	blaOXA-427_1										
+blaOXA-459	inactivation	Beta-lactam	blaOXA-459	blaOXA-459_1	OXA-459									
+blaOXA-486	inactivation	Beta-Lactam	OXA-486	blaOXA-486_1										
+blaOXA-488	inactivation	Beta-Lactam	OXA-488	blaOXA-488_1										
+blaOXA-494	inactivation	Beta-Lactam	blaOXA-396_1	OXA-486										
+blaOXA-496	inactivation	Beta-lactam	blaOXA-496	blaOXA-496_1										
+blaOXA-5	inactivation	Beta-Lactam	blaOXA-5_1	OXA-417	OXA-5									
+blaOXA-50	inactivation	Beta-lactam	blaOXA-50	blaOXA-50_1	OXA-50									
+blaOXA-500	inactivation	Beta-lactam	blaOXA-500	blaOXA-500_1	OXA-417									
+blaOXA-504	inactivation	Beta-Lactam	blaOXA-504											
+blaOXA-506	inactivation	Beta-Lactam	blaOXA-506_1											
+blaOXA-556	inactivation	Beta-Lactam	blaOXA-556_1											
+blaOXA-64	inactivation	Beta-Lactam	blaOXA-64_1	OXA-64										
+blaOXA-643	inactivation	Beta-Lactam	blaOXA-643											
+blaOXA-644	inactivation	Beta-Lactam	blaOXA-644											
+blaOXA-645	inactivation	Beta-Lactam	blaOXA-645											
+blaOXA-646	inactivation	Beta-lactam	blaOXA-646											
+blaOXA-648	inactivation	Beta-Lactam	blaOXA-648											
+blaOXA-650	inactivation	Beta-Lactam	blaOXA-650											
+blaOXA-651	inactivation	Beta-Lactam	blaOXA-373_1	OXA-373										
+blaOXA-652	inactivation	Beta-Lactam	blaOXA-652											
+blaOXA-662	inactivation	Beta-Lactam	blaOXA-662											
+blaOXA-667	inactivation	Beta-Lactam	blaOXA-667											
+blaOXA-668	inactivation	Beta-Lactam	blaOXA-668											
+blaOXA-669	inactivation	Beta-Lactam	blaOXA-343_1	blaOXA-274_1	OXA-343	OXA-274								
+blaOXA-674	inactivation	Beta-Lactam	blaOXA-674											
+blaOXA-699	inactivation	Beta-Lactam	blaOXA-699											
+blaOXA-78	inactivation	Beta-Lactam	OXA-78	blaOXA-78_1										
+blaOXA-816	inactivation	Beta-Lactam	blaOXA-565_1	OXA-23										
+blaOXA-85	inactivation	Beta-Lactam	blaOXA-85_1	OXA-85										
+blaOXY-1-1	inactivation	Beta-Lactam	blaOXY-1-7_7	blaOXY-1-1_2	OXY-1-1									
+blaOXY-1-2	inactivation	Beta-Lactam	blaOXY-1-1_1	blaOXY-1-2_2	OXY-1-2									
+blaOXY-1-3	inactivation	Beta-Lactam	blaOXY-1-3_3	OXY-1-3										
+blaOXY-1-4	inactivation	Beta-Lactam	OXY-1-4	blaOXY-1-4_4										
+blaOXY-2-1	inactivation	Beta-Lactam	OXY-2-1	blaOXY-2-1_1										
+blaOXY-2-10	inactivation	Beta-lactam	blaOXY-2-10	blaOXY-2-10_10	OXY-2-10									
+blaOXY-2-11	inactivation	Beta-lactam	blaOXY-2-11											
+blaOXY-2-4	inactivation	Beta-Lactam	blaOXY-2-4	blaOXY-2-5_5	OXY-2-3									
+blaOXY-2-7	inactivation	Beta-lactam	blaOXY-2-7	blaOXY-2-7_7	OXY-2-7									
+blaOXY-2-8	inactivation	Beta-lactam	blaOXY-2-8	blaOXY-2-8_8	OXY-2-8									
+blaOXY-3-1	inactivation	Beta-lactam	blaOXY-3-1	blaOXY-3-1_1	OXY-3-1									
+blaOXY-4-1	inactivation	Beta-Lactam	blaOXY-4-1_1	OXY-4-1										
+blaOXY-5-1	inactivation	Beta-Lactam	blaOXY-5-1_1	OXY-5-1										
+blaOXY-5-2	inactivation	Beta-Lactam	OXY-5-2	blaOXY-5-2_2										
+blaOXY-6-1	inactivation	Beta-Lactam	OXY-6-1											
+blaOXY-6-2	inactivation	Beta-Lactam	blaOXY-6-2_2	OXY-6-2										
+blaOXY-6-4	inactivation	Beta-Lactam	blaOXY-6-4_4	OXY-6-4										
+blaPDC-15	inactivation	Beta-Lactam	blaPAO_2	PDC-5	PDC-8									
+blaPDC-34	inactivation	Beta-Lactam	PDC-9											
+blaPDC-374	inactivation	Beta-Lactam	blaPAO_3	PDC-1	PDC-3									
+blaPDC-55	inactivation	Beta-Lactam	PDC-5											
+blaPLA-2a	inactivation	Beta-lactam	blaPLA-2a	blaPLA-2a_1										
+blaPLA-3	inactivation	Beta-Lactam	blaPLA-5A_1											
+blaR1	inactivation	Beta-Lactam	blaR1-2											
+blaRAHN	inactivation	Beta-Lactam	blaRAHN-1_1	blaRAHN-1_2										
+blaRm3	inactivation	Beta-lactam	blaRm3	Rm3_beta-lactamase										
+blaROB-1	inactivation	Beta-Lactam	blaROB-1_1	blaROB-1_2	ROB-1									
+blaROB-2	inactivation	Beta-lactam	blaROB-2											
+blaSGM-7	inactivation	Beta-Lactam	blaSGM-7_1											
+blaSHV-107	inactivation	Beta-lactam	blaSHV-107	blaSHV-107_1	SHV-107									
+blaSHV-110	inactivation	Beta-Lactam	SHV-110	blaSHV-110_1										
+blaSHV-17	inactivation	Beta-Lactam	blaSHV-17_1	SHV-17										
+blaSHV-178	inactivation	Beta-Lactam	SHV-178	blaSHV-178_1										
+blaSHV-187	inactivation	Beta-Lactam	blaSHV-187_1	SHV-187										
+blaSHV-211	inactivation	Beta-lactam	blaSHV-211	blaSHV-145_1	SHV-1									
+blaSHV-26	inactivation	Beta-Lactam	SHV-26	blaSHV-26_1										
+blaSHV-36	inactivation	Beta-Lactam	blaSHV-26	SHV-36										
+blaSHV-4	inactivation	Beta-Lactam	blaSHV-26_1	SHV-4										
+blaSHV-40	inactivation	Beta-lactam	blaSHV-40	blaSHV-40_1	SHV-40									
+blaSHV-75	inactivation	Beta-Lactam	SHV-75	blaSHV-75_1										
+blaSPR-1	inactivation	Beta-Lactam	blaSPR-1											
+blaSRT	inactivation	Beta-Lactam	blaSST-1											
+blaSRT-2	inactivation	Beta-Lactam	SRT-2	blaSRT-2_1										
+blaTEM-1	inactivation	Beta-Lactam	blaTEM-1B_1	blaTEM-122_1	TEM-1	TEM-122								
+blaTEM-104	inactivation	Beta-Lactam	TEM-104											
+blaTEM-12	inactivation	Beta-Lactam	blaTEM-12											
+blaTEM-141	inactivation	Beta-Lactam	blaTEM-141_1											
+blaTEM-150	inactivation	Beta-Lactam	blaTEM-150_1	blaTEM-1A_1										
+blaTEM-160	inactivation	Beta-Lactam	TEM-160	blaTEM-160_1										
+blaTEM-19	inactivation	Beta-Lactam	TEM-19	blaTEM-191_1										
+blaTEM-2	inactivation	Beta-Lactam	blaTEM-2											
+blaTEM-219	inactivation	Beta-Lactam	blaTEM-219											
+blaTEM-235	inactivation	Beta-Lactam	blaTEM-1C_1											
+blaTEM-26	inactivation	Beta-Lactam	TEM-206											
+blaTEM-70	inactivation	Beta-Lactam	TEM-70											
+blaTEM-79	inactivation	Beta-Lactam	TEM-79											
+blaTER-2	inactivation	Beta-Lactam	blaTER-2_1											
+blaTHIN-B	inactivation	Beta-lactam	blaTHIN-B	THIN-B_beta-lactamase										
+catA1	inactivation	Chloramphenicol	catA1	catA1_1	plasmid-encoded_cat_(pp-cat)									
+catA15	inactivation	Chloramphenicol	catA15											
+catA16	inactivation	Chloramphenicol	catQ_1	catQ										
+catA2	inactivation	Chloramphenicol	catA2_1	catII										
+catA4	inactivation	Chloramphenicol	catA4											
+catA7	inactivation	Chloramphenicol	catA7											
+catA8	inactivation	Chloramphenicol	cat_5											
+catA9	inactivation	Chloramphenicol	catA9											
+catB	inactivation	Chloramphenicol	catB_1	catB1	catB1_1	Pseudomonas_aeruginosa_catB7	catS	catB7_1						
+catP	inactivation	Chloramphenicol	catS_1	Lactobacillus_reuteri_cat-TC										
+ceoA	efflux	Aminoglycoside/Fluoroquinolone	ceoA											
+ceoB	efflux	MDR	ceoB											
+cepA	inactivation	Beta-Lactam	cepA_beta-lactamase	cepA_1										
+cepA-29	inactivation	Beta-lactam	cepA-29	cepA-29_1										
+cfr(B)	efflux	MDR	cfr(B)	cfr(B)_1	cfr(B)_3									
+cfr-Cb	target alteration	MLS	cfr-Cb											
+cfxA	inactivation	Beta-Lactam	cfxA_1	CfxA										
+cfxA3	inactivation	Beta-Lactam	CfxA3											
+cfxA4	inactivation	Beta-Lactam	cfxA4_1											
+CfxA5	inactivation	Beta-Lactam	cfxA5_1											
+cmlA1	efflux	Phenicol	cmlA1_1											
+cmlB1	efflux	Chloramphenicol	cmlB1											
+cmx	efflux	Phenicol	cmx_1											
+cphA5	inactivation	Beta-Lactam	cphA5_1											
+cpxA	efflux	MDR	cpxA											
+CpxR	efflux	MDR	Pseudomonas_aeruginosa_CpxR											
+dfrC	target replacement	Trimethoprim	dfrC											
+dfrE	target replacement	Trimethoprim	dfrE											
+dfrG	target replacement	Trimethoprim	dfrG_1											
+efrA	efflux	MDR	efrA											
+efrB	efflux	MDR	efrB											
+emeA	efflux	MDR	emeA											
+emrA	efflux	MDR	emrA											
+emrB	efflux	MDR	emrB											
+emrE	efflux	MDR	Escherichia_coli_emrE	Pseudomonas_aeruginosa_emrE										
+emrK	efflux	MDR	emrK											
+emrR	efflux	MDR	emrR											
+emrY	efflux	MDR	emrY											
+eptA	efflux	Peptide	eptA											
+erm(A)	target alteration	Macrolide	erm(A)_1	erm(A)_2	ErmA									
+erm(B)	target alteration	MLS	erm(B)_18											
+erm(C)	target alteration	MLS	erm(C)_13	erm(C)_1	ErmC									
+erm(F)	target alteration	MLS	erm(F)_3	ErmF										
+erm(T)	target alteration	MLS	ErmT	erm(T)_2										
+erm(X)	target alteration	MLS	erm(X)_1	erm(X)_4	ErmX									
+evgA	efflux	MDR	evgA											
+evgS	efflux	MDR	evgS											
+farA	efflux	MDR	farA											
+farB	efflux	MDR	farB											
+floR	efflux	Chloramphenicol	floR	floR_1										
+fosA	inactivation	Fosfomycin	fosA	fosA_gen	fos-Crono									
+FosA2	inactivation	Fosfomycin	fosA2_1	FosA2										
+FosA5	inactivation	Fosfomycin	fosA5_1	FosA5										
+FosA6	inactivation	Fosfomycin	fosA_3	fosA6_1	FosA6									
+FosA7	inactivation	Fosfomycin	fosA7_1	FosA7										
+fosB	inactivation	Fosfomycin	fosB_gen	fosB-Saur	Staphylococcus_aureus_FosB									
+FosD	inactivation	Fosfomycin	fosD_1	FosD										
+fusB	target protection	Fusidic Acid	fusB_1											
+fusC	target protection	Fusidic Acid	fusC_1											
+fusD	target protection	Fusidic Acid	fusD											
+gadW	efflux	MDR	gadW											
+gadX	efflux	MDR	gadX											
+hmrM	efflux	MDR	hmrM											
+ileS	target alteration	Mupirocin	Bifidobacteria_intrinsic_ileS_conferring_resistance_to_mupirocin											
+iri	inactivation	Rifampicin	iri											
+kdpE	efflux	Aminoglycoside	kdpE											
+KpnE	efflux	MDR	Klebsiella_pneumoniae_KpnE											
+KpnF	efflux	MDR	Klebsiella_pneumoniae_KpnF											
+KpnG	efflux	MDR	Klebsiella_pneumoniae_KpnG											
+KpnH	efflux	MDR	Klebsiella_pneumoniae_KpnH											
+lmrD	efflux	Lincosamide	lmrD											
+lmrP	efflux	MDR	lmrP											
+LmrS	efflux	MDR	Staphylococcys_aureus_LmrS											
+lnu(A)	inactivation	Lincosamide	lnu(A)_1	InuA										
+lnu(AN2)	inactivation	Lincosamide	lnu(AN2)											
+lnu(B)	inactivation	Lincosamide	lnu(B)_2											
+lnu(C)	inactivation	Lincosamide	lnu(C)_1	lnuC										
+lnu(D)	inactivation	Lincosamide	lnu(D)_1	lnuD										
+lsa(A)	target protection	Lincosamide/Streptogramin	lsa(A)_3	lsa(A)_1	lasA									
+lsa(B)	target protection	Lincosamide/Streptogramin	lsa(B)	lsaB										
+lsa(C)	target protection	Lincosamide/Streptogramin	lsaC											
+lsa(E)	target protection	Lincosamide/Streptogramin	lsa(E)_1	lsaE										
+macA	efflux	Macrolide	macA											
+macB	efflux	Macrolide	macB											
+marA	efflux	MDR	marA											
+mcr-3.1	target alteration	Peptide	MCR-3	mcr-3.19_1										
+mcr-3.17	target alteration	Peptide	MCR-3.6	mcr-3.17_1										
+mcr-9.1	inactivation	Peptide	mcr-9_1	MCR-9										
+mdfA	efflux	MDR	mdf(A)_1	Escherichia_coli_mdfA										
+mdtA	efflux	MDR	mdtA											
+mdtB	efflux	MDR	mdtB											
+mdtC	efflux	MDR	mdtC											
+mdtE	efflux	MDR	mdtE											
+mdtF	efflux	MDR	mdtF											
+mdtG	efflux	MDR	mdtG											
+mdtH	efflux	MDR	mdtH											
+mdtK	efflux	MDR	mdtK											
+mdtM	efflux	MDR	mdtM											
+mdtN	efflux	MDR	mdtN											
+mdtO	efflux	MDR	mdtO											
+mdtP	efflux	MDR	mdtP											
+mecA	inactivation	Beta-Lactam	mecA1_2	mecA1										
+mecI	inactivation	Beta-Lactam	mecI_of_mecA											
+mecR1	inactivation	Beta-Lactam	mecR1											
+mef(A)	efflux	Macrolide	mef(A)_2	mef(A)_4	mel									
+mef(B)	efflux	Macrolide	mef(B)_1	mefB										
+mef(E)	efflux	Macrolide	mefE											
+Mef(En2)	efflux	Macrolide	Mef(En2)											
+mepA	efflux	MDR	mepA											
+mepR	efflux	MDR	mepR											
+MexA	efflux	MDR	MexA											
+MexB	efflux	MDR	MexB											
+MexC	efflux	MDR	MexC											
+MexD	efflux	MDR	MexD											
+MexE	efflux	MDR	MexE											
+MexF	efflux	MDR	MexF											
+mexG	efflux	MDR	mexG											
+mexH	efflux	MDR	mexH											
+mexI	efflux	MDR	mexI											
+mexJ	efflux	MDR	mexJ											
+mexK	efflux	MDR	mexK											
+mexL	efflux	MDR	mexL											
+mexM	efflux	MDR	mexM											
+mexN	efflux	MDR	mexN											
+mexP	efflux	MDR	mexP											
+mexQ	efflux	MDR	mexQ											
+mexV	efflux	MDR	mexV											
+mexW	efflux	MDR	mexW											
+mexX	efflux	MDR	mexX											
+mexY	efflux	MDR	mexY											
+mgrA	efflux	MDR	mgrA											
+mph(C)	inactivation	MDR	mph(C)_2	mphC										
+mph(E)	inactivation	Macrolide	mph(E)_1	mphE										
+mphB	inactivation	Macrolide	mphB											
+mphL	inactivation	Macrolide	mph(L)											
+mphO	inactivation	Macrolide	mphO											
+mprF	target alteration	Peptide	Clostridium_perfringens_mprF											
+msbA	efflux	MDR	msbA											
+msr(A)	target protection	MLS	msr(A)_1	msrA										
+msr(C)	target protection	MLS	msr(C)_2	msrC										
+msr(D)	target protection	Macrolide	msr(D)_2	msr(D)										
+msr(E)	target protection	Macrolide	msr(E)_1	msrE										
+mtrA	efflux	MDR	mtrA											
+mtrC	efflux	MDR	mtrC											
+mtrD	efflux	MDR	mtrD											
+mtrE	efflux	MDR	mtrE											
+mupA	target alteration	Mupirocin	mupA											
+MuxA	efflux	MDR	MuxA											
+MuxB	efflux	MDR	MuxB											
+MuxC	efflux	MDR	MuxC											
+norA	efflux	MDR	Staphylococcus_aureus_norA											
+opcM	efflux	Aminoglycoside/Fluoroquinolone	opcM											
+OpmB	efflux	MDR	OpmB											
+opmD	efflux	MDR	opmD											
+opmE	efflux	MDR	opmE											
+OpmH	efflux	MDR	OpmH											
+OprJ	efflux	MDR	OprJ											
+OprM	efflux	MDR	OprM											
+OprN	efflux	MDR	OprN											
+OprZ	efflux	MDR	OprZ											
+oqxA	efflux	Phenicol/Quinolone	oqxA	oqxA1	oqxA_1									
+oqxA10	efflux	Phenicol/Quinolone	oqxA10	oqxA_1	oqxA									
+oqxA11	efflux	Phenicol/Quinolone	oqxA11											
+oqxA3	efflux	Phenicol/Quinolone	oqxA3											
+oqxA5	efflux	Phenicol/Quinolone	oqxA5											
+oqxA6	efflux	Phenicol/Quinolone	oqxA6											
+oqxA7	efflux	Phenicol/Quinolone	oqxA7											
+oqxA9	efflux	Phenicol/Quinolone	oqxA9											
+oqxB	efflux	Phenicol/Quinolone	oqxB_1											
+oqxB11	efflux	Phenicol/Quinolone	oqxB11											
+oqxB12	efflux	Phenicol/Quinolone	oqxB12											
+oqxB13	efflux	Phenicol/Quinolone	oqxB13											
+oqxB15	efflux	Phenicol/Quinolone	oqxB15											
+oqxB16	efflux	Phenicol/Quinolone	oqxB16											
+oqxB17	efflux	Phenicol/Quinolone	oqxB17											
+oqxB18	efflux	Phenicol/Quinolone	oqxB18											
+oqxB19	efflux	Phenicol/Quinolone	oqxB19											
+oqxB2	efflux	Phenicol/Quinolone	oqxB2											
+oqxB20	efflux	Phenicol/Quinolone	oqxB20											
+oqxB24	efflux	Phenicol/Quinolone	oqxB24											
+oqxB25	efflux	Phenicol/Quinolone	oqxB25											
+oqxB26	efflux	Phenicol/Quinolone	oqxB26											
+oqxB27	efflux	Phenicol/Quinolone	oqxB27											
+oqxB3	efflux	Phenicol/Quinolone	oqxB3											
+oqxB32	efflux	Phenicol/Quinolone	oqxB32											
+oqxB4	efflux	Phenicol/Quinolone	oqxB4											
+oqxB5	efflux	Phenicol/Quinolone	oqxB5											
+oqxB7	efflux	Phenicol/Quinolone	oqxB7											
+oqxB9	efflux	Phenicol/Quinolone	oqxB9											
+patA	efflux	Fluoroquinolone	patA											
+patB	efflux	Fluoroquinolone	patB											
+penA	inactivation	Beta-Lactam	penA_1											
+PmpM	efflux	MDR	PmpM											
+pmrA	efflux	MDR	pmrA											
+pmrF	efflux	MDR	pmrF											
+qacA	efflux	MDR	qacA											
+qacH	efflux	MDR	qacH											
+qnrB11	target protection	Fluoroquinolone	qnrB11_1											
+QnrB33	target protection	Fluoroquinolone	qnrB33_1											
+QnrB35	target protection	Fluoroquinolone	qnrB35_1											
+qnrB38	target protection	Fluoroquinolone	qnrB38_1											
+qnrB4	target protection	Fluoroquinolone	qnrB4_1											
+qnrE1	target protection	Fluoroquinolone	qnrE1_1	qnrE1										
+ramA	efflux	MDR	ramA											
+RlmA(II)	target alteration	Macrolide/Lincosamide	RlmA(II)											
+rosA	efflux	Peptide	rosA											
+rosB	efflux	Peptide	rosB											
+rphB	inactivation	Rifampicin	rphB											
+rphC	inactivation	Rifampicin	rphC											
+rpoB	target alteration and replacement	Rifampicin	Nocardia_rifampin_resistant_beta-subunit_of_RNA_polymerase_(rpoB2)	Bifidobacterium_adolescentis_rpoB_conferring_resistance_to_rifampicin	rpoB2									
+sal(A)	target protection	MLS	sal(A)	sal(A)_1										
+sat2	inactivation	Streptothricin	sat2_gen											
+sat4	inactivation	Streptothricin	sat4	SAT-4										
+satA	inactivation	Streptothricin	satA_Ba											
+smeA	efflux	MDR	smeA											
+smeB	efflux	MDR	smeB											
+smeC	efflux	MDR	smeC											
+smeD	efflux	MDR	smeD											
+smeE	efflux	MDR	smeE											
+smeF	efflux	MDR	smeF											
+smeR	efflux	MDR	smeR											
+smeS	efflux	MDR	smeS											
+soxR	efflux	MDR	Pseudomonas_aeruginosa_soxR											
+str	target alteration	Aminoglycoside	str_1											
+sul1	target replacement	Sulfonamide	sul1_5											
+sul2	target replacement	Sulfonamide	sul2_2	sul2_3	sul2_13	sul2_14								
+tet(30)	efflux	Tetracycline	tet(30)_1											
+tet(32)	target protection	Tetracycline	tet(32)_1	tet(32)_2	tet32									
+tet(34)	efflux	Tetracycline	tet(34)_1											
+tet(38)	efflux	Tetracycline	tet38											
+tet(41)	efflux	Tetracycline	tet(41)_1											
+tet(42)	efflux	Tetracycline	tet(42)_1											
+tet(45)	efflux	Tetracycline	tet(45)	tet(45)_1	tet45									
+tet(A)	efflux	Tetracycline	tet(A)_6											
+tet(B)	efflux	Tetracycline	tet(B)_1	tet(B)_2										
+tet(H)	efflux	Tetracycline	tet(H)_3	tetH										
+tet(J)	efflux	Tetracycline	tet(J)_1											
+tet(K)	efflux	Tetracycline	tet(K)_1											
+tet(L)	efflux	Tetracycline	tet(L)_2	tet(L)_1										
+tet(M)	target protection	Tetracycline	tet(M)_1	tet(M)_2	tet(M)_4	tet(M)_5	tet(M)_6							
+tet(O)	target protection	Tetracycline	tet(O)_1	tet(O)_3	tet(O)_4	tetO		tet(M)_7	tet(M)_8	tet(M)_1	tet(M)_11	tet(M)_12	tet(M)_13	tetM
+tet(Q)	target protection	Tetracycline	tet(Q)_1	tet(Q)_2	tet(Q)_3	tet(Q)_4	tetQ							
+tet(S)	target protection	Tetracycline	tet(S)_3											
+tet(S/M)	target protection	Tetracycline	tet(S/M)_1											
+tet(W)	target protection	Tetracycline	tet(W)_4	tet(W)_5	tetW									
+tet(X)	inactivation	Tetracycline	tet(X)_2	tetX										
+tetA(46)	efflux	Tetracycline	tetA(46)_1											
+tetA(60)	efflux	Tetracycline	tetA(60)_1											
+tetA(P)	efflux	Tetracycline	tetA(P)_2	tetA(P)_1										
+tetB(46)	efflux	Tetracycline	tetB(46)_1											
+tetB(60)	efflux	Tetracycline	tetB(60)_1											
+tetB(P)	target protection	Tetracycline	tetB(P)_1	tetB(P)										
+tolC	efflux	MDR	tolC											
+TriA	efflux	MDR	TriA											
+TriB	efflux	MDR	TriB											
+TriC	efflux	MDR	TriC											
+ugd	efflux	Peptide	ugd											
+vanC	target alteration	Vancomycin	vanC2/3	VanC2XY										
+vanR-A	target alteration	Vancomycin	vanR-A	vanRA										
+vanR-C	target alteration	Vancomycin	vanRC											
+vanR-I	target alteration	Vancomycin	vanRI											
+vanR-M	target alteration	Vancomycin	vanRM											
+vanR-O	target alteration	Vancomycin	vanRO											
+vanS-C	target alteration	Vancomycin	vanS-C											
+vanS-Pt	target alteration	Vancomycin	vanS-Pt	vanSA										
+vanT-C	target alteration	Vancomycin	vanT-C											
+vanXY-C	target alteration	Vancomycin	vanXY-c4											
+vanY-Pt	target alteration	Vancomycin	vanY-Pt											
+vanZ-A	target alteration	Vancomycin	vanZA											
+vanZ-F	target alteration	Vancomycin	vanZF											
+vat(F)	inactivation	Streptogramin	vat(F)_1	vatF										

@@ -26,8 +26,8 @@ use strict;
 my $cohort = '<cohort>';
 my $config = "./Inputs/$cohort\.config";
 
-my $indir = './Insertion_sequences/Filtered_IS_with_species';
-my $input = "$indir\/IS_$cohort\_allSamples.txt";
+my $indir = './ARGs/Curated_ARGs';
+my $input = "$indir\/$cohort\_allSamples.curated_ARGs.txt";
 
 # Collect samples by group IDs
 my $grouphash = {};
@@ -46,13 +46,13 @@ foreach my $group (sort keys %{$grouphash}) {
 	print "Printing per-group output for group $group ";
 	my $group_cat = '';
 	foreach my $sample (sort keys %{$grouphash->{$group}}) {
-		$group_cat .= " $indir\/$sample\.IS.txt";
+		$group_cat .= " $indir\/$sample\.curated_ARGs.txt";
 	}
 	my $group_out = $input;
 	$group_out =~ s/allSamples/$group/; 
 	print "to $group_out\n"; 	
-	open (T, ">$group_out") || die "$! write $group_out\n"; 	
-	print T "#Sample\tContig\tSpecies\tStart\tEnd\tName\tInference\tProduct\n"; 
+	open (T, ">$group_out") || die "$! write $group_out\n"; 	 	
+	print T "#Sample\tGene\tResistance_mechanism\tDrug_class\tSpecies\tContig\tStart\tEnd\tStrand\tRaw_count\tTMP\tRPKM\tCoverage\tCoverage_map\tGaps\t%Coverage\t%Identity\tDatabase\tAccession\tProduct\tResistance\n"; 	
 	close T; 
 	`cat $group_cat | sed '/^\#/d' | sort | uniq >> $group_out`;
 }	

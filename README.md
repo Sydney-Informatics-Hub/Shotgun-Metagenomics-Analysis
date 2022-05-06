@@ -464,6 +464,204 @@ The output will be a per-group collated Bracken2 TSV file within the `Abundance_
 
 ### Part 5. Antimicrobial resistance genes
 
+This step annotates putative antimicrobial resistance genes (ARGs) on to the filtered contigs using Abricate tool with the following databases:
+* [NCBI AMRFinder Plus](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6811410)
+* [Resfinder](https://www.ncbi.nlm.nih.gov/pubmed/22782487) 
+* [Comprehensive Antibiotic Resistance Database (CARD)](https://www.ncbi.nlm.nih.gov/pubmed/27789705)
+
+ARGs are reformatted, reads mapping to the ARGs are counted and normalised, and the final output produced is ARGs with read count and species data formulated as a comprehensive TSV for downstream investigation and bespoke analysis. The final output makes use of a manually curated ARG list (`./workdir/Inputs/curated_ARGs_list.txt`) which is used to assign all genes with multiple synonyms to one unified gene name. 
+
+
+#### 5.1 Annotate ARGs 
+There is no need to create an inputs file as the inputs sample list from the assembly step will be used. Samples with ~ 6 GB input gzipped fastq should complete in less than 20 minutes using 4 CPU per sample. 
+
+You will ned to install abricate and make 'module loadable'. Tested with version 0.9.9.
+
+Update the resources in the below script, then submit:
+
+```
+qsub ./Scripts/annotate_ARGs_run_parallel.pbs
+```
+
+Output will be in per-sample directories within `./workdir/ARGs/Abricate`. Each sample will have a `.tab` file containing genes identified from the NCBI, Resfinder and CARD databases. The following steps will manipulate these raw outputs.
+
+ 
+#### 5.2 Reformat ARGs
+
+This step combines the output of the 3 databases into one file per sample, removing any exact duplicate gene entries, and one file per cohort. This cohort-level file should be used to create a curated gene list at the next step.  
+
+```
+bash reformat_ARGs_remove_dups.sh
+```
+
+The output is one additional file in each of the sample directories within `./workdir/ARGs/Abricate`, named `<sample>.ARGs.txt`, as well as a coort-level file `./workdir/ARGs/Abricate/<cohort>.ARGs.txt` that should be used to curate a gene list (see 5.3).  
+
+
+#### 5.3 Curated ARG list
+
+This is a mandatory input file consisting of at least 4 tab-delimited columns. The mandatory columns are, in order:
+
+
+| Column | Heading                   | Description                                                            | 
+|--------|---------------------------|------------------------------------------------------------------------|
+| 1      |  Curated_gene_name        | The name that will be used to describe all gene synonyms for this gene | 
+| 2      |  Resistance_Mechanism     | Mechanism of antibiotic resistance                                     | 
+| 3      |  Drug_Class               | Class of drugs the gene confers resistance to                          | 
+| 4      |  Gene_names_variation     | Gene name variant / synonym for this gene                              |  
+
+Column 4 contains a variant name for the gene listed in column 1. If there are no synonyms, the name of the gene in column 1 is listed. Genes with multiple synonyms can have as many columns as required, starting from column 5. 
+
+A curated list generated from processing 572 samples has been provided with this repository. Please note that alternate datasets will generate different gene lists, and a manual curation step should be performed using the output from step 5.2 (file `./workdir/ARGs/Abricate/<cohort>.ARGs.txt`). 
+
+Please ensure that the column orders match the above described requirement to ensure that all gene synonyms are incorporated. Loss of a column = loss of gene counts!
+
+
+#### 5.4 Count reads mapping to ARGs
+
+Counting the number of reads mapping to the ARGs provides insight into the abundance of ARGs in the microbiome.  
+
+##### 5.4.1 Mark duplicate reads in the previously created BAM files
+
+Mark dulicate reads in the BAM files created during step 3.2, to improve accuracy of ARG read counting. 
+
+For samples with ~ 6 GB input gzipped fastq, a minimum of 2 hugemem CPUs worth of RAM per sample are required for RAM. MarkDuplicates tool is assigned 30 GB RAM per CPU assigned to a task within the `markdups.sh` script, ie this script is written for the hugemem nodes which have 32 GB RAM per CPU. If using on different queue, please update the value of '30' within the `mem` variable assignment.  You can increase the number of CPUs per task to make better use of the memory on the nodes depending on your number of samples, eg if you have 10 samples, use 4 CPU per task rather than 2 as set as the default for the script. This will improve the walltime and RAM efficiency, but not the CPU efficiency, as MarkDuplicates does not multithread. Samples with ~ 6 GB input gzipped fastq using 3 hugemem CPU worth of RAM should complete in under 1 hour. 
+
+There is no need to create an inputs file as the inputs sample list from the assembly step will be used.
+
+Update the resources as discussed above, then submit:
+
+```
+qsub ./Scripts/markdups_run_parallel.pbs
+```
+
+Output will be a duplicate-marked BAM in the previously created `./workdir/Align_to_assembly` per-sample directories.  
+
+
+##### 5.4.2 Convert Abricate ARG output to GFF
+
+Convert abricate 'tab' output format to gene feature format (GFF) for compatibility with htseq-count. During the conversion to GFF, the curated ARG list is read, so that the GFF contains only one entry per gene with multiple synonyms per contig location. Ie if a gene is annotated at multiple locations in the assembly, each discrete location will be kept, assigning the chosen gene name to all discrete location entries. If a gene is annotated to one location of the assembly with multiple different gene symbols, only one entry will be kept, using the gene name specified as default in the curated list. 
+
+```
+perl ./Scripts/convert_ARG_to_gff.pl
+```
+
+The output will be per-sample GFF files in `./workdir/ARGs/Curated_GFF`, with only the curated entries as described above present in the GFF files. 
+
+
+##### 5.4.3 Count reads mapping to ARGs with HTseq count
+
+This step uses HTSeq-count to count reads that map to the putative curared ARG locations. Before running, you will need to install HTSeq-count:
+
+```
+module load python3/3.8.5
+pip install HTSeq
+```
+
+The counting options applied in `ARG_read_count.sh` are:
+```
+--stranded no 
+--minaqual 20 
+--mode union 
+--nonunique none 
+--secondary-alignments ignore 
+--supplementary-alignments score 
+```
+
+HTseq-count does not multithread and is fairly slow. Future releases will improve the parallelism here, but for now, allow 3 hours per sample on 1 Broadwell CPU, based on samples with ~ 6 GB input fastq.gz. Update the resources then submit:
+
+```
+qsub ./Scripts/ARG_read_count_run_parallel.pbs
+```
+The output will be per-sample counts files in ./ARGs/ARG_read_counts.
+
+
+##### 5.4.4 Normalise
+
+##### 5.4.4.1 Reformat the ARG read count data for easy parsing 
+
+This will convert the HTseq-count output into a 3-column text file per sample (ID, gene length, raw count), with the ID field containing the gene name, contig ID, start and end positions concatenated with a colon delimiter. 
+
+It will also check that the ARGs counted matches the number of ARGs in the the input GFF, printing a fatal error if a mismatch is found. 
+
+```
+bash reformat_ARG_read_counts.sh
+```
+
+Output files are `./ARGs/ARG_read_counts/<sample>.curated_ARGs.reformat.counts` and are used as input to the normalisation step. 
+
+##### 5.4.4.2
+
+Normalise the ARG read count data with transcript per million (TPM) and reads per kilobase million (RPKM).
+
+```
+perl normalise_ARG_read_counts.pl
+```
+
+Output is `./ARGs/ARG_read_counts/<sample>.curated_ARGs.counts.norm` per sample as well as `./ARGs/ARG_read_counts/<cohort>_allSamples.curated_ARGs.counts.norm` containing all samples in cohort. 
+
+If the cohort has groups (eg treatment groups or timepoints) and these are specified in column 5 of the sample config file, the below script can be run to additionally create a per-group output. Note that 'allSamples' in the cohort-level file name will be replaced by the group name in the output:
+
+```
+perl collate_normalised_ARG_read_counts_by_groups.pl
+```
+
+Output will be a separate normalised counts file for every group, `./ARGs/ARG_read_counts/<cohort>_<group>.curated_ARGs.counts.norm`.
+
+##### 5.4.5 Assign species to normalised ARG data
+
+For every curated ARG, find the contig that that gene resides on and print out new TSV with gene, species, contig, number of reads mapping to that contig as well as normalised count data. 
+ 
+```
+perl reformat_norm_ARG_with_species.pl
+```
+ 
+Output will be `./ARGs/Curated_ARGs/<sample>.curated_ARGs.txt` for each sample, and a cohort level file `./ARGs/Curated_ARGs/<cohort>_allSamples.curated_ARGs.txt`.
+  
+If the cohort has groups (eg treatment groups or timepoints) and these are specified in column 5 of the sample config file, the below script can be run to additionally create a per-group output. Note that 'allSamples' in the cohort-level file name will be replaced by the group name in the output:
+
+```
+perl reformat_norm_ARG_with_species_by_groups.pl
+```
+
+Output will be a separate TSV file for every group, `./ARGs/Curated_ARGs/<cohort>_<group>.curated_ARGs.txt`.
+
+
+##### 5.4.6 Descriptive statistics  
+
+Print descriptive stats of curated-ARG-containing contigs. 
+
+```
+perl ARG_contig_length_stats.pl
+```
+Output is a single file for all samples in cohort, containing the count, mean, standard deviation, min and max lengths for all contigs and for ARG-containing contigs, `./ARGs/Curated_ARGs/<cohort>_allSamples_curated_ARGs_contig_length_stats.txt`. 
+
+##### 5.4.7 Filter ARGs by coverage and identity
+
+For each curarted ARG, filter by >=70% coverage and >=80% identity. To change these thresholds, please edit the variable assignments for `$cover` and `$identity` within the below perl script.
+
+
+Reports a separate R-compatible dataframe for TPM normalised and raw counts. Column headings are gene names and row headings are sample IDs. 
+
+
+```
+perl filter_ARGs_by_coverage_and_identity.pl
+
+```
+Outputs are `./ARGs/Curated_ARGs/<cohort>_allSamples_curated_ARGs_rawCount_Rdataframe.txt` and `./ARGs/Curated_ARGs/$cohort\_allSamples_curated_ARGs_TPM_Rdataframe.txt`. 
+
+  
+If the cohort has groups (eg treatment groups or timepoints) and these are specified in column 5 of the sample config file, the below script can be run to additionally create a per-group output. Note that 'allSamples' in the cohort-level file name will be replaced by the group name in the output:
+
+```
+perl NOT_DONE_YET.pl
+```
+
+Output will be a separate R-compatible dataframe for TPM normalised and raw counts per group. 
+
+
+
+
+
 
 ### Part 6. Gene prediction
 

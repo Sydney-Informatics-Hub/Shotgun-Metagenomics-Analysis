@@ -68,6 +68,10 @@ else
 	exit
 fi
 
+echo Making sample list ./Inputs/${cohort}_samples.list
+awk 'NR>1 {print $2}' ${config} > ./Inputs/${cohort}_samples.list
+echo
+
 # NCI project
 echo Enter the name of your NCI project:
 read project

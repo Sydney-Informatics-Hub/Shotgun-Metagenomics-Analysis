@@ -1,4 +1,4 @@
-#!/usr/bin/env perl
+#!/usr/bin/perl
 
 #########################################################
 #
@@ -26,19 +26,22 @@ use strict;
 my $cohort = '<cohort>';
 my $config = "./Inputs/$cohort\.config";
 
-my $indir = './Insertion_sequences/Filtered_IS_with_species';
-my $input = "$indir\/IS_$cohort\_allSamples.txt";
+my $indir = './ARGs/ARG_read_counts';
+my $input = "$indir\/$cohort\_allSamples.curated_ARGs.counts.norm"; 
 
 # Collect samples by group IDs
 my $grouphash = {};
 my @groups = '';
 open (S, $config) || die "$! $config\n"; 
 while (my $line = <S>) {
-	my ($id, $sample, $platform, $centre, $group) = split(' ', $line); 
-	if (!$grouphash->{$group}) {
-		push @groups, $group; 	
-	}
-	$grouphash->{$group}->{$sample} = 1; 
+	chomp $line; 
+	if ($line!~/^\#/) {
+		my ($id, $sample, $platform, $centre, $group) = split(' ', $line); 
+		if (!$grouphash->{$group}) {
+			push @groups, $group; 	
+		}
+		$grouphash->{$group}->{$sample} = 1;
+	} 
 } close S; 
 
 # Print per-group output files
@@ -46,13 +49,13 @@ foreach my $group (sort keys %{$grouphash}) {
 	print "Printing per-group output for group $group ";
 	my $group_cat = '';
 	foreach my $sample (sort keys %{$grouphash->{$group}}) {
-		$group_cat .= " $indir\/$sample\.IS.txt";
+		$group_cat .= " $indir\/$sample\.curated_ARGs.counts.norm";
 	}
 	my $group_out = $input;
 	$group_out =~ s/allSamples/$group/; 
 	print "to $group_out\n"; 	
 	open (T, ">$group_out") || die "$! write $group_out\n"; 	
-	print T "#Sample\tContig\tSpecies\tStart\tEnd\tName\tInference\tProduct\n"; 
+	print T "#Sample\tGene\tContig\tStart\tEnd\tStrand\tLength\tRaw_counts\tRPK\tRPK_sum\tTPM_scale\tTPM\tLibrarySize\tRPKM_scale\tRPKM\n"; 
 	close T; 
 	`cat $group_cat | sed '/^\#/d' | sort | uniq >> $group_out`;
 }	

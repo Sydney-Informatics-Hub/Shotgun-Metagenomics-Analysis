@@ -1,0 +1,63 @@
+#!/bin/bash
+
+#########################################################
+#
+# Platform: NCI Gadi HPC
+# Description: see https://github.com/Sydney-Informatics-Hub/Shotgun-Metagenomics-Analysis
+#
+# Author/s: Cali Willet; Tracy Chew
+# cali.willet@sydney.edu.au; tracy.chew@sydney.edu.au
+#
+# If you use this script towards a publication, please acknowledge the
+# Sydney Informatics Hub (or co-authorship, where appropriate).
+#
+# Suggested acknowledgement:
+# The authors acknowledge the scientific and technical assistance
+# <or e.g. bioinformatics assistance of <PERSON>> of Sydney Informatics
+# Hub and resources and services from the National Computational
+# Infrastructure (NCI), which is supported by the Australian Government
+# with access facilitated by the University of Sydney.
+#
+#########################################################
+
+
+#PBS -P <project>
+#PBS -N ARG-count
+#PBS -l walltime=03:00:00
+#PBS -l ncpus=28
+#PBS -l mem=128GB
+#PBS -q normalbw
+#PBS -W umask=022
+#PBS -l wd
+#PBS -o ./Logs/ARG_read_count.o
+#PBS -e ./Logs/ARG_read_count.e
+#PBS -lstorage=scratch/<project>
+
+module load openmpi/4.0.2
+module load nci-parallel/1.0.0a
+module load python3/3.8.5
+export PYTHONPATH=$HOME/.local/lib/python3.8/site-packages
+
+set -e
+
+SCRIPT=./Scripts/ARG_read_count.sh
+INPUTS=./Inputs/<cohort>_samples.list
+
+NCPUS=1
+
+mkdir -p ./ARGs/ARG_read_counts ./Logs/HTSeq
+
+#########################################################
+# Do not edit below this line
+#########################################################
+
+M=$(( PBS_NCI_NCPUS_PER_NODE / NCPUS )) #tasks per node
+
+sed "s|^|${SCRIPT} |" ${INPUTS} > ${PBS_JOBFS}/input-file
+
+mpirun --np $((M * PBS_NCPUS / PBS_NCI_NCPUS_PER_NODE)) \
+        --map-by node:PE=${NCPUS} \
+        nci-parallel \
+        --verbose \
+        --input-file ${PBS_JOBFS}/input-file
+
