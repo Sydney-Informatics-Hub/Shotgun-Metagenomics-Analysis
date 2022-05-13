@@ -32,16 +32,15 @@ my $input = "$indir\/$cohort\_allSamples.curated_ARGs.counts.norm";
 # Collect samples by group IDs
 my $grouphash = {};
 my @groups = '';
-open (S, $config) || die "$! $config\n"; 
+open (S, $config) || die "$! $config\n";
+chomp (my $header = <S>); 
 while (my $line = <S>) {
 	chomp $line; 
-	if ($line!~/^\#/) {
-		my ($id, $sample, $platform, $centre, $group) = split(' ', $line); 
-		if (!$grouphash->{$group}) {
-			push @groups, $group; 	
-		}
-		$grouphash->{$group}->{$sample} = 1;
-	} 
+	my ($id, $sample, $platform, $centre, $group) = split(' ', $line); 
+	if (!$grouphash->{$group}) {
+		push @groups, $group; 	
+	}
+	$grouphash->{$group}->{$sample} = 1; 
 } close S; 
 
 # Print per-group output files

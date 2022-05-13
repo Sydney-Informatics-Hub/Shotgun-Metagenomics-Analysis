@@ -653,14 +653,10 @@ Outputs are `./ARGs/Curated_ARGs/<cohort>_allSamples_curated_ARGs_rawCount_Rdata
 If the cohort has groups (eg treatment groups or timepoints) and these are specified in column 5 of the sample config file, the below script can be run to additionally create a per-group output. Note that 'allSamples' in the cohort-level file name will be replaced by the group name in the output:
 
 ```
-perl NOT_DONE_YET.pl
+perl filter_ARGs_by_coverage_and_identity_by_groups.pl
 ```
 
-Output will be a separate R-compatible dataframe for TPM normalised and raw counts per group. 
-
-
-
-
+Output will be a separate R-compatible dataframe for TPM normalised and raw counts per group, also within the `./ARGs/Curated_ARGs` directory. 
 
 
 ### Part 6. Gene prediction

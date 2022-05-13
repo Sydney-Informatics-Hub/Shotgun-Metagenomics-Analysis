@@ -33,7 +33,9 @@ my $input = "$indir\/IS_$cohort\_allSamples.txt";
 my $grouphash = {};
 my @groups = '';
 open (S, $config) || die "$! $config\n"; 
+chomp (my $header = <S>);
 while (my $line = <S>) {
+	chomp $line; 
 	my ($id, $sample, $platform, $centre, $group) = split(' ', $line); 
 	if (!$grouphash->{$group}) {
 		push @groups, $group; 	

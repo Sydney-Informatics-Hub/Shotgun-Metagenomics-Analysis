@@ -27,13 +27,14 @@ my $cohort = '<cohort>';
 my $config = "./Inputs/$cohort\.config";
 
 my $indir = './ARGs/Curated_ARGs';
-my $input = "$indir\/$cohort\_allSamples.curated_ARGs.txt";
+my $raw_input = "$indir\/$cohort\_allSamples_curated_ARGs_rawCount_Rdataframe.txt";
+my $norm_input = "$indir\/$cohort\_allSamples_curated_ARGs_TPM_Rdataframe.txt";
 
 # Collect samples by group IDs
 my $grouphash = {};
 my @groups = '';
 open (S, $config) || die "$! $config\n"; 
-chomp (my $header = <S>);
+chomp (my $header = <S>); 
 while (my $line = <S>) {
 	chomp $line;
 	my ($id, $sample, $platform, $centre, $group) = split(' ', $line); 
@@ -45,16 +46,28 @@ while (my $line = <S>) {
 
 # Print per-group output files
 foreach my $group (sort keys %{$grouphash}) {
-	print "Printing per-group output for group $group ";
-	my $group_cat = '';
-	foreach my $sample (sort keys %{$grouphash->{$group}}) {
-		$group_cat .= " $indir\/$sample\.curated_ARGs.txt";
-	}
-	my $group_out = $input;
-	$group_out =~ s/allSamples/$group/; 
-	print "to $group_out\n"; 	
-	open (T, ">$group_out") || die "$! write $group_out\n"; 	 	
-	print T "#Sample\tGene\tResistance_mechanism\tDrug_class\tSpecies\tContig\tStart\tEnd\tStrand\tRaw_count\tTMP\tRPKM\tCoverage\tCoverage_map\tGaps\t%Coverage\t%Identity\tDatabase\tAccession\tProduct\tResistance\n"; 	
-	close T; 
-	`cat $group_cat | sed '/^\#/d' | sort | uniq >> $group_out`;
-}	
+        print "Printing per-group output for group $group\:\n";
+        my $group_temp = "./$group\_ID_list.temp";
+	open (G, ">$group_temp") || die "$! $group_temp\n"; 
+        foreach my $sample (sort keys %{$grouphash->{$group}}) {
+                print G "$sample\n"; 	
+        } close G; 
+
+	# TPM: 	
+        my $group_out = $norm_input;
+        $group_out =~ s/allSamples/$group/;
+	print "\t$group_out\n";	
+	`head -1 $norm_input > $group_out`;
+	`join -t \$'\t' $group_temp $norm_input >> $group_out`;
+	
+	# Raw counts:         
+	$group_out = $raw_input;
+        $group_out =~ s/allSamples/$group/;
+	print "\t$group_out\n";	
+	`head -1 $raw_input > $group_out`;
+	`join -t \$'\t' $group_temp $raw_input >> $group_out`;	
+	
+	# Delete temp file:
+	unlink($group_temp);
+}
+	
