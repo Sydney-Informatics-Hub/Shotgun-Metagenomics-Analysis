@@ -141,6 +141,8 @@ This analysis takes the target (host-removed) reads and assembles them into cont
 
 The number of parallel tasks is equal to the number of samples. A sample may have multiple pairs of input fastq. The `assemble.sh` script will find all fastq pairs belonging to a sample using the sample ID. So it is critical that your sample IDs are unique within the cohort (see note in  'Configuration/sample info' section above).
 
+Megahit assembler will exit if the specified output directory exists. The script `assemble.sh` uses output directory `./workdir/Assembly/<sample>`. If the script finds this directory already exists, it will assume you are resuming a previously failed run for that sample (eg died on walltime) and apply the `--continue` flag to Megahit. 
+
 Samples with 3-4 GB total target read fastq.gz using 24 CPU should complete in approximately 1.75 hours.
 
 Make inputs file:

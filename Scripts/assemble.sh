@@ -25,19 +25,25 @@ sample=$1
 # Create comma-delimited list of interleaved fastq for megahit
 interleaved=$(ls ./Target_reads/*${sample}*.interleaved.extracted.fq.gz | tr '\n' , | sed 's/,$//')
 
-#megahit will terminate with exit status 1 if outdir exists. If dir exists, use a dir with timedata to ensure uniqueness. 
+#megahit will terminate with exit status 1 if outdir exists. If dir exists, apply the --continue flag 
 outdir=./Assembly/${sample}
 
 if [ -d "$outdir" ]
 then
-  dt=`date '+%d-%m-%Y_%H:%M:%S'`
-  outdir=./Assembly/${sample}_${dt}
+	echo Resuming previously aborted Megahit assembly run for $sample
+	megahit \
+		--continue \
+		--12 $interleaved \
+        	-o $outdir \
+        	-t $NCPUS \
+        	--out-prefix $sample
+  
+else
+	megahit \
+		--12 $interleaved \
+       		-o $outdir \
+        	-t $NCPUS \
+        	--out-prefix $sample
 fi
-
-megahit \
-        --12 $interleaved \
-        -o $outdir \
-        -t $NCPUS \
-        --out-prefix $sample
 
 
