@@ -21,7 +21,10 @@
 #########################################################
 
 fastq=`echo $1 | cut -d ',' -f 1`
-out=`echo $1 | cut -d ',' -f 2`
-logfile=`echo $1 | cut -d ',' -f 3`
 
-fastqc --extract -o ${out} ${fastq} >> ${logfile} 2>&1 
+prefix=$(basename $fastq | sed  's/.f.*q.gz$//g')
+out=./FastQC/${prefix}
+log=./Logs/FastQC/${prefix}.log
+
+
+fastqc --extract -o ${out} ${fastq} >> ${log} 2>&1 

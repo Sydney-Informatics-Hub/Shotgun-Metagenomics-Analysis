@@ -31,7 +31,7 @@
 #PBS -l wd
 #PBS -o ./Logs/markdups.o
 #PBS -e ./Logs/markdups.e
-#PBS -lstorage=scratch/<project>
+#PBS -l storage=scratch/<project>
 
 
 module load openmpi/4.0.2

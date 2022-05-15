@@ -4,23 +4,23 @@ Analysis of metagenomic shotgun sequences including assembly, speciation, ARG di
 ## Description
 The input for this analysis is paired end next generation sequencing data from metagenomic samples. The workflow is designed to be modular, so that individual modules can be run depending on the nature of the metagenomics project at hand. More modules will be added as we develop them - this repo is a work in progress!
 
-These scripts have been written specifically for NCI Gadi HPC, wich runs PBS Pro, however feel free to use and modify for anothre system if you are not a Gadi user. 
+These scripts have been written specifically for NCI Gadi HPC, wich runs PBS Pro, however feel free to use and modify for another system if you are not a Gadi user. 
 
 ### Part 1. Setup and QC
 Download the repo. You will see directories for `Scripts`, `Fastq`, `Inputs` and `Logs`. You will need to copy or symlink your fastq to `Fastq` and sample configuration file (see below) to `Inputs`. All work scripts are in `Scripts` and all logs (PBS and software logs) are written to `Logs`.
  
 
 #### 1.1 Fastq inputs
-The scripts assume all fastq files are paired, gzipped, and all in the one directory named 'Fastq'. If your fastq are within a convoluted directory structure (eg per-sample directories) or you would simply like to link them from an alternate location, please use the script `setup_fastq.sh`.
+The scripts assume all fastq files are paired, gzipped, and all in the one directory named 'Fastq'. If your fastq are within a convoluted directory structure (eg per-sample directories) or you would simply like to link them from an alternate location, please use the script `setup_fastq.sh`, or else just copy your fastq files to `workdir/Fastq`.
 
-To use this script, parse the path name of your fastq directory as first argument on the command line, and run the script from the base working directory (<your_path>/Shotgun-Metagenomics-Analysis) which will from here on be referred to as `workdir`. Note that this script looks for `f*q.gz` files (ie fastq.gz or fq.gz) - if yours differ in suffix, please adjust the script accordingly.
+To use this script, parse the path name of your fastq directory as first argument on the command line, and run the script from the base working directory (<your_path>/Shotgun-Metagenomics-Analysis) which will from here on be referred to as `workdir`. Note that **the scripts used in this workflow look for `f*q.gz` files** (ie fastq.gz or fq.gz) - if yours differ in suffix, the simplest solution is to rename them.
 
 ```
 bash ./Scripts/setup_fastq.sh </path/to/your/parent/fastq/directory>
 ```
 
 #### 1.2 Configuration/sample info
-The only required input configuration file should be named <cohort>.config, where <cohort> is the name of the current batch of samples you are processing, or some other meaningful name to your project; it will be used to name output files. The config file should be placed inside the $workdir/Inputs directory, and include the following columns, in this order:
+The only required input configuration file should be named `<cohort>.config`, where `<cohort>` is the name of the current batch of samples you are processing, or some other meaningful name to your project; it will be used to name output files. The config file should be placed inside the `workdir/Inputs` directory, and include the following columns, in this order:
 
 ```
 1. Sample ID - used to identify the sample, eg if you have 3 lanes of sequencing per sample, each of those 6 fastq files should contain this ID that is in column 1
@@ -30,16 +30,20 @@ The only required input configuration file should be named <cohort>.config, wher
 5. Group - eg different time points or treatment groups. If no specific group structure is relevant, can be left blank 
 ```
 
-Please do not have spaces in any of the values for the config file. 
+Please **ensure your sample IDs are unique within column 1 and unique within column 2**, and do not have spaces in any of the values for the config file.
+
+The number of rows in the config file should be the number of samples plus 1 (for the header, which should start with a `#` character). Ie, even if your samples have multiple input fastq files, you still only need one row per sample, as the script will identify all fastq belonging to each sample based on the ID in column 1. 
 
 
 #### 1.3 General setup
 
-All scripts will need to be updated to reflect your NCI project code at the `-P <project>` and `-l \<storage\>` directive. Running the script `create_project.sh` and following the prompts will complete some of the setup for you. 
+All scripts will need to be updated to reflect your NCI project code at the `-P <project>` and `-l <storage>` directive. Running the script `create_project.sh` and following the prompts will complete some of the setup for you. 
 
-Note that you will need to manually edit the PBS resource requests for each PBS script depending on the size of your input data; guidelines/example resources will be given at each step to help you do this. As the 'sed' commands within this script operate on .sh and .pbs files, this setup script has been intentionally named .bash (easiest solution).
+Note that you will need to manually edit the PBS resource requests for each PBS script depending on the size of your input data; guidelines/example resources will be given at each step to help you do this. As the `sed` commands within this script operate on `.sh` files, this setup script has been intentionally named `.bash`.
 
 Remember to submit all scripts from your `workdir`. 
+
+Run the below command and follow the prompts:
 
 ```
 bash ./Scripts/create_project.sh
@@ -51,21 +55,42 @@ The parallel launcher script has been set up to make the workflow efficient and 
 
 #### 1.4 QC
 
-Run fastQC over each fastq file in parallel. Adjust the resources as per your project. To run all files in parallel, set the number of NCPUS requested equal to the number of fastq files (remember that Gadi can only request <1 node or multiples of whole nodes). The make input script sorts the fastq files largest to smallest, so if you have a discrpeancy in file size, optimal efficiency can be achieved by requested less nodes than the total required to run all your fastq in parallel.
+Run fastQC over each fastq file in parallel. Adjust the resources as per your project. To run all files in parallel, set the number of CPUS requested equal to the number of fastq files (remember that Gadi can only request <1 node or multiples of whole nodes,not for example 1.5 nodes). The make input script sorts the fastq files largest to smallest, so if you have a discrepancy in file size, optimal efficiency can be achieved by requesting less CPUs than the total required to run all your fastq in parallel.
 
-FastQC does not multithread on a single file, so CPUs per parallel task is set to 1. Example walltimes on Gadi 'normal' queue:  one 1.8 GB fastq = 4 minutes; one 52 GB fastq file = 69.5 minutes.
+FastQC does not multithread on a single file, so CPUs per parallel task is set to 1. Example walltimes on Gadi 'normal' queue:  one 1.8 GB fastq = 4 minutes; one 52 GB fastq file = 69.5 minutes. Allow 4 GB RAM per CPU requested. 
+
+Please note that if you have symlinked fastq files from another project storage area on Gadi, you will need to ensure that project storage space is specified at the `-l storage` directive, otherwise FastQC will return an error "Skipping '<fastq file name>' which didn't exist, or couldn't be read". 
 
 Make the fastqc parallel inputs file by running (from `workdir`):
 ```
 bash ./Scripts/fastqc_make_inputs.sh
 ```
 
-Edit the resource requests in `fastqc_run_parallel.pbs` according to your number of fastq files and their size, then submit:
+Edit the resource requests in `fastqc_run_parallel.pbs` according to your number of fastq files and their size. Eg for 30 fastq files, set ncpus=30 and mem=120 (4 GB per CPU on the `normal` queue), then submit:
 ```
 qsub ./Scripts/fastqc_run_parallel.pbs
 ```
 
-To ease manual inspection of the fastQC output, running `multiqc` is recommended. This will collate the individual fastQC reports into one report. This can be done on the login node for small sample numbers, or using the below script for larger cohorts. Edit the PBS directives, then run:
+**For all jobs in this workflow, check that the job was successful through multiple measures:**
+
+- Check the expected output exists, in this case fastQC output for each fastq file within the `workdir/FastQC` directory
+- Check that the ".o" PBS log file shows an exit status of zero, and that the resources used are in line with expectations
+- Check that each sub-task completed with an exit status of zero, by running this command: 
+	- `grep "exited with status 0" Logs/fastqc.e | wc -l
+	- The number returned should equal the number of parallel tasks run by the job
+
+To ease manual inspection of the fastQC output, running `multiqc` is recommended. This will collate the individual FastQC reports into one report. This can be done on the login node for small sample numbers, or using the below script for larger cohorts. 
+
+
+For small numbers, run the 3 commands below on the login node. Eg for 30 fastq files of 1 - 3 GB each, the run time is < 30 seconds:
+
+```
+module load multiqc/1.9
+mkdir -p ./MultiQC
+multiqc -o ./MultiQC ./FastQC
+```
+
+For larger cohorts, edit the PBS directives, then run:
 
 ```
 qsub ./Scripts/multiqc.pbs
@@ -79,11 +104,11 @@ Will be added at a later date. This is highly dependent on the quality of your d
 
 ### Part 2. Removal of host DNA contamination 
 
-If you have metagenomic data extracted from a host (eg tissue, saliva), you will need a copy of the host reference genome sequence in order to remove any DNA sequences belonging to the host. Even if your wetlab protocol included a host removal step, it is still important to run bioinformatic host removal.
+If you have metagenomic data extracted from a host (eg tissue, saliva), you will need a copy of the host reference genome sequence in order to remove any DNA sequences belonging to the host. Even if your wetlab protocol included a host removal step, it is still important to run bioinformatic host removal, as lab-based host removal is rarely perfect.
 
 
 #### 2.1 Prepare the reference
-If you ran `create_project.sh` you would have been asked for the full path to your host reference genome. This will add the reference to the `bbmap_prep.pbs` script below. If you did not run `create_project.sh` you will need to manually add the full path to your host reference sequence in the below BBtools scripts.
+If you ran `create_project.sh` you would have been asked for the full path to your host reference genome. This will add the reference to the `bbmap_prep.pbs` script below. If you did not run `create_project.sh` you will need to manually add the full path to your host reference fasta sequence in the below BBtools scripts.
 
 This step repeat-masks the reference and creates the required BBtools index. If you are unsure whether your genome is already repeat-masked, you can run the script as-is, as there is no problem caused by running bbmask over an already-masked reference.
 
@@ -96,7 +121,7 @@ To run:
 qsub ./Scripts/bbmap_prep.pbs
 ```
 
-The BBtools masked reference and index will be created in `./ref`. 
+The BBtools masked reference and index will be created in `./ref`. Don't be alarmed if you observe that the number of contigs/chromosomes in your reference are not represented in the BBmap output file names. For example, the human genome will typically show 7 'chroms'. View the BBmap `info.txt` and `summary.txt` files to see that many contigs are combined together to create fewer contigs of more equal size.  
 
 #### 2.2 Host contamination removal
 

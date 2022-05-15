@@ -31,7 +31,7 @@
 #PBS -l wd
 #PBS -o ./Logs/ARG_read_count.o
 #PBS -e ./Logs/ARG_read_count.e
-#PBS -lstorage=scratch/<project>
+#PBS -l storage=scratch/<project>
 
 module load openmpi/4.0.2
 module load nci-parallel/1.0.0a

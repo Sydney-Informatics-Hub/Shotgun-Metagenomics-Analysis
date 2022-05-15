@@ -34,14 +34,14 @@ do
         basename=$(basename "$fastq" | cut -d. -f1)
         out=${outdir}/${basename}
         logfile=${logdir}/${basename}.log
-	bytes=$(ls -s "${fastq}" | awk '{print $1}')
+	bytes=$(stat -Lc %s ${fastq})
         mkdir -p ${out}
-        echo "${fastq},${out},${logfile},${bytes}" >> ${inputs}-unsorted
+        echo "${fastq},${bytes}" >> ${inputs}-unsorted
 done
 
 # Reverse numeric sort bytes, comma delimited unsorted file
-sort -rnk 4 -t ',' ${inputs}-unsorted > ${inputs}
+sort -rnk 2 -t ',' ${inputs}-unsorted > ${inputs}
 rm -rf ${inputs}-unsorted
 
-num_tasks=`wc -l ${inputs}`
+num_tasks=`wc -l < ${inputs}`
 echo "Number of fastQC tasks to run: $num_tasks"

@@ -29,7 +29,7 @@
 #PBS -l wd
 #PBS -o ./Logs/annotate_ARGs.o
 #PBS -e ./Logs/annotate_ARGs.e
-#PBS -lstorage=scratch/<project>
+#PBS -l storage=scratch/<project>
 
 module load openmpi/4.1.0
 module load nci-parallel/1.0.0a

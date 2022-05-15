@@ -30,7 +30,7 @@
 #PBS -l wd
 #PBS -o ./Logs/bracken_db_build.o
 #PBS -e ./Logs/bracken_db_build.e
-#PBS -lstorage=scratch/<project>
+#PBS -l storage=scratch/<project>
 
 module load python3/3.7.4 kraken2/2.0.8-beta bracken/2.6.0
 

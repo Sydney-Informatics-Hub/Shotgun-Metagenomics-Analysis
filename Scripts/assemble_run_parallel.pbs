@@ -30,7 +30,7 @@
 #PBS -l wd
 #PBS -o ./Logs/assemble.o
 #PBS -e ./Logs/assemble.e
-#PBS -lstorage=scratch/<project>
+#PBS -l storage=scratch/<project>
 
 
 module load openmpi/4.0.2

@@ -28,7 +28,7 @@
 #PBS -l jobfs=400GB
 #PBS -W umask=022
 #PBS -l wd
-#PBS -lstorage=scratch/<project>
+#PBS -l storage=scratch/<project>
 
 
 module load metaphlan2/2.7.8 

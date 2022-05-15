@@ -30,7 +30,7 @@
 #PBS -l wd
 #PBS -o ./Logs/align_reads_to_contigs.o
 #PBS -e ./Logs/align_reads_to_contigs.e
-#PBS -lstorage=scratch/<project>
+#PBS -l storage=scratch/<project>
 
 
 module load openmpi/4.0.2

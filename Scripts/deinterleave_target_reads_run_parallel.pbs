@@ -30,7 +30,7 @@
 #PBS -l wd
 #PBS -o ./Logs/deinterleave.o
 #PBS -e ./Logs/deinterleave.e
-#PBS -lstorage=scratch/<project>
+#PBS -l storage=scratch/<project>
 
 
 module load openmpi/4.0.2

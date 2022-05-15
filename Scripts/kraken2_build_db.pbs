@@ -24,13 +24,13 @@
 #PBS -N kdb
 #PBS -l walltime=02:00:00
 #PBS -l ncpus=48
-#PBS -l mem=192GB
+#PBS -l mem=190GB
 #PBS -q normal
 #PBS -W umask=022
 #PBS -l wd
 #PBS -o ./Logs/kraken2_build_db.o
 #PBS -e ./Logs/kraken2_build_db.e
-#PBS -lstorage=scratch/<project>
+#PBS -l storage=scratch/<project>
 
 module load kraken2/2.0.8-beta
 

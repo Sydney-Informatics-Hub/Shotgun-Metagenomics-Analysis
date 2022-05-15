@@ -28,7 +28,7 @@
 #PBS -q normal
 #PBS -W umask=022 
 #PBS -l wd 
-#PBS -lstorage=scratch/<project>
+#PBS -l storage=scratch/<project>
  
 module load openmpi/4.1.0
 module load nci-parallel/1.0.0a

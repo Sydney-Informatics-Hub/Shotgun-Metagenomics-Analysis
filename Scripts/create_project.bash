@@ -5,8 +5,8 @@
 # Platform: NCI Gadi HPC
 # Description: see https://github.com/Sydney-Informatics-Hub/Shotgun-Metagenomics-Analysis
 #
-# Author/s: Cali Willet; Tracy Chew
-# cali.willet@sydney.edu.au; tracy.chew@sydney.edu.au
+# Author/s: Cali Willet
+# cali.willet@sydney.edu.au
 #
 # If you use this script towards a publication, please acknowledge the
 # Sydney Informatics Hub (or co-authorship, where appropriate).
@@ -23,7 +23,7 @@
 
 #### functions####
 function storage {
-echo Do you require read/write to any Gadi storage other than /scratch/${project}? If yes, please enter all separated by space \[enter for no\]:
+echo Do you require read/write to any Gadi storage other than /scratch/${project}? If yes, please enter all paths separated by space \[enter for no\]:
 
 read more_storage
 IFS=' ' read -r -a array <<< "$more_storage"
@@ -32,11 +32,11 @@ lstorage=scratch/${project}
 for i in "${!array[@]}"
 do
     path=$(echo ${array[i]} | sed 's/^\///g')
-    lstorage+="+scratch/${path}"
+    lstorage+="+${path}"
 done
 
 echo
-echo PBS lstorage directive will be: $lstorage
+printf "PBS -l storage directive will be: $lstorage\n"
 echo Is this correct? Enter y or n
 
 read answer
@@ -45,7 +45,7 @@ if [[ $answer != y ]]
 then 
 	storage
 else
-	echo Using lstorage $lstorage
+	echo Using storage $lstorage
 	echo
 	return 0	
 fi
@@ -54,7 +54,7 @@ fi
 ###################
 
 # Config file
-echo Enter your cohort name / the basename of your <cohort>.config file:
+printf "Enter your cohort name / the basename of your <cohort>.config file:\n"
 read cohort
 config=./Inputs/${cohort}.config
 
@@ -84,18 +84,18 @@ echo
 
 # Call storage function as many times as needed
 storage
-sed -i "s|#PBS -lstorage=.*|#PBS -lstorage=${lstorage}|" ./Scripts/*.pbs
+sed -i "s|#PBS -l storage=.*|#PBS -l storage=${lstorage}|" ./Scripts/*.pbs
 
 ###################
 
 # Reference genome
 
-echo Is your metagenomics data extracted from a host? (eg tissue, saliva) - enter 'Y' or 'N'
+printf "Is your metagenomics data extracted from a host? (eg tissue, saliva) - enter 'y' or 'n'\n"
 read host
 
 if [ $host == "y" ] || [ $host == "Y" ] 
 then 
-	echo Enter the name of your host reference genome sequence file, including full path:
+	printf  "Host-extracted data requires a host removal step against a reference genome.\nEnter the name of your host reference genome sequence fasta file, including full path:\n"
 	read refpath
 	
 	if [ -f $refpath ] 
