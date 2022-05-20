@@ -22,9 +22,9 @@
 
 #PBS -P <project>
 #PBS -N remhost-f
-#PBS -l walltime=08:00:00
-#PBS -l ncpus=144
-#PBS -l mem=570GB
+#PBS -l walltime=12:00:00
+#PBS -l ncpus=24
+#PBS -l mem=96GB
 #PBS -q normal
 #PBS -W umask=022
 #PBS -l wd

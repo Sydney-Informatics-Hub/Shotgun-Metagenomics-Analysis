@@ -127,28 +127,31 @@ The BBtools masked reference and index will be created in `./ref`. Don't be alar
 
 Run host contamination removal over each fastq pair in parallel. 
 
-The below script assumes your R1 fastq files match the following pattern: ` *_R1_*.fastq.gz`. Please check, and if this pattern does not apply to your data, please edit the corresponding line within the make inputs script.
+The below script assumes your R1 fastq files match the following pattern: ` *_R1*.f*q.gz`. Please check, and if this pattern does not apply to your data, please edit the corresponding line within the make inputs script.
 
 Make the remove_host parallel inputs file by running (from `workdir`):
 ```
 bash ./Scripts/remove_host_make_input.sh
 ```
 
-The number of remove host tasks to run should be equal to the number of fastq pairs that you have. If this is not the case, please check 1) that the above pattern matches your fastq filenames, or 2) that your fastq files are all within ./Fastq, with no fastq files nested within subdirectories.
+The number of remove host tasks to run should be equal to the number of fastq pairs that you have (ie, fastq files divided by 2, NOT the total number of samples in the cohort). If this is not the case, please check 1) that the above pattern matches your fastq filenames, or 2) that your fastq files are all within (or symlinked to) ./Fastq, with no fastq files nested within subdirectories.
+
+View the file `Inputs/remove_host.inputs`. It should be a list of file pair prefixes, ie the unique prefix of each fastq pair, without the R1|R2 designation or fastq.gz suffix.
 
 Edit the resource requests in `remove_host_run_parallel.pbs` according to your number of fastq file pairs, data size and host: 
 
 - 12 CPUs and 48 GB RAM per task is recommended for mammalian host
 - Please note that if you alter NCPUs from the pre-set value of 12, you should also edit the -Xmx value in `remove_host.sh`, which is optimally set to 42 GB for mammalian host removal
 - 3 hours walltime is adequate for most samples with 2 x 2 GB fastq files, however occasioanlly, samples may require a longer walltime. These can be collected and resubmitted with `remove_host_find_failed`. 
-- Example: 40 pairs fastq.gz, each file = 2 GB ( 4 GB per sample), mammalian host = 12 CPU per task, total 40 x 12 =  480 CPUs (10 nodes) for 3 hours to run all samples in parallel, or 240 CPUs (5 nodes) at 6 hours walltime.  
+- Example: 40 pairs fastq.gz, each file = 2 GB ( 4 GB per fastq pair), mammalian host = 12 CPU per task, total 40 x 12 =  480 CPUs (10 nodes) for 3 hours to run all samples in parallel, or 240 CPUs (5 nodes) at 6 hours walltime. 15 fastq pairs would require 4 nodes (192 CPUs), as 15 x 12 = 180 which is 3.75 nodes, and Gadi requires whole nodes for multi-node jobs.  
 
 Then submit:
 ```
 qsub ./Scripts/remove_host_run_parallel.pbs
 ```
 
-After this job has completed, run the below script to find failed tasks:
+Some samples may need additional walltime comapred to others of a similar input size. After this job has completed, run the below script to find failed tasks needing to be resubmitted with longer walltime. In future releases, we will include an option to split and parallelise the remove host step, as this is one of the slowest parts of the workflow.
+
 ```
 bash ./Scripts/remove_host_find_failed_tasks.sh
 ```

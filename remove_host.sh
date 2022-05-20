@@ -1,4 +1,4 @@
-#! /bin/bash
+#!/bin/bash
 
 #########################################################
 #
@@ -20,11 +20,27 @@
 #
 #########################################################
 
-inputs=./Inputs/remove_host.inputs
+set -e
 
-find ./Fastq -name "*_R1*.f*q.gz" -exec stat -Lc '%s %n' {} \; | sort -rnk 1 | awk '{print $2}'| sed 's/_R1.*//' > $inputs
+prefix=$1
 
-tasks=`wc -l < $inputs`
+fq1=$(ls ${prefix}*_R1*.f*q.gz)
+fq2=$(ls ${prefix}*_R2*.f*q.gz)
 
-printf "Number of remove host tasks to run: ${tasks}\n"
+prefix=$(basename $prefix)
 
+out=./Target_reads/${prefix}.interleaved.extracted.fq.gz
+log=./Logs/Remove_host/${prefix}.bbmap.log
+
+# BBmap will look in ./ref for the reference index (created by bbmap_prep.pbs)
+# Script tool is  used to force log to end up in the right place
+
+script -c "bbmap.sh \
+	-Xmx42g \
+	in=${fq1} \
+	in2=${fq2} \
+	outu=${out} \
+	threads=$NCPUS \
+	overwrite=t \	
+	usejni=t \
+	unpigz=t" ${log}

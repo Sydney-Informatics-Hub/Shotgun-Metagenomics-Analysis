@@ -32,3 +32,5 @@ grep -v -f  ./Inputs/remove_host_passed ./Inputs/remove_host.inputs-sorted > ./I
 rerun=$(wc -l < ./Inputs/remove_host.inputs-failed )
 
 echo There are $rerun remove host tasks to rerun
+echo These have been written to ./Inputs/remove_host.inputs-failed
+echo Please edit the resource requests and run ./Scripts/remove_host_failed_run_parallel.pbs
