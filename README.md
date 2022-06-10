@@ -9,8 +9,7 @@ These scripts have been written specifically for NCI Gadi HPC, wich runs PBS Pro
 ## Workflow diagram
 
 Some analyses use target (host-removed) reads as input while others use the filtered contigs. 
-
-<img src="https://user-images.githubusercontent.com/7400393/173057977-e9ed291b-eca4-436c-9a96-555cbfb460bb.png" width="50%" height="50%">  
+<img src="https://user-images.githubusercontent.com/7400393/173061647-e27f0637-6f4b-4a52-b070-22451ceb6dfa.png" width="65%" height="65%"> 
 
 ### Part 1. Setup and QC
 Download the repo. You will see directories for `Scripts`, `Fastq`, `Inputs` and `Logs`. You will need to copy or symlink your fastq to `Fastq` and sample configuration file (see below) to `Inputs`. All work scripts are in `Scripts` and all logs (PBS and software logs) are written to `Logs`.
