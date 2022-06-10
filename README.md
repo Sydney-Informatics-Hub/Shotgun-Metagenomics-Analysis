@@ -4,7 +4,13 @@ Analysis of metagenomic shotgun sequences including assembly, speciation, ARG di
 ## Description
 The input for this analysis is paired end next generation sequencing data from metagenomic samples. The workflow is designed to be modular, so that individual modules can be run depending on the nature of the metagenomics project at hand. More modules will be added as we develop them - this repo is a work in progress!
 
-These scripts have been written specifically for NCI Gadi HPC, wich runs PBS Pro, however feel free to use and modify for another system if you are not a Gadi user. 
+These scripts have been written specifically for NCI Gadi HPC, wich runs PBS Pro, however feel free to use and modify for another system if you are not a Gadi user.
+
+## Workflow diagram
+
+Some analyses use target (host-removed) reads as input while others use the filtered contigs. 
+
+<img src="https://user-images.githubusercontent.com/7400393/173057977-e9ed291b-eca4-436c-9a96-555cbfb460bb.png" width="50%" height="50%">  
 
 ### Part 1. Setup and QC
 Download the repo. You will see directories for `Scripts`, `Fastq`, `Inputs` and `Logs`. You will need to copy or symlink your fastq to `Fastq` and sample configuration file (see below) to `Inputs`. All work scripts are in `Scripts` and all logs (PBS and software logs) are written to `Logs`.
