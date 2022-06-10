@@ -29,6 +29,8 @@ fq2=$(ls ${prefix}*R2*.fastq.gz)
 
 prefix=$(basename $prefix)
 
+xmx=$(expr $NCPUS \* 4 - 6)
+
 out=./Target_reads/${prefix}.interleaved.extracted.fq.gz
 log=./Logs/Remove_host/${prefix}.bbmap.log
 
@@ -36,7 +38,7 @@ log=./Logs/Remove_host/${prefix}.bbmap.log
 # Script tool is  used to force log to end up in the right place
 
 script -c "bbmap.sh \
-	-Xmx42g \
+	-Xmx${xmx}g \
 	in=${fq1} \
 	in2=${fq2} \
 	outu=${out} \

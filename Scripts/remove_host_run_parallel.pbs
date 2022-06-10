@@ -22,7 +22,7 @@
 
 #PBS -P <project>
 #PBS -N remhost
-#PBS -l walltime=08:00:00
+#PBS -l walltime=12:00:00
 #PBS -l ncpus=144
 #PBS -l mem=570GB
 #PBS -q normal
@@ -41,7 +41,7 @@ set -e
 SCRIPT=./Scripts/remove_host.sh  
 INPUTS=./Inputs/remove_host.inputs
  
-NCPUS=12 
+NCPUS=24 
 
 mkdir -p Target_reads ./Logs/Remove_host
 

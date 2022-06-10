@@ -140,26 +140,29 @@ View the file `Inputs/remove_host.inputs`. It should be a list of file pair pref
 
 Edit the resource requests in `remove_host_run_parallel.pbs` according to your number of fastq file pairs, data size and host: 
 
-- 12 CPUs and 48 GB RAM per task is recommended for mammalian host
-- Please note that if you alter NCPUs from the pre-set value of 12, you should also edit the -Xmx value in `remove_host.sh`, which is optimally set to 42 GB for mammalian host removal
-- 3 hours walltime is adequate for most samples with 2 x 2 GB fastq files, however occasioanlly, samples may require a longer walltime. These can be collected and resubmitted with `remove_host_find_failed`. 
-- Example: 40 pairs fastq.gz, each file = 2 GB ( 4 GB per fastq pair), mammalian host = 12 CPU per task, total 40 x 12 =  480 CPUs (10 nodes) for 3 hours to run all samples in parallel, or 240 CPUs (5 nodes) at 6 hours walltime. 15 fastq pairs would require 4 nodes (192 CPUs), as 15 x 12 = 180 which is 3.75 nodes, and Gadi requires whole nodes for multi-node jobs.  
+- 12 CPUs and 48 GB RAM per task is the minimum required for mammalian host
+- BBmap scales well, so increasing the CPUs per task will decrease walltime efficiently 
+- The run script defaults to 24 CPU per sample and 12 hours walltime. Most samples with ~ 6 GB input gzipped fastq will complete in less than 6 hours, but the odd sample will die on walltime. These can be collected and resubmitted with `remove_host_find_failed`. 
+- Tasks that fail on walltime should be resubmitted with 48 CPU per sample
+- Example: 40 pairs fastq.gz, each file = 2 GB ( 4 GB per fastq pair), mammalian host = 24 CPU per task, total 40 x 24 =  960 CPUs (20 nodes) for 6 hours to run all samples in parallel, or 480 CPUs (10 nodes) at 12 hours walltime. 15 fastq pairs would require 8 nodes (384 CPUs), as 15 x 24 = 360 which is 7.5 nodes, and Gadi requires whole nodes for multi-node jobs. This method of determining walltime and nodes can be applied to all of the steps which use the "run_parallel" method.  
 
 Then submit:
 ```
 qsub ./Scripts/remove_host_run_parallel.pbs
 ```
 
-Some samples may need additional walltime comapred to others of a similar input size. After this job has completed, run the below script to find failed tasks needing to be resubmitted with longer walltime. In future releases, we will include an option to split and parallelise the remove host step, as this is one of the slowest parts of the workflow.
+Some samples may need additional walltime compared to others of a similar input size. After this job has completed, run the below script to find failed tasks needing to be resubmitted with longer walltime. In future releases, we will include an option to split and parallelise the remove host step, as this is one of the slowest parts of the workflow.
 
 ```
 bash ./Scripts/remove_host_find_failed_tasks.sh
 ```
  
-Update the resource requests in `remove_host_failed_run_parallel.pbs`, ensuring to increase the walltime sufficiently, then submit with `qsub`.
+Update the resource requests in `remove_host_failed_run_parallel.pbs`, ensuring to increase the NCPUs per parallel task to 48, and double the walltime (or more, depending on your data), then submit with `qsub`.
 
 The output of remove host will be interleaved fastq in `./Target_reads` that has the host-derived DNA removed, leaving only putative microbial reads for downstream analysis. 
 
+
+After the completion of this step, you can continue directly to steps 3, 4 or 9. Step 9 is straightforward but has a long run time, so skiping ahead to run this step before contonuing with step 3 can help save analysis time. Step 4 can be run on target reads or filtered assemblies (or both). 
 
 ### Part 3. Metagenome assembly
 
@@ -286,14 +289,14 @@ bash ./Scripts/target_reads_and_assembly_summaries_collate.sh
 
 
 ### Part 4. Speciation and abundance
-This analysis determines the species present within each sample, and their abundance. The analysis can be performed on the target read (host removed) data, or on the filtered contigs from Part 3 Assembly, or both. Abundance estimation with Bracken is usually performed on reads, as per the guidelines for that software. Performing speciation on contigs is useful for Part 5. Antimicrobial resistance genes and Part 6. Insertion sequence elements, as it enables us to assign a species to genes/elements detected on the contigs. 
+This analysis determines the species present within each sample, and their abundance. The analysis can be performed on the target read (host removed) data, or on the filtered contigs from Part 3 Assembly, or both. Abundance estimation with Bracken is usually performed on reads, as per the guidelines for that software. Performing speciation on contigs is useful for Part 6. Antimicrobial resistance genes and Part 9. Insertion sequence elements, as it enables us to assign a species to genes/elements detected on the contigs. 
 
 This part requires kraken2 (tested with v.2.0.8-beta), bracken2 (tested with v.2.6.0) and kronatools (tested with v.2.7.1) (as well as BBtools, used earlier). At the time of writing, **kraken2, bracken2, kronatools and BBtools are not global apps on Gadi** so please self-install and make "module loadable" or update the scripts to use your local installation. 
 
 
 #### 4.1 Build the Kraken2 database
 
-The included script builds the 'standard' database, which includes NCBI taxonomic information and all RefSeq complete genomes for bacteria, archaea, virus, as well as human and some known vectors. Given the memory capacity of Gadi, the use of 'MiniKraken' databases is not recommended. 
+The included script builds the 'standard' database, which includes NCBI taxonomic information and all RefSeq complete genomes for bacteria, archaea, virus, as well as human and some known vectors. Given the memory capacity of Gadi, the use of 'MiniKraken' database is not recommended. 
 
 Since the NCBI RefSeq collection is constantly updated, the build date is included in the database name. 
 
@@ -490,9 +493,72 @@ perl ./Scripts/collate_speciation_or_abundance_with_groups.pl ./Abundance_contig
 ```
 The output will be a per-group collated Bracken2 TSV file within the `Abundance_reads` or `Abundance_contigs` directory.
 
+### Part 5. Functional profiling
+Profile the presence/absence and abundance of microbial pathways in the metagenomes using HUMAnN 2 and metaphlan2. 
+
+HUManN2 has extremely variable run times that cannot be predicted by eg data size, so samples are run via a loop rather than using parallel mode. Working space utilises `jobfs` (up to 300 GB per ~ 6 GB sample during testing) and copies the key output files to `<workdir>/Functional_profiling` before the job ends. Humann2 does not consider pairing information for paired read data, and accepts only one input file, so interleaved or concatenated paired input is required. For samples with >1 fastq file input, the script will concatenate the temp input data using jobfs.  
+
+Humann2 does have a `resume` flag, however this necessitates that temp files are not written to jobfs, which is wiped upon job completion. If you encounter a sample that dies on walltime very much longer than the other samples, it may be worth resubmitting that sample without utilising jobfs (by editing the script to write to workdir rather than jobfs) so that resume can be utilised for potential further failed runs.
 
 
-### Part 5. Antimicrobial resistance genes
+#### 5.1 Software and database setup
+ 
+HUMAnN 2 and metaphlan2 are not global apps on Gadi, so please install these and make them 'module load-able'. 
+
+Then [download the Chocophlan and Uniref90 databases](https://github.com/biobakery/humann/tree/2.9#5-download-the-databases) into the `<path>/humann2/<version>` directory.
+
+First, check that your module load commands work:
+
+```
+module load metaphlan2/2.7.8 
+module load humann2/2.8.2
+```
+
+If these commands do not function, check your install and module setup.
+
+Humann2 expects python3 to be within its `bin` directory. Check, and if not present, run the following from within the humann2 `bin` directory:
+
+```
+ln -s /apps/python3/3.7.4/bin/python3 python3
+```
+
+Run the following commands (update the value of `<path>`), which changes the shebang line from `#!/usr/bin/env python` to `#!/usr/bin/env python3`:
+
+```
+for file in <path>/humann2/2.8.2/bin/*; do sed -i '/python/c\#!/usr/bin/env python3' $file; done
+for file in <path>/metaphlan2/2.7.8/utils/*; do sed -i '/python/c\#!/usr/bin/env python3' $file; done
+```
+
+Run the below to verify that humann2 is working correctly:
+
+```
+humann2 -v
+```
+
+If these commands do not function, check your install and module setup. 
+
+Finally, check that your databases are in the location expected by `functional_profiling.pbs`: 
+
+```
+base=$(which humann2)
+uniref=${base/%bin\/humann2/uniref90_diamond}
+choco=${base/%bin\/humann2/chocophlan}
+du -hs $uniref
+du -hs $choco
+```
+
+#### 5.2 Run functional profiling
+
+Once the modules and databases have been checked and any issues rectified, submit the serial per-sample PBS jobs using the loop script:
+
+``` 
+bash ./Scripts/functional_profiling_run_loop.sh
+```
+
+Output will be in per-sample directories within `./Functional_profiling`, with humann2 and PBS logs written to `./Logs/humann2`.
+
+
+### Part 6. Antimicrobial resistance genes
 
 This step annotates putative antimicrobial resistance genes (ARGs) on to the filtered contigs using Abricate tool with the following databases:
 * [NCBI AMRFinder Plus](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6811410)
@@ -502,7 +568,7 @@ This step annotates putative antimicrobial resistance genes (ARGs) on to the fil
 ARGs are reformatted, reads mapping to the ARGs are counted and normalised, and the final output produced is ARGs with read count and species data formulated as a comprehensive TSV for downstream investigation and bespoke analysis. The final output makes use of a manually curated ARG list (`./workdir/Inputs/curated_ARGs_list.txt`) which is used to assign all genes with multiple synonyms to one unified gene name. 
 
 
-#### 5.1 Annotate ARGs 
+#### 6.1 Annotate ARGs 
 There is no need to create an inputs file as the inputs sample list from the assembly step will be used. Samples with ~ 6 GB input gzipped fastq should complete in less than 20 minutes using 4 CPU per sample. 
 
 You will ned to install abricate and make 'module loadable'. Tested with version 0.9.9.
@@ -516,7 +582,7 @@ qsub ./Scripts/annotate_ARGs_run_parallel.pbs
 Output will be in per-sample directories within `./workdir/ARGs/Abricate`. Each sample will have a `.tab` file containing genes identified from the NCBI, Resfinder and CARD databases. The following steps will manipulate these raw outputs.
 
  
-#### 5.2 Reformat ARGs
+#### 6.2 Reformat ARGs
 
 This step combines the output of the 3 databases into one file per sample, removing any exact duplicate gene entries, and one file per cohort. This cohort-level file should be used to create a curated gene list at the next step.  
 
@@ -527,7 +593,7 @@ bash reformat_ARGs_remove_dups.sh
 The output is one additional file in each of the sample directories within `./workdir/ARGs/Abricate`, named `<sample>.ARGs.txt`, as well as a coort-level file `./workdir/ARGs/Abricate/<cohort>.ARGs.txt` that should be used to curate a gene list (see 5.3).  
 
 
-#### 5.3 Curated ARG list
+#### 6.3 Curated ARG list
 
 This is a mandatory input file consisting of at least 4 tab-delimited columns. The mandatory columns are, in order:
 
@@ -546,11 +612,11 @@ A curated list generated from processing 572 samples has been provided with this
 Please ensure that the column orders match the above described requirement to ensure that all gene synonyms are incorporated. Loss of a column = loss of gene counts!
 
 
-#### 5.4 Count reads mapping to ARGs
+#### 6.4 Count reads mapping to ARGs
 
 Counting the number of reads mapping to the ARGs provides insight into the abundance of ARGs in the microbiome.  
 
-##### 5.4.1 Mark duplicate reads in the previously created BAM files
+##### 6.4.1 Mark duplicate reads in the previously created BAM files
 
 Mark dulicate reads in the BAM files created during step 3.2, to improve accuracy of ARG read counting. 
 
@@ -567,7 +633,7 @@ qsub ./Scripts/markdups_run_parallel.pbs
 Output will be a duplicate-marked BAM in the previously created `./workdir/Align_to_assembly` per-sample directories.  
 
 
-##### 5.4.2 Convert Abricate ARG output to GFF
+##### 6.4.2 Convert Abricate ARG output to GFF
 
 Convert abricate 'tab' output format to gene feature format (GFF) for compatibility with htseq-count. During the conversion to GFF, the curated ARG list is read, so that the GFF contains only one entry per gene with multiple synonyms per contig location. Ie if a gene is annotated at multiple locations in the assembly, each discrete location will be kept, assigning the chosen gene name to all discrete location entries. If a gene is annotated to one location of the assembly with multiple different gene symbols, only one entry will be kept, using the gene name specified as default in the curated list. 
 
@@ -578,7 +644,7 @@ perl ./Scripts/convert_ARG_to_gff.pl
 The output will be per-sample GFF files in `./workdir/ARGs/Curated_GFF`, with only the curated entries as described above present in the GFF files. 
 
 
-##### 5.4.3 Count reads mapping to ARGs with HTseq count
+##### 6.4.3 Count reads mapping to ARGs with HTseq count
 
 This step uses HTSeq-count to count reads that map to the putative curared ARG locations. Before running, you will need to install HTSeq-count:
 
@@ -605,9 +671,9 @@ qsub ./Scripts/ARG_read_count_run_parallel.pbs
 The output will be per-sample counts files in ./ARGs/ARG_read_counts.
 
 
-##### 5.4.4 Normalise
+##### 6.4.4 Normalise
 
-##### 5.4.4.1 Reformat the ARG read count data for easy parsing 
+##### 6.4.4.1 Reformat the ARG read count data for easy parsing 
 
 This will convert the HTseq-count output into a 3-column text file per sample (ID, gene length, raw count), with the ID field containing the gene name, contig ID, start and end positions concatenated with a colon delimiter. 
 
@@ -619,7 +685,7 @@ bash reformat_ARG_read_counts.sh
 
 Output files are `./ARGs/ARG_read_counts/<sample>.curated_ARGs.reformat.counts` and are used as input to the normalisation step. 
 
-##### 5.4.4.2
+##### 6.4.4.2
 
 Normalise the ARG read count data with transcript per million (TPM) and reads per kilobase million (RPKM).
 
@@ -637,7 +703,7 @@ perl collate_normalised_ARG_read_counts_by_groups.pl
 
 Output will be a separate normalised counts file for every group, `./ARGs/ARG_read_counts/<cohort>_<group>.curated_ARGs.counts.norm`.
 
-##### 5.4.5 Assign species to normalised ARG data
+##### 6.4.5 Assign species to normalised ARG data
 
 For every curated ARG, find the contig that that gene resides on and print out new TSV with gene, species, contig, number of reads mapping to that contig as well as normalised count data. 
  
@@ -656,7 +722,7 @@ perl reformat_norm_ARG_with_species_by_groups.pl
 Output will be a separate TSV file for every group, `./ARGs/Curated_ARGs/<cohort>_<group>.curated_ARGs.txt`.
 
 
-##### 5.4.6 Descriptive statistics  
+##### 6.4.6 Descriptive statistics  
 
 Print descriptive stats of curated-ARG-containing contigs. 
 
@@ -665,7 +731,7 @@ perl ARG_contig_length_stats.pl
 ```
 Output is a single file for all samples in cohort, containing the count, mean, standard deviation, min and max lengths for all contigs and for ARG-containing contigs, `./ARGs/Curated_ARGs/<cohort>_allSamples_curated_ARGs_contig_length_stats.txt`. 
 
-##### 5.4.7 Filter ARGs by coverage and identity
+##### 6.4.7 Filter ARGs by coverage and identity
 
 For each curarted ARG, filter by >=70% coverage and >=80% identity. To change these thresholds, please edit the variable assignments for `$cover` and `$identity` within the below perl script.
 
@@ -689,14 +755,30 @@ perl filter_ARGs_by_coverage_and_identity_by_groups.pl
 Output will be a separate R-compatible dataframe for TPM normalised and raw counts per group, also within the `./ARGs/Curated_ARGs` directory. 
 
 
-### Part 6. Gene prediction
+### Part 7. Gene prediction
+
+#### 7.1 Predict coding sequences
+
+Predict coding sequences within the filtered contigs using Prodigal
+
+#### 7.2 Annotate genes
+
+Annotate gene names to coding sequences using NCBI NR database and Diamond
 
 
-### Part 7. Resistome calculation
+### Part 8. Resistome calculation
+
+#### 8.1 Correspond ARGs to gene annotations
+
+#### 8.2 Calculate resistome
+
+Calculate resistome
 
 
-### Part 8. Insertion seqeunce (IS) elements
+### Part 9. Insertion seqeunce (IS) elements
 This step annotates putative insertion sequence elements on the filtered assemblies using [Prokka annotation tool](https://github.com/tseemann/prokka) and [ISfinder sequence database](https://github.com/thanhleviet/ISfinder-sequences).
+
+#### 9.1 Download the IS database
 
 First, download the ISfinder database to your workdir:
 ```
@@ -706,6 +788,8 @@ git clone https://github.com/thanhleviet/ISfinder-sequences.git
 At the time of writing, Prokka is not a global app on Gadi so please install and test. Run `prokka --depends` to ensure you have all dependencies. During testing, we found two required perl modules not globally installed (XML::Simple and bioperl) so if you are using a self-install Prokka app, ensure to also install these Perl modules and add them to the path in the '.base' module load file. 
 
 You may also need to manually update the `tbl2asn` file, which NCBI has set to expire. See [known issue](https://github.com/tseemann/prokka/issues/139) for discussion and solution. 
+
+#### 9.2 Annotate IS on filtered contigs 
 
 Prokka multithreads but the CPU efficiency is low when all samples are run in a parallel job (7-13% during testing at 12-24 CPU per task). Walltimes can be unpredictably long - up to 11 hours for ~ 6 GB input fastq.gz samples. This is because Prokka was not designed to annotate large metagenomes. To increase overall efficiency, a serial submission loop is utilised rather than the parallel mode.  
 
@@ -733,20 +817,7 @@ perl collate_IS_annotation_with_species_by_groups.pl
 
 Output will be TSV files in `./Insertion_sequences/Filtered_IS_with_species`, per sample, per cohort, and per group if relevant. 
 
-### Part 9. Functional profiling
-Profile the presence/absence and abundance of microbial pathways in the metagenomes using HUMAnN 2 and metaphlan2. These are not global apps on Gadi, so please install and also [download the Chocophlan and Uniref90 databases](https://github.com/biobakery/humann/tree/2.9#5-download-the-databases).
 
-Humann2 has extremely variable run times that cannot be predicted by eg data size, so samples are run via a loop rather than using parallel mode. Working space utilises `jobfs` (up to 300 GB per ~ 6 GB sample during testing) and copies the key output files to `<workdir>/Functional_profiling` before the job ends. Humann2 does not consider pairing information for paired read data, and accepts only one input file, so interleaved or concatenated paired input is required. For samples with >1 fastq file input, the script will concatenate the temp input data using jobfs.  
-
-Humann2 does have a `resume` flag, however this necessitates that temp files are not written to jobfs, which is wiped upon job completion. If you encounter a sample that dies on walltime very much longer than the other samples, it may be worth resubmitting that sample without utilising jobfs (by editing the script to write to workdir rather than jobfs) so that resume can be utilised for potential further failed runs. 
-
-After checking that your module load commands work and that the path variables for the required Uniref and Chocophlan databases are correct for your installation, submit the serial per-sample PBS jobs using the loop script:
-
-``` 
-bash functional_profiling_run_loop.sh
-```
-
-Output will be in per-sample directories within `./Functional_profiling`, with humann2 and PBS logs written to `./Logs/humann2`.
 
 
 ### Software used
