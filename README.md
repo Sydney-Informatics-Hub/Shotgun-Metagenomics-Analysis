@@ -8,7 +8,7 @@ These scripts have been written specifically for NCI Gadi HPC, wich runs PBS Pro
 
 ## Workflow diagram
 
-Some analyses use target (host-removed) reads as input while others use the filtered contigs. 
+Some analyses use target (host-removed) reads as input while others use the filtered metagenome assemblies. 
 <img src="https://user-images.githubusercontent.com/7400393/173061647-e27f0637-6f4b-4a52-b070-22451ceb6dfa.png" width="65%" height="65%"> 
 
 ### Part 1. Setup and QC
@@ -40,9 +40,9 @@ Please **ensure your sample IDs are unique within column 1 and unique within col
 The number of rows in the config file should be the number of samples plus 1 (for the header, which should start with a `#` character). Ie, even if your samples have multiple input fastq files, you still only need one row per sample, as the script will identify all fastq belonging to each sample based on the ID in column 1. 
 
 
-#### 1.3 General setup
+#### 1.3 General setup of scripts
 
-All scripts will need to be updated to reflect your NCI project code at the `-P <project>` and `-l <storage>` directive. Running the script `create_project.sh` and following the prompts will complete some of the setup for you. 
+All scripts will need to be updated to reflect your NCI project code at the `-P <project>` and `-l <storage>` directive. Running the script `setup_scripts.sh` and following the prompts will complete some of the setup for you. 
 
 Note that you will need to manually edit the PBS resource requests for each PBS script depending on the size of your input data; guidelines/example resources will be given at each step to help you do this. As the `sed` commands within this script operate on `.sh` files, this setup script has been intentionally named `.bash`.
 
@@ -51,7 +51,7 @@ Remember to submit all scripts from your `workdir`.
 Run the below command and follow the prompts:
 
 ```
-bash ./Scripts/create_project.sh
+bash ./Scripts/setup_scripts.sh
 ```
 
 For jobs that execute in parallel, there are 3 scripts: one to make the 'inputs' file listing the details of each parallel task, one job execution shell script that is run over each task in parallel, and one PBS launcher script. The process is to submit the make input script, check it to make sure your job details are correct, edit the resources directives depending on the number and size of your parallel tasks, then submit the PBS launcher script with `qsub`. 
@@ -113,7 +113,7 @@ If you have metagenomic data extracted from a host (eg tissue, saliva), you will
 
 
 #### 2.1 Prepare the reference
-If you ran `create_project.sh` you would have been asked for the full path to your host reference genome. This will add the reference to the `bbmap_prep.pbs` script below. If you did not run `create_project.sh` you will need to manually add the full path to your host reference fasta sequence in the below BBtools scripts.
+If you ran `setup_scripts.sh` you would have been asked for the full path to your host reference genome. This will add the reference to the `bbmap_prep.pbs` script below. If you did not run `create_project.sh` you will need to manually add the full path to your host reference fasta sequence in the below BBtools scripts.
 
 This step repeat-masks the reference and creates the required BBtools index. If you are unsure whether your genome is already repeat-masked, you can run the script as-is, as there is no problem caused by running bbmask over an already-masked reference.
 
@@ -298,18 +298,39 @@ This analysis determines the species present within each sample, and their abund
 
 This part requires kraken2 (tested with v.2.0.8-beta), bracken2 (tested with v.2.6.0) and kronatools (tested with v.2.7.1) (as well as BBtools, used earlier). At the time of writing, **kraken2, bracken2, kronatools and BBtools are not global apps on Gadi** so please self-install and make "module loadable" or update the scripts to use your local installation. 
 
+Once kraken2 is installed, edit the kraken2 script `rsync_from_ncbi.pl` updating 'ftp' to 'https' (from  https://github.com/DerrickWood/kraken2/issues/508):
+
+Change this line:
+```
+if (! ($full_path =~ s#^ftp://${qm_server}${qm_server_path}/##)) {
+```
+To this:
+```
+if (! ($full_path =~ s#^https://${qm_server}${qm_server_path}/##)) {
+```
+
 
 #### 4.1 Build the Kraken2 database
 
-The included script builds the 'standard' database, which includes NCBI taxonomic information and all RefSeq complete genomes for bacteria, archaea, virus, as well as human and some known vectors. Given the memory capacity of Gadi, the use of 'MiniKraken' database is not recommended. 
+The included scripts build the 'standard' database, which includes NCBI taxonomic information and all RefSeq complete genomes for bacteria, archaea, virus, as well as human and some known vectors (Univec_core). Given the memory capacity of Gadi, the use of 'MiniKraken' database is not recommended. 
 
-Since the NCBI RefSeq collection is constantly updated, the build date is included in the database name. 
+Since the NCBI RefSeq collection is constantly updated, the build date is included in the database name. The database will be created in `./kraken2_standard_db_build_<date>`. Please ensure you have ample disk space (~ 150 GB required at the time of writing). Change the path to specify a different database location if desired. 
 
-The database will be created in `./kraken2_standard_db_build_<date>`. Please ensure you have ample disk space (~ 150 GB required at the time of writing). Change the path to specify a different database location if desired.   
+The script `kraken2_run_download.sh` launches 2 separate jobs on Gadi's `copyq` to download the required databases. The shortcut kraken2 command to download and build the standard database cannot be used on Gadi, as the walltime limit of 10 hours and CPU limit of 1 CPU is not sufficient to both download and build. By separating the download from the buld steps, the build process can make use of multiple threads and thus save time creating the kraken2 database.  
+
+If you would like to use additional/alternate RefSeq databases (eg if your host is non-human) you can add the database name to the space-delimited variable list within the script `kraken2_run_download.sh`, and increase the walltime (as a guide, human RefSeq downlodas in ~ 11 minutes and viral in ~ 17 minutes):
+```
+-v library="archaea viral human UniVec_Core"  
+```
 
 Ensure your `module load kraken2` command works before running the below script: 
 ```
-qsub ./Scripts/kraken2_build_db.pbs
+bash ./Scripts/kraken2_run_download.sh
+```
+
+Once all libaries are successfully downloaded, submit the build job:
+```
+qsub ./Scripts/kraken2_build.pbs
 ```
 
 

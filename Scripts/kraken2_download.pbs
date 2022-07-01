@@ -1,0 +1,56 @@
+#!/bin/bash
+
+#########################################################
+#
+# Platform: NCI Gadi HPC
+# Description: see https://github.com/Sydney-Informatics-Hub/Shotgun-Metagenomics-Analysis
+#
+# Author/s: Cali Willet
+# cali.willet@sydney.edu.au
+#
+# If you use this script towards a publication, please acknowledge the
+# Sydney Informatics Hub (or co-authorship, where appropriate).
+#
+# Suggested acknowledgement:
+# The authors acknowledge the scientific and technical assistance
+# <or e.g. bioinformatics assistance of <PERSON>> of Sydney Informatics
+# Hub and resources and services from the National Computational
+# Infrastructure (NCI), which is supported by the Australian Government
+# with access facilitated by the University of Sydney.
+#
+#########################################################
+
+#PBS -P <project>
+#PBS -l ncpus=1
+#PBS -q copyq
+#PBS -W umask=022
+#PBS -l wd
+#PBS -l storage=scratch/<project>
+
+module load kraken2/2.0.8-beta
+
+printf "Using database name ${dbname}\n"
+echo
+
+if [ $library == bacterial ]
+then 
+	dt=$(date)
+	printf "Starting NCBI download for ${library} library at ${dt}:\n"
+	kraken2-build --download-library $library --db $dbname	
+	echo		
+else 
+	dt=$(date)
+	printf "Starting NCBI taxonomy download at ${dt}\n"
+	kraken2-build --download-taxonomy --db $dbname	
+	echo
+	
+	libs=($library)
+	for ((i = 0; i < ${#libs[@]}; i++ ))
+	do
+		library=${libs[$i]}
+		dt=$(date)
+		printf "Starting NCBI download for ${library} library at ${dt}:\n"
+		kraken2-build --download-library $library --db $dbname	
+		echo
+	done
+fi

@@ -21,30 +21,24 @@
 #########################################################
 
 #PBS -P <project>
-#PBS -N kdb
-#PBS -l walltime=02:00:00
+#PBS -N k2-db-build
+#PBS -l walltime=04:00:00
 #PBS -l ncpus=48
 #PBS -l mem=190GB
 #PBS -q normal
 #PBS -W umask=022
 #PBS -l wd
-#PBS -o ./Logs/kraken2_build_db.o
-#PBS -e ./Logs/kraken2_build_db.e
+#PBS -o ./Logs/kraken2_db_build.o
+#PBS -e ./Logs/kraken2_db_build.e
 #PBS -l storage=scratch/<project>
 
 module load kraken2/2.0.8-beta
+unset OMP_NUM_THREADS #from github.com/DerrickWood/kraken2/issues/348#issuecomment-743106099
 
-dt=`date '+%d-%m-%Y'`
-
-DB_NAME=kraken2_standard_db_build_${dt}
+echo Building kraken2 database $dbname
 
 kraken2-build \
-	--standard \
+	--build \
 	--threads $NCPUS \
-	--db $DB_NAME
-
-
-
-
-
+	--db $dbname
 

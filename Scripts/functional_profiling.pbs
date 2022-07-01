@@ -33,6 +33,7 @@
 
 module load metaphlan2/2.7.8 
 module load humann2/2.8.2
+module load python3/3.7.4
 
 base=$(which humann2)
 uniref=${base/%bin\/humann2/uniref90_diamond}
