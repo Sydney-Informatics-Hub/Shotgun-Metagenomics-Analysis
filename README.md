@@ -316,9 +316,9 @@ The included scripts build the 'standard' database, which includes NCBI taxonomi
 
 Since the NCBI RefSeq collection is constantly updated, the build date is included in the database name. The database will be created in `./kraken2_standard_db_build_<date>`. Please ensure you have ample disk space (~ 150 GB required at the time of writing). Change the path to specify a different database location if desired. 
 
-The script `kraken2_run_download.sh` launches 2 separate jobs on Gadi's `copyq` to download the required databases. The shortcut kraken2 command to download and build the standard database cannot be used on Gadi, as the walltime limit of 10 hours and CPU limit of 1 CPU is not sufficient to both download and build. By separating the download from the buld steps, the build process can make use of multiple threads and thus save time creating the kraken2 database.  
+The script `kraken2_run_download.sh` launches 2 separate jobs on Gadi's `copyq` to download the required databases. The shortcut kraken2 command to download and build the standard database cannot be used on Gadi, as the walltime limit of 10 hours and CPU limit of 1 CPU is not sufficient to both download and build. By separating the download from the build steps, the build process can make use of multiple threads and thus save time creating the kraken2 database.  
 
-If you would like to use additional/alternate RefSeq databases (eg if your host is non-human) you can add the database name to the space-delimited variable list within the script `kraken2_run_download.sh`, and increase the walltime (as a guide, human RefSeq downlodas in ~ 11 minutes and viral in ~ 17 minutes):
+If you would like to use additional/alternate RefSeq databases (eg if your host is non-human) you can add the database name to the space-delimited variable list within the script `kraken2_run_download.sh`, and increase the walltime (as a guide, human RefSeq downloads in ~ 11 minutes and viral in ~ 17 minutes):
 ```
 -v library="archaea viral human UniVec_Core"  
 ```
@@ -328,7 +328,7 @@ Ensure your `module load kraken2` command works before running the below script:
 bash ./Scripts/kraken2_run_download.sh
 ```
 
-Once all libaries are successfully downloaded, submit the build job:
+Once all libraries are successfully downloaded, submit the build job:
 ```
 qsub ./Scripts/kraken2_build.pbs
 ```
@@ -355,10 +355,19 @@ bash ./Scripts/deinterleave_target_reads_make_input.sh
 
 The following script uses BBtools to reformat the interleaved reads to paired and pigz to gzip the output. The reformat step does not multithread but the pigz compression step does, and is the slower part. A sample with 2 pairs of fastq totalling ~ 6 GB takes ~12 minutes and 16 GB RAM on 4 'normal' CPUs and ~ 9 minutes and 18 GB  RAM on 6 CPUs. The output will be sent to `Target_reads_paired`. For samples with multiple lanes of fastq, they retain multiple lanes of fastq (ie, we do not concatenate them). Kraken2 can accept multiple pairs of fastq as input by listing them concurrently. All fastq files containing the ID used in column 1 of the sample config file will be collected into a list as total input for that sample, so if you haven't done so by now, please check that these IDs are unique among the samples and among the fastq file names. 
 
+Ensure that the make input and .sh run script can find your fastq file names by checking the glob patterns.
+
 Edit the resource directives, then submit:
 ```
 qsub ./Scripts/deinterleave_target_reads_run_parallel.pbs
 ```
+
+Once the job has completed, ensure that your `Target_reads` and `Target_reads_paired` directories are of similar size with `du -hs` command (although the paired files will use slightly less disk), and ensure that the number of fastq files within `Target_reads_paired` is exactly twice the number within `Target_reads`. Any failures will be reported within `./Logs/deinterleave.e`. It can be useful to check the PBS error log with:
+```
+grep "exited with status 0" Logs/deinterleave.e | wc -l
+```
+
+The number reported should equal the number of parallel tasks to the job. This method can be used as one method of checking all parallel jobs from this repo. 
 
 There is no need to make a new inputs file for kraken2, as the same size-sorted list used in the above deinterlave step will be used.  
 

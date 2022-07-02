@@ -22,12 +22,12 @@
 
 set -e
 
-sample=`echo $1 | cut -d ',' -f 1`
+sample=`echo $1 | cut -d ' ' -f 1`
 
-database=./kraken_standard_db_build_<date> # UPDATE THIS PATH TO REFLECT YOUR DATABASE
+database=./kraken2_standard_db_build_25-06-2022 # UPDATE THIS PATH TO REFLECT YOUR DATABASE
 
 indir=./Target_reads_paired
-fqpairs=$(ls ${indir}/${sample}_*_R1_paired.extracted.fq.gz)
+fqpairs=$(ls ${indir}/${sample}*_R1_paired.extracted.fq.gz)
 fqpairs=($fqpairs)
 
 fq_list=''
