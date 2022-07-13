@@ -1,0 +1,337 @@
+---
+title: "Example: Oral Resistome"
+author: "Dr. Henry Lydecker"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output:
+  pdf_document:
+    toc: yes
+    toc_depth: '3'
+  html_document:
+    toc: yes
+    toc_depth: 3
+    toc_float: yes
+    code_folding: hide
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning=FALSE, message = FALSE)
+```
+
+## Usage
+
+This R markdown shows several examples for how to visualise and plot the data produced through shotgun metagenomics sequencing.
+
+This example is code that was used to generate figures for the publication:
+
+Smitha et al 2022. The development of the oral resistome during the first decade of life. In Press.
+
+```{r dependencies}
+# Environment
+library(ggplot2)
+library(ggsci)
+library(here)
+library(hrbrthemes)
+library(janitor)
+library(phyloseq)
+# devtools::install_github("gdmcdonald/plotVenn")
+library(plotVenn)
+library(ggVennDiagram)
+library(ggpubr)
+library(gridExtra)
+library(readxl)
+library(RColorBrewer)
+library(tidyverse)
+library(usydColours)
+library(scales)
+library(vegan)
+
+# Set a ggplot theme. We will first use theme_classic() because it IS a classic.
+theme_set(theme_classic())
+```
+
+## Figure 1: Combined Figure of ARG class abundance and other information
+
+### Data Import and Prep
+
+1. Read raw data and mapping file
+2. Transpose raw data, merge with mapping file
+3. Pivot, summarise, and clean data
+
+I added up the total abundance for each ARG, for each time point.
+I then used this to assign the least abundant ARGs to the "Other" category.
+For now, these include:
+
+- Aminoglycoside/Fluoroquinolone
+- Rifampicin
+- Mupirocin
+- MDR
+- Phenicol
+
+
+```{r figure 1 data import, message=FALSE}
+# read in mapping data
+fig_1_mapping <- read_csv(here("100_data_raw_round2","Fig_1_summary","All_samp_mapping_file.csv"))
+# Original raw data 
+# fig_1_data <- read_csv(here("100_data_raw_round2","Fig_1_summary","noMDEP_TPM_by Arg.csv"))
+# read in raw data
+fig_1_data <- read_excel(here("100_data_raw_round2","Fig_1_summary","ARG_AMR_TPM_noMDEP_CA_271021_final.xlsx"))
+
+fig_1_mapping_2 <- read_csv(here("100_data_raw_round2","All_samp_mapping_file.csv"))
+
+# We will then create several different dataframes to use for plotting
+# transpose the dataset so we have columns for ARGs and rows for samples
+fig_1_clean <- fig_1_data %>% 
+  pivot_longer(cols=c(3:536),names_to = "Sample_ID", values_to = "counts") %>% 
+  pivot_wider(id_cols = "Sample_ID",names_from = c("AMR_Class"), values_from = "counts",values_fn = sum) %>% left_join(fig_1_mapping_2,by = "Sample_ID") %>% 
+  mutate(Timepoint = as.factor(Timepoint))
+
+# pivot longer so there is an ARG and a count column.
+fig_1_long <- fig_1_clean %>%
+  pivot_longer(cols=c(2:25), names_to = "ARG", values_to = "count") %>% 
+  mutate(relative_abundance = count /TPM_all) %>% 
+  mutate(Age_months = Age * 12)
+
+# summarise by ARG so that we can decide what to exclude
+fig_1_args <- fig_1_long %>% group_by(ARG, Timepoint) %>% 
+  summarise(average_count = sum(count)) %>% 
+  pivot_wider(id_cols = ARG, names_from = Timepoint,values_from = average_count)
+
+# create a new, cleaned long ARG/count dataset
+# for now, we are excluding ARGs that have abundance less than 6 digits in all time points
+fig_1_long_clean <- fig_1_long %>% 
+  mutate(ARG = if_else(ARG == "Fluoroquinolone" | ARG == "Beta-Lactam" | ARG == "Macrolide" | ARG == "Tetracycline" | ARG == "Macrolide/Lincosamide", ARG, "Other"))
+
+knitr::kable(fig_1_args)
+```
+
+### Plotting
+
+I created the figure by first generating five different ggplot objects, then stacking them together using ggarrange().
+
+```{r figure 1 plot}
+# Major panel with ARG class % by age
+arg_class <- fig_1_long_clean %>%
+  # Filter out ARGs with a count below a set threshold
+  # dplyr::filter((count / TPM_all) > 0.01) %>%
+  group_by(Age) %>%
+  # arrange(Sample_ID,count,ARG) %>%
+  ggplot(aes(x = Age_months, y = relative_abundance, fill = ARG)) +
+  geom_col(position = "fill", width = 1) +
+  scale_y_continuous(labels = scales::percent) +
+  facet_grid( ~ Timepoint,scales="free_x") +
+  theme(
+    # axis.title.x = element_blank(),
+    # axis.text.x = element_blank(),
+    # axis.ticks.x = element_blank()
+  ) +
+  scale_fill_manual(values = usyd_palette("extended")) +
+  labs(y = "Relative Abundance (TPM %)",
+       x = "Age (months)",
+       fill = "AMR Gene Class")+
+  guides(col = guide_legend(nrow = 8))
+
+# TODO: Refactor this into a function so we don't duplicate code.
+# TODO: Maybe pick hex codes for fill that don't overlap with the major panel?
+# Resistance Mechanism n_Mech_noMDEP
+arg_richness <- fig_1_long_clean %>%
+  ggplot(aes(x = Age, y = n_Mech_noMDEP, fill = "Resistance mechanism")) +
+  geom_bar(stat="summary",fun.y = "mean")+
+  scale_fill_manual(values = "#F9A134") +
+  facet_grid( ~ Timepoint, scales = "free_x") +
+  ylim(0,6)+
+  theme(
+    legend.justification = "left",
+        strip.background = element_blank(),
+    strip.text.x = element_blank(),
+    legend.title = element_blank(),
+    axis.title.y = element_blank(),
+    axis.title.x = element_blank(),
+    axis.text.x = element_blank(),
+    axis.ticks.x = element_blank()
+  )
+
+# Host %
+host_percent <- fig_1_long_clean %>%
+  mutate(Host_percent = Host_percent / 100) %>% 
+  ggplot(aes(x = Age_months, y = Host_percent, fill = "Host %")) +
+  geom_bar(stat="summary",fun.y = "mean")+
+  scale_fill_manual(values = "#F79C72") +
+  facet_grid( ~ Timepoint, scales = "free_x") +
+  scale_y_continuous(labels = scales::percent) +
+  theme(
+    legend.justification = "left",
+      strip.background = element_blank(),
+  strip.text.x = element_blank(),
+    legend.title = element_blank(),
+    axis.title.y = element_blank(),
+    axis.title.x = element_blank(),
+    axis.text.x = element_blank(),
+    axis.ticks.x = element_blank()
+  )
+
+# IS richness
+is_richness <- fig_1_long_clean %>%
+  ggplot(aes(x = Age_months, y = IS_rich, fill = "IS richness")) +
+  geom_bar(stat="summary",fun.y = "mean")+
+  scale_fill_manual(values = "#D6519D") +
+  facet_grid( ~ Timepoint, scales = "free_x") +
+  ylim(0,1500)+
+  theme(
+    legend.justification = "left",
+      strip.background = element_blank(),
+  strip.text.x = element_blank(),
+    legend.title = element_blank(),
+    axis.title.y = element_blank(),
+    axis.title.x = element_blank(),
+    axis.text.x = element_blank(),
+    axis.ticks.x = element_blank()
+  )
+
+# TPM_noMDEP
+tpm_nomdep <- fig_1_long_clean %>%
+  ggplot(aes(x = Age_months, y = TPM_noMDEP, fill = "Relative Abundance (TPM)")) +
+  geom_bar(stat="summary",fun.y = "mean")+
+  scale_fill_manual(values = "#7F3F98") +
+  facet_grid( ~ Timepoint, scales = "free") +
+  scale_y_continuous(labels = comma)+
+  theme(
+    legend.justification = "left",
+      strip.background = element_blank(),
+  strip.text.x = element_blank(),
+    legend.title = element_blank(),
+    axis.title.y = element_blank(),
+    axis.title.x = element_blank(),
+    axis.text.x = element_blank(),
+    axis.ticks.x = element_blank()
+  )
+
+# Put all the panels together one on top of each other.
+# We will make the minor panels combined together take up as much space as the major panel.
+p <- ggarrange(
+  arg_class,
+  arg_richness,
+  host_percent,
+  is_richness,
+  tpm_nomdep,
+  heights = c(4,1,1,1,1),
+  ncol = 1,
+  nrow = 5,
+  align = "v",
+  legend = "right"
+)
+
+p
+ggsave(filename = here("500_figures","Figure1.pdf"),plot = p,device = "pdf")
+# Another way to do this
+# cowplot::plot_grid(arg_class,
+#   arg_richness,
+#   host_percent,
+#   is_richness,
+#   tpm_nomdep,
+#   ncol = 1,
+#   rel_heights = c(4,1,1,1,1),
+#   align = "v"
+#   )
+```
+
+### Additional data exploration
+
+To aid possible sanity checking, here's a series of box plots for each time point, showing average abundance on a log10 scale for each ARG.
+
+```{r figure 1 plot part 2, warning=FALSE}
+fig_1_clean %>%
+  pivot_longer(cols = c(2:25),
+               names_to = "ARG",
+               values_to = "count") %>%
+  group_by(ARG, Timepoint, Age) %>%
+  ggplot(aes(
+    x = Timepoint,
+    y = count,
+    fill = Timepoint
+  )) +
+  geom_boxplot(alpha = 0.9) +
+  scale_y_log10() +
+  scale_fill_manual(values = usyd_palette("extended")) +
+  facet_wrap( ~ ARG) +
+  labs(x = "Timepoint",
+       y = "Count (log10)") +
+  theme(legend.position = "none")
+```
+
+
+## Figure 2: Venn diagram of ARGs by time point
+
+Venn diagrams and/or Euler plots are still a huge pain to make in R.
+
+```{r figure 2 data}
+fig_2_data <- read_csv(here("100_data_raw_round2","Fig_2_venn","noMDEP_TPM_by Arg.csv"))
+
+# Prep data for plotVenn
+fig_2_wide <- fig_2_data %>% 
+  mutate(TPM = if_else(TPM > 0, TRUE, FALSE)) %>% 
+  pivot_wider(id_cols = ARG,names_from = Timepoint, values_from = TPM) %>% 
+  rename("Timepoint 1"=`1`,"Timepoint 2"=`2`,"Timepoint 3"=`3`) %>% 
+  dplyr::select(-ARG) %>% 
+  filter(`Timepoint 1` == TRUE | `Timepoint 2` == TRUE | `Timepoint 3` == TRUE)
+  
+```
+
+
+```{r}
+
+p <- plotVenn::plotVenn(fig_2_wide,not_in_set_name = "Not Present")
+
+p
+```
+
+
+
+## Figure 3: Alpha diversity of resistome and bacteriome
+
+This figure is fairly straightforward.
+
+```{r figure 3 data import}
+fig_3_data <- read_csv(here("100_data_raw_round2","Fig_3_a_div","adiv_ARG_meta_map_CA_271021.csv"))
+```
+
+```{r figure 3 plot}
+p <- fig_3_data %>%
+  mutate(Microbiome = recode_factor(Microbiome, Bacteriome = "Microbiome")) %>% 
+  ggplot(aes(x = Age_years, y = Shannon, colour = Microbiome, fill = Microbiome)) +
+  geom_point(alpha=0.75) +
+  geom_smooth(color = "black") +
+  labs(
+    y = "Biodiversity (Shannon)",
+    x = "Age (years)",
+    fill = "",
+    color = ""
+  ) + 
+  scale_color_manual(values=usyd_palette("extended")) + 
+  scale_fill_manual(values=usyd_palette("extended"))
+
+p
+# ggsave(filename = here("500_figures","Figure3.pdf"),plot = p,device = "pdf")
+```
+
+## Figure 4: National prescribing patterns by ARGs
+
+This is also a fairly straightforward figure.
+
+
+```{r figure 4 data import}
+fig_4_data <- read_csv(here("100_data_raw_round2","Fig_4_perscribing","DDD_Drug_class.csv"))
+```
+
+
+```{r figure 4 plot v1}
+fig_4_data %>% 
+  ggplot(aes(x = DDD, y = `Mean TPM`, fill = `Drug Class`))+
+  geom_boxplot(alpha=0.9)+
+  scale_y_log10()+
+  scale_fill_manual(values=usyd_palette("extended"))+
+  labs(
+    x = "Defined daily dose per 1000 individuals",
+    y = "Mean TPM (log10 scale)"
+  )
+```
+
