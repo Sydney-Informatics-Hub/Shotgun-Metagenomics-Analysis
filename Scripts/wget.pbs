@@ -1,0 +1,43 @@
+#!/bin/bash
+
+# Submit this script multiple times automatically
+# with transfer_multiple.pbs
+# This is a Gadi data transfer script
+
+set -e
+
+#########################################################
+#
+# Platform: NCI Gadi HPC
+#
+# Author: Tracy Chew
+# tracy.chew@sydney.edu.au
+#
+# If you use this script towards a publication, please acknowledge the
+# Sydney Informatics Hub (or co-authorship, where appropriate).
+#
+# Suggested acknowledgement:
+# The authors acknowledge the scientific and technical assistance
+# <or e.g. bioinformatics assistance of <PERSON>> of Sydney Informatics
+# Hub and resources and services from the National Computational
+# Infrastructure (NCI), which is supported by the Australian Government
+# with access facilitated by the University of Sydney.
+#
+#########################################################
+
+#PBS -P <project>
+#PBS -l walltime=10:00:00
+#PBS -l ncpus=1
+#PBS -l mem=8GB
+#PBS -W umask=022
+#PBS -q copyq
+#PBS -l wd
+#PBS -lstorage=gdata/<project>
+#PBS -N wget
+
+wget https://ftp.ncbi.nlm.nih.gov/blast/db/FASTA/nr.gz
+wget https://ftp.ncbi.nlm.nih.gov/blast/db/FASTA/nr.gz.md5
+
+# Optional
+wget ftp://ftp.ncbi.nlm.nih.gov/pub/taxonomy/accession2taxid/prot.accession2taxid.FULL.gz
+wget ftp://ftp.ncbi.nlm.nih.gov/pub/taxonomy/taxdmp.zip
