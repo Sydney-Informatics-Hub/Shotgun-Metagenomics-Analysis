@@ -792,14 +792,73 @@ Output will be a separate R-compatible dataframe for TPM normalised and raw coun
 
 ### Part 7. Gene prediction
 
+__THIS PART IS UNDER TESTING__: The commands work but the scripts have not been productionized to be consistent with the rest of the pipeline. This is a work in progress!
+
+This part will be used to predict genes that exist in sample MEGAHIT assemblies. Gene prediction is performed with Prodigal and annotation is performed with DIAMOND, by BLAST'ing predicted genes to NCBI's NR database. This workflow processes multiple sample assemblies in parallel. The outputs of this part is used downstream in this workflow for Resistome calculation. 
+
 #### 7.1 Predict coding sequences
 
-Predict coding sequences within the filtered contigs using Prodigal
+Predict coding sequences within the filtered MEGAHIT contigs using Prodigal.
+
+Required inputs:
+
+```
+./Inputs/samples.list # simple list of sample identifiers, one ID per row. This is used to locate ../Assembly/${sample}/${sample}.filteredContigs.fa
+```
+
+`prodigal_cds_run_parallel.pbs` will run `prodigal_cds.sh` in parallel, taking your list of samples as input. By default, protein sequences are generated and `-p meta` is applied. Change the compute resources in `prodigal_cds_run_parallel.pbs` to scale with the number of samples you are processing. One sample requires 1 CPU, 4GB memory and ~30 minutes walltime.
+
+```
+qsub prodigal_cds_run_parallel.pbs
+```
+
+Outputs:
+
+```
+../Prodigal_CDS/${sample}.CDS.prot.fa
+../Prodical_CDS/${sample}.CDS.gff
+```
 
 #### 7.2 Annotate genes
 
-Annotate gene names to coding sequences using NCBI NR database and Diamond
+Annotate predicted genes using NR (non-redundant) protein database and Diamond. The NR database is compiled by the NCBI (National Center for Biotechnology Information) as a protein database for Blast searches. It contains non-identical sequences from GenBank CDS translations, PDB, Swiss-Prot, PIR, and PRF.
 
+#### First time set up
+
+The steps below only need to be performed once per database:
+
+* Download the NR database from NCBI. An example script is provided in `wget.pbs`. I recommend also downloading `.md5` files to perform checksums
+* Perform checksums to confirm that the database was downloaded successfully `md5sum -c nr.gz.md5`
+* Run `diamond_makedb.pbs`. This will unzip and run `diamond makedb` (which is not compatible with gz files). This will output `nr.dmnd`
+
+#### Run diamond blastp
+
+Use BLASTP to query sample CDS to NCBI NR. One top match per CDS is reported if it meets these cut-off criteria:
+
+* 75 % identity
+* 75 % query covery
+* 1E-6 Evalue
+
+Required inputs (change to your inputs):
+
+```
+./Inputs/samples.list # In diamond_submit_jobs.sh. Used to locate prodigal output contig=../Prodigal_CDS/${sample}.CDS.prot.fa
+nr=/scratch/er01/apps/diamond/NCBI/nr.dmnd # edit in diamond_taxon.pbs
+taxonmap=/scratch/er01/apps/diamond/NCBI/prot.accession2taxid.FULL.gz # edit in diamond_taxon.pbs
+```
+
+Once you have updated the paths to your input files in the above scripts, run:
+
+```
+sh ./diamond_submit_jobs.sh
+```
+This script will submit one `diamond_taxon.pbs` per sample. Due to the highly variable walltimes that cannot be attributed to any feature of the input data, we do not use nci.parallel or openmpi here. Leave compute resources as default.
+
+Output per sample:
+
+```
+../Diamond_NCBI/${sample}.DIAMOND.tsv
+```
 
 ### Part 8. Resistome calculation
 

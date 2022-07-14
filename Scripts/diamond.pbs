@@ -1,0 +1,44 @@
+#!/bin/bash
+
+# Submit multiple jobs with diamond_submit_jobs.sh
+# BLAST contigs to
+# NCBI NR protein DB using DIAMOND
+
+#PBS -P er01
+#PBS -l walltime=10:00:00
+#PBS -l ncpus=28
+#PBS -l mem=128GB
+#PBS -q normalbw
+#PBS -W umask=022
+#PBS -l wd
+#PBS -lstorage=scratch/qq47+scratch/er01
+#PBS -l jobfs=400GB
+
+set -e
+
+module load diamond/2.0.11
+
+# sample is parsed with qsub -v
+
+nr=/scratch/er01/apps/diamond/NCBI/nr.dmnd
+taxonmap=/scratch/er01/apps/diamond/NCBI/prot.accession2taxid.FULL.gz
+contig=../Prodigal_CDS/${sample}.CDS.prot.fa
+outdir=../Diamond_NCBI
+TMPDIR=${PBS_JOBFS}/tmp
+PTMPDIR=${PBS_JOBFS}/ptmp
+
+out=${outdir}/${sample}.DIAMOND.tsv
+
+mkdir -p ${TMPDIR} ${PTMPDIR}
+
+diamond blastp \
+	--threads ${PBS_NCPUS} \
+	--db ${nr} \
+	--taxonmap ${taxonmap} \
+	--query ${contig} \
+	--max-target-seqs 1 \
+	--outfmt 6 \
+	--evalue 0.00001 \
+	--id 75 \
+	--query-cover 75 \
+	--out ${out}
