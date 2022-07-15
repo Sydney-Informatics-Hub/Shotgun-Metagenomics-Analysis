@@ -231,7 +231,7 @@ Adjust the resources, requesting 1 CPU per sample, then submit:
 qsub ./Scripts/contig_coverage_run_parallel.pbs
 ```
 
-The output coverage file will be sent to the same output directory as above, and will be used to filter away contigs with low mapping support at the next step.
+The output coverage files will be sent to the `Align_to_assembly` per-sample directories, and will be used to filter away contigs with low mapping support at the next step.
 
 #### 3.4 Filter contigs
 
@@ -263,16 +263,21 @@ awk '$7>=1 && $3>=10000' $cov
 
 Add as many filters as desired. 
 
-There is no need to make an inputs file for this step, as the inputs made for the contig coverage step above will be used. 
+There is no need to make an inputs file for this step, as the inputs made for the contig coverage step above will be used.  
 
-Adjust the resource requests depending on the number of samples and their data size. Assemblies of around 300 MB take only 10 seconds to filter, however with large numbers of samples this can add up so running on the login node is not recommended.
+Assemblies of around 300 MB take only 10 seconds to filter, however with large numbers of samples this can add up so running on the login node is not recommended for more than a handful of samples. For a small number of samples of modest assembly fasta size, login node run can be achieved by running the following:
 
-Then submit:
+```
+module load seqtk/1.3
+while read line; do bash Scripts/filter_contigs.sh $line; done < Inputs/contig_coverage.inputs
+```
+
+For compute node runs, adjust the resource requests depending on the number of samples and their data size, allowing 1 CPU per sample, then submit:
 ```
 qsub ./Scripts/filter_contigs_run_parallel.pbs
 ```
 
-The output will be a new filtered contig fasta file in the `Assembly directory`, eg for Sample1,  the output will be `./Assembly/Sample1/Sample1.filteredContigs.fa`.
+The output will be new filtered contig fasta files in the `Assembly` per-sample directories, eg for Sample1,  the output will be `./Assembly/Sample1/Sample1.filteredContigs.fa`.
 
 #### 3.5 Create target read and assembly summaries
 

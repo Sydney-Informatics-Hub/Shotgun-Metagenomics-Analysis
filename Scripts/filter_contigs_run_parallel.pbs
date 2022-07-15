@@ -1,0 +1,61 @@
+#!/bin/bash
+
+#########################################################
+#
+# Platform: NCI Gadi HPC
+# Description: see https://github.com/Sydney-Informatics-Hub/Shotgun-Metagenomics-Analysis
+#
+# Author/s: Cali Willet; Tracy Chew
+# cali.willet@sydney.edu.au; tracy.chew@sydney.edu.au
+#
+# If you use this script towards a publication, please acknowledge the
+# Sydney Informatics Hub (or co-authorship, where appropriate).
+#
+# Suggested acknowledgement:
+# The authors acknowledge the scientific and technical assistance
+# <or e.g. bioinformatics assistance of <PERSON>> of Sydney Informatics
+# Hub and resources and services from the National Computational
+# Infrastructure (NCI), which is supported by the Australian Government
+# with access facilitated by the University of Sydney.
+#
+#########################################################
+
+#PBS -P <project>
+#PBS -N filterContigs
+#PBS -l walltime=00:10:00
+#PBS -l ncpus=12
+#PBS -l mem=48GB
+#PBS -q normal
+#PBS -W umask=022
+#PBS -l wd
+#PBS -o ./Logs/filter_contigs.o
+#PBS -e ./Logs/filter_contigs.e
+#PBS -l storage=scratch/<project>
+
+module load openmpi/4.1.0
+module load nci-parallel/1.0.0a
+module load seqtk/1.3
+
+set -e
+
+SCRIPT=./Scripts/filter_contigs.sh  
+INPUTS=./Inputs/contig_coverage.inputs
+ 
+NCPUS=1
+
+
+#########################################################
+# Do not edit below this line
+#########################################################
+
+if [[ $PBS_QUEUE =~ bw-exec ]]; then CPN=28; else CPN=48; fi
+M=$(( CPN / NCPUS )) #tasks per node
+
+sed "s|^|${SCRIPT} |" ${INPUTS} > ${PBS_JOBFS}/input-file
+
+mpirun --np $((M * PBS_NCPUS / PBS_NCI_NCPUS_PER_NODE)) \
+        --map-by node:PE=${NCPUS} \
+        nci-parallel \
+        --verbose \
+        --input-file ${PBS_JOBFS}/input-file
+
