@@ -35,7 +35,7 @@
 
 module load openmpi/4.0.2
 module load nci-parallel/1.0.0a
-module load bwa/0.7.17 samtools/1.10 sambamba/0.7.0
+module load bwa/0.7.17 samtools/1.10 sambamba/0.8.1
 
 
 set -e
@@ -45,7 +45,7 @@ INPUTS=./Inputs/align_reads_to_contigs.inputs
  
 NCPUS=12
 
-mkdir -p ./Align_to_assembly
+mkdir -p ./Align_to_assembly ./Logs/Align_to_assembly
 
 #########################################################
 # Do not edit below this line  

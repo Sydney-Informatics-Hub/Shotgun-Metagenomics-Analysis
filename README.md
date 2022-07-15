@@ -211,7 +211,7 @@ Adjust the resources depending on the number of parallel tasks and sample size. 
 qsub ./Scripts/align_reads_to_contigs_run_parallel.pbs
 ```
 
-Output will be created in `./Align_to_assembly/<sampleDir>`. Each sample should have a BAM file per fastq pair input, a merged name-sorted BAM, and a final sort.bam file, as well as a BAM index (.bai) and an index statistics (.idxstats) file. Once you are satisfied that the job completed successfully, the intermediate BAMs (BAM file per fastq pair input, merged name-sorted BAM) can be deleted. 
+Output will be created in `./Align_to_assembly/<sampleDir>`. Each sample should have a merged.nameSorted.bam file, lane-level BAMs for samples with multiple input lanes of fastq, and a final sort.bam file, as well as a BAM index (.bai) and an index statistics (.idxstats) file. Once you are satisfied that the job completed successfully, the intermediate BAMs (BAM file per fastq pair input, merged name-sorted BAM) can be deleted. 
 
 #### 3.3 Calculate contig read coverage
 
