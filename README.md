@@ -281,11 +281,11 @@ The output will be new filtered contig fasta files in the `Assembly` per-sample 
 
 #### 3.5 Create target read and assembly summaries
 
-This analysis summarises the number of raw and target reads, % host contamnination, number of contigs (raw and filtered), contig size and N50 values for each smaple into one TSV file. 
+This analysis summarises the number of raw and target reads, % host contamnination, number of contigs (raw and filtered), contig size and N50 values for each sample into one TSV file. 
 
 There is no need to create an inputs file as the inputs sample list from the assembly step will be used.
 
-Adjust the resources then submit:
+Adjust the resources, allowing 1 CPU per sample and ~ 3 minutes per sample for samples with ~ 6 GB input fastq.gz, then submit:
 ```
 qsub ./Scripts/target_reads_and_assembly_summaries_run_parallel.pbs
 ```
@@ -296,7 +296,7 @@ Collate the summaries:
 ```
 bash ./Scripts/target_reads_and_assembly_summaries_collate.sh
 ```
-
+Output will be a TSV file within your base working directory, named `<cohort>_target_reads_and_assembly_summary.txt`.
 
 ### Part 4. Speciation and abundance
 This analysis determines the species present within each sample, and their abundance. The analysis can be performed on the target read (host removed) data, or on the filtered contigs from Part 3 Assembly, or both. Abundance estimation with Bracken is usually performed on reads, as per the guidelines for that software. Performing speciation on contigs is useful for Part 6. Antimicrobial resistance genes and Part 9. Insertion sequence elements, as it enables us to assign a species to genes/elements detected on the contigs. 
@@ -325,7 +325,7 @@ The script `kraken2_run_download.sh` launches 2 separate jobs on Gadi's `copyq` 
 
 If you would like to use additional/alternate RefSeq databases (eg if your host is non-human) you can add the database name to the space-delimited variable list within the script `kraken2_run_download.sh`, and increase the walltime (as a guide, human RefSeq downloads in ~ 11 minutes and viral in ~ 17 minutes):
 ```
--v library="archaea viral human UniVec_Core"  
+-v library="archaea viral human UniVec_Core <additional_NCBI_database_name>"  
 ```
 
 Ensure your `module load kraken2` command works before running the below script: 
