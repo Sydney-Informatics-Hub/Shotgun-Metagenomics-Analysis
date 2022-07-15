@@ -391,12 +391,12 @@ Output will be in the `Speciation_reads` directory, with per-sample directories 
 The inputs file sorts the samples in order of their assembly size, largest to smallest. This is to increase parallel job efficiency, if the number of consecutively running tasks is less than the total number of tasks. 
 
 ```
-bash speciation_contigs_make_input.sh
+bash ./Scripts/speciation_contigs_make_input.sh
 ```
 
-Edit the script `./Scripts/speciation_reads.sh` to the name of your database created at step 4.1.
+Edit the script `./Scripts/speciation_contigs.sh` to the name of your database created at step 4.1.
 
-Adjust the resources, noting the RAM and CPU notes described above. Request all of the jobfs for the whole nodes you are using. Then submit:
+Adjust the resources, noting the RAM and CPU notes described above. Kraken2 over the contigs should take similar RAM but less walltime and less jobfs than using reads as input. Then submit:
 ```
 qsub ./Scripts/speciation_contigs_run_parallel.pbs
 ```
@@ -410,33 +410,36 @@ Format Kraken2 output into one file for all samples in cohort.
 
 The below script creates a single TSV file of the Kraken2 output for all samples in the cohort. It collects column 1 ("Percentage of fragments covered by the clade rooted at this taxon") and column 6 (scientific name). Column headings are sample IDs and row headings are scientific names. The sample ID in column 2 of the config is used to name the samples. Collating the Kraken2 output in this way makes downstream customised analysis and interrogation more straightforward. 
 
-The script can collate Kraken2 output from either reads or contigs analysis, by parsing these as variable names on the command line.
+The script can collate Kraken2 output from either reads or contigs analysis, by parsing these as arguments on the command line.
 
 Collate Kraken2 'reads' output:
 
 ```
 perl ./Scripts/collate_speciation.pl reads
 ```
+Output will be a single TSV file `./Speciation_reads/Kraken2_<cohort>_reads_allSamples.txt`.
+
 
 Collate Kraken2 'contigs' output:
 
 ```
 perl ./Scripts/collate_speciation.pl contigs
 ```
-The output will be an 'allSample.txt' file within the Speciation_reads or Speciation_contigs directory. 
 
-If the cohort has groups (eg treatment groups or timepoints) and these are specified in column 5 of the sample config file, the below script can be run to additionally create a per-group TSV of the Kraken2 output. Provide the name of the collated output file as the first and only command line argument:
+Output will be a single TSV file `./Speciation_contigs/Kraken2_<cohort>_contigs_allSamples.txt`.
+
+If the cohort has groups (eg treatment groups or timepoints) and these are specified in column 5 of the sample config file, the below script can be run to additionally create a per-group TSV of the Kraken2 output. Provide the name of the analysis input ('reads' or 'contigs') as sole argument on the command line:
 
 
 Collate Kraken2 'reads' output into per-group files:
 ```
-perl ./Scripts/collate_speciation_or_abundance_with_groups.pl ./Speciation_reads/Kraken2_reads_allSamples.txt
+perl ./Scripts/collate_speciation_or_abundance_with_groups.pl reads
 ```
 
 Collate Kraken2 'contigs' output into per-group files:
 
 ```
-perl ./Scripts/collate_speciation_or_abundance_with_groups.pl ./Speciation_contigs/Kraken2_contigs_allSamples.txt
+perl ./Scripts/collate_speciation_or_abundance_with_groups.pl contigs
 ```
 The output will be a per-group collated Kraken2 TSV file within the `./Speciation_reads` or `./Speciation_contigs` directory.
 

@@ -25,16 +25,20 @@ use strict;
 
 
 # Inputs:
-my $config = './Inputs/<cohort>.config';
+my $cohort = 'test'; 
+my $config = "./Inputs/$cohort\.config"; 
 
-my $input = $ARGV[0]; # The speciation or abundance all-sample collated file, output of collate_speciation.pl or collate_abundance.pl
-chomp $input; 
+my $set = $ARGV[0]; chomp $set; # do for contigs and reads separately
+
+# The speciation or abundance all-sample collated file, output of collate_speciation.pl or collate_abundance.pl: 
+my $input = "./Speciation_$set\/Kraken2_$cohort\_$set\_allSamples.txt";
 
 
 # Collect samples by group IDs
 my $grouphash = {};
 my @groups = '';
 open (S, $config) || die "$! $config\n"; 
+chomp (my $header = <S>); 
 while (my $line = <S>) {
 	my ($id, $sample, $platform, $centre, $group) = split(' ', $line); 
 	if (!$grouphash->{$group}) {
@@ -46,7 +50,7 @@ while (my $line = <S>) {
 
 # Header is needed to get the column numbers for each sample
 open (O, $input)|| die "$! $input\n"; 
-chomp (my $header = <O>); 
+chomp ($header = <O>); 
 close O;
 my @header = split('\t', $header); 
 
