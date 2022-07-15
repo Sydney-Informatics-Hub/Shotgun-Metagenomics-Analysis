@@ -430,12 +430,12 @@ Output will be a single TSV file `./Speciation_contigs/Kraken2_<cohort>_contigs_
 
 If the cohort has groups (eg treatment groups or timepoints) and these are specified in column 5 of the sample config file, the below script can be run to additionally create a per-group TSV of the Kraken2 output. Provide the name of the collated output file as the first and only command line argument:
 
-Collate Kraken2 'reads' output into per-group files:
+Collate Kraken2 'reads' output into per-group files, replacing \<cohort\> with the name of your cohort:
 ```
 perl ./Scripts/collate_speciation_or_abundance_with_groups.pl ./Speciation_reads/Kraken2_<cohort>_reads_allSamples.txt
 ```
 
-Collate Kraken2 'contigs' output into per-group files:
+Collate Kraken2 'contigs' output into per-group files, replacing \<cohort\> with the name of your cohort:
 
 ```
 perl ./Scripts/collate_speciation_or_abundance_with_groups.pl ./Speciation_contigs/Kraken2_<cohort>_contigs_allSamples.txt
@@ -523,12 +523,12 @@ The output will be an 'allSamples.txt' file within the `./Abundance_reads` or `.
 If the cohort has groups (eg treatment groups or timepoints) and these are specified in column 5 of the sample config file, the below script can be run to additionally create a per-group TSV of the Bracken2 output. Provide the name of the collated output file as the first and only command line argument:
 
 
-Collate Bracken2 'reads' output into per-group files, replacing <cohort> with the name of your cohort:
+Collate Bracken2 'reads' output into per-group files, replacing \<cohort\> with the name of your cohort:
 ```
 perl ./Scripts/collate_speciation_or_abundance_with_groups.pl ./Abundance_reads/Bracken2_<cohort>_reads_allSamples.txt
 ```
 
-Collate Bracken2 'contigs' output into per-group files, replacing <cohort> with the name of your cohort:
+Collate Bracken2 'contigs' output into per-group files, replacing \<cohort\> with the name of your cohort:
 
 ```
 perl ./Scripts/collate_speciation_or_abundance_with_groups.pl ./Abundance_contigs/Bracken2_<cohort>_contigs_allSamples.txt
