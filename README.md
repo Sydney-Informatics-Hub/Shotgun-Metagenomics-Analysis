@@ -383,7 +383,7 @@ Output will be in the `Speciation_reads` directory, with per-sample directories 
 
 ##### 4.2.2 Speciation (contigs)
 
-The inputs file sorts the samples in order of their asembly size, largest to smallest. This is to increase parallel job efficiency, if the number of consecutively running tasks is less than the total number of tasks. 
+The inputs file sorts the samples in order of their assembly size, largest to smallest. This is to increase parallel job efficiency, if the number of consecutively running tasks is less than the total number of tasks. 
 
 ```
 bash speciation_contigs_make_input.sh
