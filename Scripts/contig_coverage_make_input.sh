@@ -41,5 +41,5 @@ awk 'NR>1 {print $2}' $config > $inputs
 sed -i "s/$/,${mapq},${baseQ}/" $inputs
 
 tasks=`wc -l < $inputs`
-printf "Number of metagenomic assembly tasks to run: ${tasks}\n"
+printf "Number of coverage tasks to run: ${tasks}\n"
 

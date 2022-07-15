@@ -37,7 +37,7 @@ samtools coverage \
 	-q ${mapq} -Q ${baseQ} \
 	--reference ${contigs} \
 	-o ${sampledir}/${sample}.q${mapq}Q${baseQ}.cov \
-	${final}
+	${bam}
 
 
 

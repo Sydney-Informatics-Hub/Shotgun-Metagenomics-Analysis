@@ -211,7 +211,7 @@ Adjust the resources depending on the number of parallel tasks and sample size. 
 qsub ./Scripts/align_reads_to_contigs_run_parallel.pbs
 ```
 
-Output will be created in `./Align_to_assembly/<sampleDir>`. 
+Output will be created in `./Align_to_assembly/<sampleDir>`. Each sample should have a BAM file per fastq pair input, a merged name-sorted BAM, and a final sort.bam file, as well as a BAM index (.bai) and an index statistics (.idxstats) file. Once you are satisfied that the job completed successfully, the intermediate BAMs (BAM file per fastq pair input, merged name-sorted BAM) can be deleted. 
 
 #### 3.3 Calculate contig read coverage
 
@@ -219,14 +219,14 @@ This step computes the read coverage metrics across the contigs from the sorted 
 
 Running the make_input script will ask the user to input the minimum base and mapping quality scores to use for coverage calculation. Values of 20 for both is a fair start. It is not recommended to use values below 20, however you may wish to use higher values for more stringent filtering. 
 
-The coverage calculation takes ~ 2.5 minutes for a 3.5 GB BAM file.
+The single-threaded coverage calculation takes ~ 2.5 minutes for a 3.5 GB BAM file.
 
 Make the inputs file, entering your chosen quality values when prompted:
 ```
 bash ./Scripts/contig_coverage_make_input.sh
 ```
 
-Adjust the resources, then submit:
+Adjust the resources, requesting 1 CPU per sample, then submit:
 ```
 qsub ./Scripts/contig_coverage_run_parallel.pbs
 ```
