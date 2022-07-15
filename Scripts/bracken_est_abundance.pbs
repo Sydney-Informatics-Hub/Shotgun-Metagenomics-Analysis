@@ -46,7 +46,8 @@ CLASSIFICATION_LVL=S #default=S (species)
 THRESHOLD=10 #Default=10
 
 outdir=./Abundance_reads
-mkdir -p $outdir
+logdir=./Logs/bracken2/
+mkdir -p $outdir $logdir
 
 kdir=./Speciation_reads
 
@@ -61,12 +62,15 @@ do
 
 	sampleoutdir=./${outdir}/${sample}
 	mkdir -p $sampleoutdir
-	out=${sampleoutdir}/${sample}.bracken
+	out=${sampleoutdir}/${sample}.bracken	
+	log=${logdir}/${sample}.bracken.reads.log
+	
+	rm -rf $out $log
 
 	python3 ${src}/est_abundance.py \
 		-i ${kreport} \
 		-k ${KRAKEN_DB}/database${READ_LEN}mers.kmer_distrib \
 		-l ${CLASSIFICATION_LVL} \
 		-t ${THRESHOLD} \
-		-o ${out}
+		-o ${out} > $log
 done

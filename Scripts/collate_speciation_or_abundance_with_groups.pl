@@ -25,14 +25,13 @@ use strict;
 
 
 # Inputs:
-my $cohort = 'test'; 
+my $cohort = '<cohort>'; 
 my $config = "./Inputs/$cohort\.config"; 
 
-my $set = $ARGV[0]; chomp $set; # do for contigs and reads separately
-
 # The speciation or abundance all-sample collated file, output of collate_speciation.pl or collate_abundance.pl: 
-my $input = "./Speciation_$set\/Kraken2_$cohort\_$set\_allSamples.txt";
+my $input = $ARGV[0]; chomp $input; # do for contigs and reads separately
 
+print "Collating data from file $input using group metadata from config $config\n"; 
 
 # Collect samples by group IDs
 my $grouphash = {};

@@ -428,18 +428,17 @@ perl ./Scripts/collate_speciation.pl contigs
 
 Output will be a single TSV file `./Speciation_contigs/Kraken2_<cohort>_contigs_allSamples.txt`.
 
-If the cohort has groups (eg treatment groups or timepoints) and these are specified in column 5 of the sample config file, the below script can be run to additionally create a per-group TSV of the Kraken2 output. Provide the name of the analysis input ('reads' or 'contigs') as sole argument on the command line:
-
+If the cohort has groups (eg treatment groups or timepoints) and these are specified in column 5 of the sample config file, the below script can be run to additionally create a per-group TSV of the Kraken2 output. Provide the name of the collated output file as the first and only command line argument:
 
 Collate Kraken2 'reads' output into per-group files:
 ```
-perl ./Scripts/collate_speciation_or_abundance_with_groups.pl reads
+perl ./Scripts/collate_speciation_or_abundance_with_groups.pl ./Speciation_reads/Kraken2_<cohort>_reads_allSamples.txt
 ```
 
 Collate Kraken2 'contigs' output into per-group files:
 
 ```
-perl ./Scripts/collate_speciation_or_abundance_with_groups.pl contigs
+perl ./Scripts/collate_speciation_or_abundance_with_groups.pl ./Speciation_contigs/Kraken2_<cohort>_contigs_allSamples.txt
 ```
 The output will be a per-group collated Kraken2 TSV file within the `./Speciation_reads` or `./Speciation_contigs` directory.
 
@@ -469,9 +468,9 @@ qsub ./Sripts/bracken_db_build.pbs
 
 ##### 4.3.2 Abundance (reads)
 
-Compute species abundance estimates using target reads as input with Bracken2. This step is very fast (~ 2 seconds per sample with 'standard' database and ~ 6 GB traget fastq.gz) so abundance is computed per sample in series rather than in parallel.
+Compute species abundance estimates using target reads as input with Bracken2. This step is very fast (~ 2 seconds per sample with 'standard' database and ~ 6 GB target fastq.gz) so abundance is computed per sample in series rather than in parallel.
 
-The following Bracken2 parameters are set by default in the script - please update these to values better suited to your data if required:
+The following Bracken2 parameters are set by default in the script `bracken_est_abundance.pbs` - please update these to values better suited to your data if required. The kmer length and read length values used here should match that used when building the bracken2 database in the previous step. 
 
 ```
 KMER_LEN=35
@@ -489,7 +488,7 @@ qsub ./Scripts/bracken_est_abundance.pbs
 
 ##### 4.3.3 Abundance (contigs)
 
-Note the tool was written to estimate abundance using read data not contig data; however depending on the nature of your research project, estimating the abundance based on assembled contigs may be meaningful.
+Note the tool was written to estimate abundance using read data not contig data; however depending on the nature of your research project, estimating the abundance based on assembled contigs may be meaningful. Please interpret such data with caution, as the read length and kmer values may not be appropriate.
 
 There is no separate script for this step, so either copy the script and `sed` the copy, or `sed` the original script to run the analysis on Kraken2 contig data:
 
@@ -504,7 +503,7 @@ Format Bracken2 output into one file for all samples in cohort.
 
 The below script creates a single TSV file of the Bracken2 output for all samples in the cohort. It collects column 1 (scientific name) and column 7 (fraction total reads). Column headings are sample IDs and row headings are scientific names. The sample ID in column 2 of the config is used to name the samples. Collating the Bracken2 output in this way makes downstream customised analysis and interrogation more straightforward. 
 
-The script can collate Bracken2 output from either reads or contigs analysis, by parsing these as variable names on the command line.
+The script can collate Bracken2 output from either reads or contigs analysis, by parsing these as arguments on the command line.
 
 Collate Bracken2 'reads' output:
 
@@ -518,23 +517,23 @@ Collate Braken2 'contigs' output:
 perl ./Scripts/collate_abundance.pl contigs
 ```
 
-The output will be an 'allSample.txt' file within the `./Abundance_reads` or `./Abundance_contigs` directory. 
+The output will be an 'allSamples.txt' file within the `./Abundance_reads` or `./Abundance_contigs` directory. 
 
 
 If the cohort has groups (eg treatment groups or timepoints) and these are specified in column 5 of the sample config file, the below script can be run to additionally create a per-group TSV of the Bracken2 output. Provide the name of the collated output file as the first and only command line argument:
 
 
-Collate Bracken2 'reads' output into per-group files:
+Collate Bracken2 'reads' output into per-group files, replacing <cohort> with the name of your cohort:
 ```
-perl ./Scripts/collate_speciation_or_abundance_with_groups.pl ./Abundance_reads/Bracken2_reads_allSamples.txt
+perl ./Scripts/collate_speciation_or_abundance_with_groups.pl ./Abundance_reads/Bracken2_<cohort>_reads_allSamples.txt
 ```
 
-Collate Bracken2 'contigs' output into per-group files:
+Collate Bracken2 'contigs' output into per-group files, replacing <cohort> with the name of your cohort:
 
 ```
-perl ./Scripts/collate_speciation_or_abundance_with_groups.pl ./Abundance_contigs/Bracken2_contigs_allSamples.txt
+perl ./Scripts/collate_speciation_or_abundance_with_groups.pl ./Abundance_contigs/Bracken2_<cohort>_contigs_allSamples.txt
 ```
-The output will be a per-group collated Bracken2 TSV file within the `Abundance_reads` or `Abundance_contigs` directory.
+The output will be per-group collated Bracken2 TSV files within the `Abundance_reads` or `Abundance_contigs` directories.
 
 ### Part 5. Functional profiling
 Profile the presence/absence and abundance of microbial pathways in the metagenomes using HUMAnN 2 and metaphlan2. 
