@@ -37,19 +37,21 @@ module load python3/3.7.4 kraken2/2.0.8-beta bracken/2.6.0
 src=$(which bracken)
 src=${src/%bracken/src}
 
-KRAKEN_DB=kraken2_standard_db_build_<date> ###UPDATE TO YOUR KRAKEN2 DB
+KRAKEN_DB=${PWD}/kraken2_standard_db_build_<date> ###UPDATE TO YOUR KRAKEN2 DB
 KMER_LEN=35
 READ_LEN=150
 
-printf "Bracken estimation of abundance step 1: Generate the Bracken database file (databaseXmers.kmer_distrib)\n"
+printf "Using database ${KRAKEN_DB}\n"
 
-printf "\n$(date): Step 1a: Search all library input sequences against the database\n"
+printf "Generating the Bracken database file (databaseXmers.kmer_distrib)\n"
+
+printf "\n$(date): Searching all library input sequences against the database\n"
 cd $KRAKEN_DB
 kraken2 --db ${KRAKEN_DB} \
 	--threads=${NCPUS} <( find -L library -name "*.fna" -exec cat {} + )  \
 	> database.kraken
 
-printf "\n$(date): Step 1b: Compute classifications for each perfect read from one of the input sequences\n"
+printf "\n$(date): Computing classifications for each perfect read from one of the input sequences\n"
 ${src}/kmer2read_distr \
 	--seqid2taxid ${KRAKEN_DB}/seqid2taxid.map \
 	--taxonomy ${KRAKEN_DB}/taxonomy \
@@ -60,7 +62,7 @@ ${src}/kmer2read_distr \
 	-t ${NCPUS}
 
 
-printf "\n$(date): Step 1c: Generate the kmer distribution file\n"
+printf "\n$(date): Generating the kmer distribution file\n"
 python3 ${src}/generate_kmer_distribution.py \
 	-i database${READ_LEN}mers.kraken \
 	-o database${READ_LEN}mers.kmer_distrib

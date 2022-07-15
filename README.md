@@ -383,7 +383,7 @@ Output will be in the `Speciation_reads` directory, with per-sample directories 
 
 ##### 4.2.2 Speciation (contigs)
 
-The inputs file sorts the samples in order of their asembly size, largest to smallest. This is to increase parallel job efficiency, if the number of consecutively running tasks is less than the total number of tasks. 
+The inputs file sorts the samples in order of their assembly size, largest to smallest. This is to increase parallel job efficiency, if the number of consecutively running tasks is less than the total number of tasks. 
 
 ```
 bash speciation_contigs_make_input.sh
@@ -956,6 +956,7 @@ Output will be TSV files in `./Insertion_sequences/Filtered_IS_with_species`, pe
 * [bbtools/37.98](https://jgi.doe.gov/data-and-tools/software-tools/bbtools/)
 * [bracken/2.6.0](https://github.com/jenniferlu717/Bracken)
 * [bwa/0.7.17](https://github.com/lh3/bwa) 
+* [diamond/2.0.11](https://github.com/bbuchfink/diamond)
 * [fastqc/0.11.7](https://github.com/s-andrews/FastQC)
 * [gatk/4.1.5.0](https://github.com/broadinstitute/gatk)
 * [humann2/2.8.2](https://github.com/biobakery/humann)
@@ -966,6 +967,7 @@ Output will be TSV files in `./Insertion_sequences/Filtered_IS_with_species`, pe
 * [multiqc/1.9](https://github.com/ewels/MultiQC)
 * [nci-parallel/1.0.0a](https://opus.nci.org.au/display/Help/nci-parallel)
 * [openmpi/4.1.0](https://github.com/open-mpi)
+* [prodigal/2.6.3](https://github.com/hyattpd/Prodigal)
 * [prokka/1.14.6](https://github.com/tseemann/prokka)
 * [python3](https://github.com/python/cpython)
 * [sambamba/0.7.0](https://github.com/biod/sambamba)
