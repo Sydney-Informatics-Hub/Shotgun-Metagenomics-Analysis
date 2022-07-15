@@ -818,6 +818,7 @@ Outputs:
 ../Prodigal_CDS/${sample}.CDS.prot.fa
 ../Prodical_CDS/${sample}.CDS.gff
 ```
+* Note, output protein sequence and use BLASTP because this was slighlty more computationally performant than other configurations tested
 
 #### 7.2 Annotate genes
 
@@ -862,11 +863,47 @@ Output per sample:
 
 ### Part 8. Resistome calculation
 
-#### 8.1 Correspond ARGs to gene annotations
+__THIS PART IS UNDER TESTING__: The commands work but the scripts have not been productionized to be consistent with the rest of the pipeline. We would also like to make this part more interoperable to other experimental types. This is a work in progress!
 
-#### 8.2 Calculate resistome
+This part is to determine the resistome (%) per sample, defined by: __Total ARGs/ Total Genes * 100__
 
-Calculate resistome
+Total genes that exist in each sample assembly are identified in "Gene prediction", upstream in this workflow. This was done by matching predicted gene sequences to the NCBI NR database. This step __filters for high quality matches by including only genes with a hit length of > 25__.
+
+To detemine which of the total genes above are ARGs, we use the output in "Antimicrobial resistance genes", upstream in this workflow. There is no mechanism to obtain a perfect match - ARGs are determined by matching to a different database (NCBI AMRFinder Plus, Resfinder and CARD using ABRICATE) with different annotations to NCBI NR (e.g. gene names are slightly different, different accession IDs are used). Therefore, high quality matches are determined if:
+
+* predicted gene start (determined with Prodigal) matches ABRICATE start; OR
+* predicted gene end (detemined with Prodigal) matches ABRICATE end
+
+for each MEGAHIT contig in the sample. This part is performed for a list of samples with `match_ARGs_to_diamond_cds.pl`.
+
+Required inputs:
+
+```
+./Inputs/samples.list # please change in match_ARGs_to_diamond_cds.pl
+./Inputs/*/samples.list # used to obtain analysis set, to find curated ARG output, generated upstream in the workflow ../../$analysis_set\_analysis_Aug21/Curated_ARGs/$sampleid\.curated_ARGs.txt
+./Inputs/$analysis_set\/*_samples.list # Used to identify the timepoint the sample belonged to, *_samples.list should be named T1_samples.list, T2_samples.list, etc and contain a simple list of sample IDs belonging to a timepoint group
+../Diamond_NCBI/$sampleid\.DIAMOND.tsv # output generated in "Gene prediction"
+../Prodigal_CDS/$sampleid\.CDS.gff # output generated in "Gene prediction"
+
+```
+
+Outputs:
+
+```
+../Diamond_NCBI_ARGs/$sampleid\.DIAMOND_ARGs.txt # per sample results, with the headers: Contig\tProdigal_CDS\tSpecies\tGene\tARG_start\tARG_end\tProdigal_start\tProdigal_end
+../Diamond_NCBI_ARGs/Allsamples_resistome.txt # summary of results, with the headers: $sampleid\t$timepoint\t$ARG_match\t$total_diamond\t$failed_length\t$resistome\n
+```
+
+If you have a small number of samples in `samples.list` (<100), you can run this on the login node:
+```
+perl match_ARGs_to_diamond_cds.pl
+```
+
+If you have a large number of samples in `samples.list` (>100), I would recommend running this in a job as longer walltimes are required:
+```
+qsub match_ARGs_to_diamond_cds.pbs
+```
+By default, the compute settings are sufficient for ~550 samples (1 CPU, 4 Gb mem, ~50 min walltime).
 
 
 ### Part 9. Insertion seqeunce (IS) elements
