@@ -792,22 +792,118 @@ Output will be a separate R-compatible dataframe for TPM normalised and raw coun
 
 ### Part 7. Gene prediction
 
+__THIS PART IS UNDER TESTING__: The commands work but the scripts have not been productionized to be consistent with the rest of the pipeline. This is a work in progress!
+
+This part will be used to predict genes that exist in sample MEGAHIT assemblies. Gene prediction is performed with Prodigal and annotation is performed with DIAMOND, by BLAST'ing predicted genes to NCBI's NR database. This workflow processes multiple sample assemblies in parallel. The outputs of this part is used downstream in this workflow for Resistome calculation. 
+
 #### 7.1 Predict coding sequences
 
-Predict coding sequences within the filtered contigs using Prodigal
+Predict coding sequences within the filtered MEGAHIT contigs using Prodigal.
+
+Required inputs:
+
+```
+./Inputs/samples.list # simple list of sample identifiers, one ID per row. This is used to locate ../Assembly/${sample}/${sample}.filteredContigs.fa
+```
+
+`prodigal_cds_run_parallel.pbs` will run `prodigal_cds.sh` in parallel, taking your list of samples as input. By default, protein sequences are generated and `-p meta` is applied. Change the compute resources in `prodigal_cds_run_parallel.pbs` to scale with the number of samples you are processing. One sample requires 1 CPU, 4GB memory and ~30 minutes walltime.
+
+```
+qsub prodigal_cds_run_parallel.pbs
+```
+
+Outputs:
+
+```
+../Prodigal_CDS/${sample}.CDS.prot.fa
+../Prodical_CDS/${sample}.CDS.gff
+```
+* Note, output protein sequence and use BLASTP because this was slighlty more computationally performant than other configurations tested
 
 #### 7.2 Annotate genes
 
-Annotate gene names to coding sequences using NCBI NR database and Diamond
+Annotate predicted genes using NR (non-redundant) protein database and Diamond. The NR database is compiled by the NCBI (National Center for Biotechnology Information) as a protein database for Blast searches. It contains non-identical sequences from GenBank CDS translations, PDB, Swiss-Prot, PIR, and PRF.
 
+#### First time set up
+
+The steps below only need to be performed once per database:
+
+* Download the NR database from NCBI. An example script is provided in `wget.pbs`. I recommend also downloading `.md5` files to perform checksums
+* Perform checksums to confirm that the database was downloaded successfully `md5sum -c nr.gz.md5`
+* Run `diamond_makedb.pbs`. This will unzip and run `diamond makedb` (which is not compatible with gz files). This will output `nr.dmnd`
+
+#### Run diamond blastp
+
+Use BLASTP to query sample CDS to NCBI NR. One top match per CDS is reported if it meets these cut-off criteria:
+
+* 75 % identity
+* 75 % query covery
+* 1E-6 Evalue
+
+Required inputs (change to your inputs):
+
+```
+./Inputs/samples.list # In diamond_submit_jobs.sh. Used to locate prodigal output contig=../Prodigal_CDS/${sample}.CDS.prot.fa
+nr=/scratch/er01/apps/diamond/NCBI/nr.dmnd # edit in diamond_taxon.pbs
+taxonmap=/scratch/er01/apps/diamond/NCBI/prot.accession2taxid.FULL.gz # edit in diamond_taxon.pbs
+```
+
+Once you have updated the paths to your input files in the above scripts, run:
+
+```
+sh ./diamond_submit_jobs.sh
+```
+This script will submit one `diamond_taxon.pbs` per sample. Due to the highly variable walltimes that cannot be attributed to any feature of the input data, we do not use nci.parallel or openmpi here. Leave compute resources as default.
+
+Output per sample:
+
+```
+../Diamond_NCBI/${sample}.DIAMOND.tsv
+```
 
 ### Part 8. Resistome calculation
 
-#### 8.1 Correspond ARGs to gene annotations
+__THIS PART IS UNDER TESTING__: The commands work but the scripts have not been productionized to be consistent with the rest of the pipeline. We would also like to make this part more interoperable to other experimental types. This is a work in progress!
 
-#### 8.2 Calculate resistome
+This part is to determine the resistome (%) per sample, defined by: __Total ARGs/ Total Genes * 100__
 
-Calculate resistome
+Total genes that exist in each sample assembly are identified in "Gene prediction", upstream in this workflow. This was done by matching predicted gene sequences to the NCBI NR database. This step __filters for high quality matches by including only genes with a hit length of > 25__.
+
+To detemine which of the total genes above are ARGs, we use the output in "Antimicrobial resistance genes", upstream in this workflow. There is no mechanism to obtain a perfect match - ARGs are determined by matching to a different database (NCBI AMRFinder Plus, Resfinder and CARD using ABRICATE) with different annotations to NCBI NR (e.g. gene names are slightly different, different accession IDs are used). Therefore, high quality matches are determined if:
+
+* predicted gene start (determined with Prodigal) matches ABRICATE start; OR
+* predicted gene end (detemined with Prodigal) matches ABRICATE end
+
+for each MEGAHIT contig in the sample. This part is performed for a list of samples with `match_ARGs_to_diamond_cds.pl`.
+
+Required inputs:
+
+```
+./Inputs/samples.list # please change in match_ARGs_to_diamond_cds.pl
+./Inputs/*/samples.list # used to obtain analysis set, to find curated ARG output, generated upstream in the workflow ../../$analysis_set\_analysis_Aug21/Curated_ARGs/$sampleid\.curated_ARGs.txt
+./Inputs/$analysis_set\/*_samples.list # Used to identify the timepoint the sample belonged to, *_samples.list should be named T1_samples.list, T2_samples.list, etc and contain a simple list of sample IDs belonging to a timepoint group
+../Diamond_NCBI/$sampleid\.DIAMOND.tsv # output generated in "Gene prediction"
+../Prodigal_CDS/$sampleid\.CDS.gff # output generated in "Gene prediction"
+
+```
+
+Outputs:
+
+```
+../Diamond_NCBI_ARGs/$sampleid\.DIAMOND_ARGs.txt # per sample results, with the headers: Contig\tProdigal_CDS\tSpecies\tGene\tARG_start\tARG_end\tProdigal_start\tProdigal_end
+../Diamond_NCBI_ARGs/Allsamples_resistome.txt # summary of results, with the headers: $sampleid\t$timepoint\t$ARG_match\t$total_diamond\t$failed_length\t$resistome\n
+```
+
+If you have a small number of samples in `samples.list` (<100), you can run this on the login node:
+```
+perl match_ARGs_to_diamond_cds.pl
+```
+
+If you have a large number of samples in `samples.list` (>100), I would recommend running this in a job as longer walltimes are required:
+```
+qsub match_ARGs_to_diamond_cds.pbs
+```
+By default, the compute settings are sufficient for ~550 samples (1 CPU, 4 Gb mem, ~50 min walltime).
 
 
 ### Part 9. Insertion seqeunce (IS) elements
@@ -860,6 +956,7 @@ Output will be TSV files in `./Insertion_sequences/Filtered_IS_with_species`, pe
 * [bbtools/37.98](https://jgi.doe.gov/data-and-tools/software-tools/bbtools/)
 * [bracken/2.6.0](https://github.com/jenniferlu717/Bracken)
 * [bwa/0.7.17](https://github.com/lh3/bwa) 
+* [diamond/2.0.11](https://github.com/bbuchfink/diamond)
 * [fastqc/0.11.7](https://github.com/s-andrews/FastQC)
 * [gatk/4.1.5.0](https://github.com/broadinstitute/gatk)
 * [humann2/2.8.2](https://github.com/biobakery/humann)
@@ -870,6 +967,7 @@ Output will be TSV files in `./Insertion_sequences/Filtered_IS_with_species`, pe
 * [multiqc/1.9](https://github.com/ewels/MultiQC)
 * [nci-parallel/1.0.0a](https://opus.nci.org.au/display/Help/nci-parallel)
 * [openmpi/4.1.0](https://github.com/open-mpi)
+* [prodigal/2.6.3](https://github.com/hyattpd/Prodigal)
 * [prokka/1.14.6](https://github.com/tseemann/prokka)
 * [python3](https://github.com/python/cpython)
 * [sambamba/0.7.0](https://github.com/biod/sambamba)
