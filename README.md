@@ -607,13 +607,13 @@ This step annotates putative antimicrobial resistance genes (ARGs) on to the fil
 * [Resfinder](https://www.ncbi.nlm.nih.gov/pubmed/22782487) 
 * [Comprehensive Antibiotic Resistance Database (CARD)](https://www.ncbi.nlm.nih.gov/pubmed/27789705)
 
-ARGs are reformatted, reads mapping to the ARGs are counted and normalised, and the final output produced is ARGs with read count and species data formulated as a comprehensive TSV for downstream investigation and bespoke analysis. The final output makes use of a manually curated ARG list (`./workdir/Inputs/curated_ARGs_list.txt`) which is used to assign all genes with multiple synonyms to one unified gene name. 
+ARGs are reformatted, reads mapping to the ARGs are counted and normalised, and the final output produced is ARGs with read count and species data formulated as a comprehensive TSV for downstream investigation and bespoke analysis. The final output makes use of a manually curated ARG list (`./workdir/Inputs/curated_ARGs_list.txt`, described in section 6.3 Curated ARG list) which is used to assign all genes with multiple synonyms to one unified gene name. 
 
 
 #### 6.1 Annotate ARGs 
 There is no need to create an inputs file as the inputs sample list from the assembly step will be used. Samples with ~ 6 GB input gzipped fastq should complete in less than 20 minutes using 4 CPU per sample. 
 
-You will ned to install abricate and make 'module loadable'. Tested with version 0.9.9.
+You will need to install abricate and make 'module loadable'. Tested with version 0.9.9.
 
 Update the resources in the below script, then submit:
 
@@ -629,10 +629,10 @@ Output will be in per-sample directories within `./workdir/ARGs/Abricate`. Each 
 This step combines the output of the 3 databases into one file per sample, removing any exact duplicate gene entries, and one file per cohort. This cohort-level file should be used to create a curated gene list at the next step.  
 
 ```
-bash reformat_ARGs_remove_dups.sh
+bash ./Scripts/reformat_ARGs_remove_dups.sh
 ```
 
-The output is one additional file in each of the sample directories within `./workdir/ARGs/Abricate`, named `<sample>.ARGs.txt`, as well as a coort-level file `./workdir/ARGs/Abricate/<cohort>.ARGs.txt` that should be used to curate a gene list (see 5.3).  
+The output is one additional file in each of the sample directories within `./workdir/ARGs/Abricate`, named `<sample>.ARGs.txt`, as well as a cohort-level file `./workdir/ARGs/Abricate/<cohort>.ARGs.txt` that should be used to curate a gene list (see 6.3).  
 
 
 #### 6.3 Curated ARG list
@@ -649,7 +649,7 @@ This is a mandatory input file consisting of at least 4 tab-delimited columns. T
 
 Column 4 contains a variant name for the gene listed in column 1. If there are no synonyms, the name of the gene in column 1 is listed. Genes with multiple synonyms can have as many columns as required, starting from column 5. 
 
-A curated list generated from processing 572 samples has been provided with this repository. Please note that alternate datasets will generate different gene lists, and a manual curation step should be performed using the output from step 5.2 (file `./workdir/ARGs/Abricate/<cohort>.ARGs.txt`). 
+A curated list generated from processing 572 samples has been provided with this repository. Please note that alternate datasets will generate different gene lists, and a manual curation step should be performed using your output from step 6.2 (file `./workdir/ARGs/Abricate/<cohort>.ARGs.txt`). 
 
 Please ensure that the column orders match the above described requirement to ensure that all gene synonyms are incorporated. Loss of a column = loss of gene counts!
 
@@ -658,7 +658,20 @@ Please ensure that the column orders match the above described requirement to en
 
 Counting the number of reads mapping to the ARGs provides insight into the abundance of ARGs in the microbiome.  
 
-##### 6.4.1 Mark duplicate reads in the previously created BAM files
+##### 6.4.1 Convert Abricate ARG output to GFF
+
+Convert abricate 'tab' output format to gene feature format (GFF) for compatibility with htseq-count. During the conversion to GFF, the curated ARG list is read, so that the GFF contains only one entry per gene with multiple synonyms per contig location. Ie if a gene is annotated at multiple locations in the assembly, each discrete location will be kept, assigning the chosen gene name to all discrete location entries. If a gene is annotated to one location of the assembly with multiple different gene symbols, only one entry will be kept, using the gene name specified as default in the curated list created during step 6.3. 
+
+
+```
+perl ./Scripts/convert_ARG_to_gff.pl
+```
+
+The output will be per-sample GFF files in `./workdir/ARGs/Curated_GFF`, with only the curated entries as described above present in the GFF files. 
+
+
+
+##### 6.4.2 Mark duplicate reads in the previously created BAM files
 
 Mark dulicate reads in the BAM files created during step 3.2, to improve accuracy of ARG read counting. 
 
@@ -673,17 +686,6 @@ qsub ./Scripts/markdups_run_parallel.pbs
 ```
 
 Output will be a duplicate-marked BAM in the previously created `./workdir/Align_to_assembly` per-sample directories.  
-
-
-##### 6.4.2 Convert Abricate ARG output to GFF
-
-Convert abricate 'tab' output format to gene feature format (GFF) for compatibility with htseq-count. During the conversion to GFF, the curated ARG list is read, so that the GFF contains only one entry per gene with multiple synonyms per contig location. Ie if a gene is annotated at multiple locations in the assembly, each discrete location will be kept, assigning the chosen gene name to all discrete location entries. If a gene is annotated to one location of the assembly with multiple different gene symbols, only one entry will be kept, using the gene name specified as default in the curated list. 
-
-```
-perl ./Scripts/convert_ARG_to_gff.pl
-```
-
-The output will be per-sample GFF files in `./workdir/ARGs/Curated_GFF`, with only the curated entries as described above present in the GFF files. 
 
 
 ##### 6.4.3 Count reads mapping to ARGs with HTseq count
@@ -918,14 +920,18 @@ This step annotates putative insertion sequence elements on the filtered assembl
 
 #### 9.1 Download the IS database
 
-First, download the ISfinder database to your workdir:
+First, download the ISfinder database to your workdir (this is a small database):
 ```
 git clone https://github.com/thanhleviet/ISfinder-sequences.git
 ```
 
-At the time of writing, Prokka is not a global app on Gadi so please install and test. Run `prokka --depends` to ensure you have all dependencies. During testing, we found two required perl modules not globally installed (XML::Simple and bioperl) so if you are using a self-install Prokka app, ensure to also install these Perl modules and add them to the path in the '.base' module load file. 
+At the time of writing, Prokka is not a global app on Gadi so please install and test. Run `prokka --depends` to ensure you have all dependencies. During testing, we found two required perl modules not globally installed (XML::Simple and bioperl) so if you are using a self-install Prokka app, ensure to also install these Perl modules and add them to the PERL5LIB path in the '.base' module load file, like below:
 
-You may also need to manually update the `tbl2asn` file, which NCBI has set to expire. See [known issue](https://github.com/tseemann/prokka/issues/139) for discussion and solution. 
+```
+append-path PERL5LIB <installation_path>/bioperl-live-release-1-7-2:<installation_path>/XML-Simple-2.25/lib
+```
+
+You may also need to manually update the `tbl2asn` file, which NCBI has set to expire. See [known issue](https://github.com/tseemann/prokka/issues/139) for discussion and solution (follow the steps described by YePererva). 
 
 #### 9.2 Annotate IS on filtered contigs 
 
@@ -934,7 +940,7 @@ Prokka multithreads but the CPU efficiency is low when all samples are run in a 
 Submit all samples with:
  
 ``` 
-bash IS_annotation_run_loop.sh
+bash ./Scripts/IS_annotation_run_loop.sh
 ```
 
 Output will be Prokka annotation files in per-sample directories within `./Insertion_sequences` with PBS logs written to `./Logs/IS`.
