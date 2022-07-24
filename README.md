@@ -613,7 +613,7 @@ ARGs are reformatted, reads mapping to the ARGs are counted and normalised, and 
 #### 6.1 Annotate ARGs 
 There is no need to create an inputs file as the inputs sample list from the assembly step will be used. Samples with ~ 6 GB input gzipped fastq should complete in less than 20 minutes using 4 CPU per sample. 
 
-You will need to install abricate and make 'module loadable'. Tested with version 0.9.9.
+You will need to install abricate and make 'module loadable'. Abricate has a number of dependencies so please ensure to bundle them with your abricate load. In addition to the required Perl modules listed at [Abricate github](https://github.com/tseemann/abricate) we also needed to install List::MoreUtils and Exporter::Tiny. Tested with version 0.9.9.
 
 Update the resources in the below script, then submit:
 
@@ -649,7 +649,15 @@ This is a mandatory input file consisting of at least 4 tab-delimited columns. T
 
 Column 4 contains a variant name for the gene listed in column 1. If there are no synonyms, the name of the gene in column 1 is listed. Genes with multiple synonyms can have as many columns as required, starting from column 5. 
 
-A curated list generated from processing 572 samples has been provided with this repository. Please note that alternate datasets will generate different gene lists, and a manual curation step should be performed using your output from step 6.2 (file `./workdir/ARGs/Abricate/<cohort>.ARGs.txt`). 
+A curated list generated from processing 572 samples has been provided with this repository as an example only. Please note that alternate datasets will generate different gene lists, and a manual curation step should be performed using the genes from column 6 of your output from step 6.2 (file `./workdir/ARGs/Abricate/<cohort>.ARGs.txt`).
+
+Obtain a unique list of ARG names from your dataset by running the below, replacing `\<cohort\> wth the name of your cohort:
+
+```
+awk 'NR>1 {print $6}' ARGs/Abricate/<cohort>.ARGs.txt | sort | uniq > ARGs/Abricate/<cohort>.ARGs.geneListRaw.txt
+```
+
+From this list, you will need to identify genes with multiple synonyms, select one synonym as the gene name to use for the rest of the workflow, enter that selected gene name in column 1 of your curated gene list file, and all the associated synonyms in columns 4 to n. Replace the example file `Inputs/curated_ARGs_list.txt` with your own list.
 
 Please ensure that the column orders match the above described requirement to ensure that all gene synonyms are incorporated. Loss of a column = loss of gene counts!
 
@@ -666,6 +674,9 @@ Convert abricate 'tab' output format to gene feature format (GFF) for compatibil
 ```
 perl ./Scripts/convert_ARG_to_gff.pl
 ```
+
+The script will produce a 'WARN' message for genes identified within the input data that are not in the curated gene list file `Inputs/curated_ARGs_list.txt`. If you have intentionally culled some genes from your curated ARGs list, this is to be expected. If not, you should check why there are missed genes.
+
 
 The output will be per-sample GFF files in `./workdir/ARGs/Curated_GFF`, with only the curated entries as described above present in the GFF files. 
 
