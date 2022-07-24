@@ -28,7 +28,9 @@ assdir=./Align_to_assembly/${sample}
 bam=${assdir}/${sample}.sort.bam
 dedup=./${assdir}/${sample}.sort.dedup.bam
 metrics=${assdir}/${sample}.dedup_metrics.txt 
-log=./${assdir}/${sample}.dedup.log
+log=./Logs/Mark_dups/${sample}.dedup.log
+
+rm -rf $dedup $metrics $log
 
 # Max java heap space, 30 GB per CPU per task (ie, Gadi hugemem nodes)
 mem=$(expr $NCPUS \* 30)
