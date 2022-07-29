@@ -696,7 +696,7 @@ Update the resources as discussed above, then submit:
 qsub ./Scripts/markdups_run_parallel.pbs
 ```
 
-Output will be a duplicate-marked BAM in the previously created `./workdir/Align_to_assembly` per-sample directories.  
+Output will be a duplicate-marked BAM plus index in the previously created `./workdir/Align_to_assembly` per-sample directories.  
 
 
 ##### 6.4.3 Count reads mapping to ARGs with HTseq count
@@ -706,7 +706,7 @@ This step uses HTSeq-count to count reads that map to the putative curared ARG l
 ```
 module load python3/3.8.5
 pip install numpy --upgrade
-pip install HTSeq
+pip install 'HTSeq==0.12.4'
 ```
 
 The above commands will install to a default location in your home. The ARG_read_counts scripts are setup to read from this location. To check that your installation works, run:
