@@ -41,3 +41,5 @@ gatk MarkDuplicates \
 	-O ${dedup} \
 	--OPTICAL_DUPLICATE_PIXEL_DISTANCE 2500 \
 	-M ${metrics} > ${log} 2>&1 
+
+samtools index -@ ${NCPUS} ${dedup}
