@@ -701,11 +701,18 @@ Output will be a duplicate-marked BAM in the previously created `./workdir/Align
 
 ##### 6.4.3 Count reads mapping to ARGs with HTseq count
 
-This step uses HTSeq-count to count reads that map to the putative curared ARG locations. Before running, you will need to install HTSeq-count:
+This step uses HTSeq-count to count reads that map to the putative curared ARG locations. Before running, you will need to install HTSeq-count: 
 
 ```
 module load python3/3.8.5
+pip install numpy --upgrade
 pip install HTSeq
+```
+
+The above commands will install to a default location in your home. The ARG_read_counts scripts are setup to read from this location. To check that your installation works, run:
+
+```
+$HOME/.local/bin/htseq-count --version
 ```
 
 The counting options applied in `ARG_read_count.sh` are:
@@ -936,13 +943,15 @@ First, download the ISfinder database to your workdir (this is a small database)
 git clone https://github.com/thanhleviet/ISfinder-sequences.git
 ```
 
-At the time of writing, Prokka is not a global app on Gadi so please install and test. Run `prokka --depends` to ensure you have all dependencies. During testing, we found two required perl modules not globally installed (XML::Simple and bioperl) so if you are using a self-install Prokka app, ensure to also install these Perl modules and add them to the PERL5LIB path in the '.base' module load file, like below:
+At the time of writing, Prokka is not a global app on Gadi so please install and test. Run `prokka --depends` then ensure you have all listed dependencies. During testing, we found three required perl modules not globally installed (XML::Simple, BioPerl, Bio::SearchIO::hmmer3 ) so if you are using a self-install Prokka app, ensure to also install these Perl modules and add them to the PERL5LIB path in the '.base' module load file, like below:
 
 ```
-append-path PERL5LIB <installation_path>/bioperl-live-release-1-7-2:<installation_path>/XML-Simple-2.25/lib
+append-path PERL5LIB <installation_path>/bioperl-live-release-1-7-2/lib:<installation_path>/XML-Simple-2.25/lib:<installation_path>/Bio-SearchIO-hmmer-1.7.3/lib
 ```
 
-You may also need to manually update the `tbl2asn` file, which NCBI has set to expire. See [known issue](https://github.com/tseemann/prokka/issues/139) for discussion and solution (follow the steps described by YePererva). 
+You may also need to manually update the `tbl2asn` file (within prokka's `binaries/linux` directory) , which NCBI has set to expire. See [known issue](https://github.com/tseemann/prokka/issues/139) for discussion and solution (follow the steps described by YePererva).
+
+To ensure the binaries are accessible when loading prokka, you may need to add the `binaries/linux` full path to PATH within the `.base` module file. 
 
 #### 9.2 Annotate IS on filtered contigs 
 
@@ -955,6 +964,8 @@ bash ./Scripts/IS_annotation_run_loop.sh
 ```
 
 Output will be Prokka annotation files in per-sample directories within `./Insertion_sequences` with PBS logs written to `./Logs/IS`.
+
+If your jobs finished with an exit status of 2 after failing to run the `tbl2asn` command, this can be safely ignored for the purposes of this pipeline, as the resultant `.gbk` file is not used. If you require a `.gbk` file, try updating the copy of `tbl2asn` within the prokka `binaries/linux` directory. 
 
 The following scripts will annotate the putative IS seqeunces with contig ID and species, filtering for only the passenger or transposase genes from the Prokka GFF file.
 
