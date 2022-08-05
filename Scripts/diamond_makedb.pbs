@@ -40,15 +40,12 @@ database_dir=./NCBI_NR
 
 cd $database_dir
 
-FASTA=nr.gz
+FASTA=./nr
 out=diamond_ncbi
-
-# Doesn't seem to work with gzipped files:
-gunzip ${FASTA}
 
 diamond makedb \
 	-p ${NCPUS} \
-	--in ./nr \
+	--in ${FASTA} \
 	--taxonmap prot.accession2taxid.FULL.gz \
 	--taxonnodes nodes.dmp \
 	--taxonnames names.dmp \

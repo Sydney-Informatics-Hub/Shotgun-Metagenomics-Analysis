@@ -22,7 +22,7 @@
 
 #PBS -P <project>
 #PBS -N get-NR
-#PBS -l walltime=10:00:00
+#PBS -l walltime=05:00:00
 #PBS -l ncpus=1
 #PBS -l mem=8GB
 #PBS -W umask=022
@@ -45,12 +45,18 @@ wget https://ftp.ncbi.nlm.nih.gov/blast/db/FASTA/nr.gz
 echo Downloading nr.gz.md5
 wget https://ftp.ncbi.nlm.nih.gov/blast/db/FASTA/nr.gz.md5
 
+echo Checking md5sums for nr.gz:
+md5sum -c nr.gz.md5
+
+echo Unzipping nr.gz
+gunzip nr.gz
+
 echo Downloading prot.accession2taxid.FULL.gz
 wget ftp://ftp.ncbi.nlm.nih.gov/pub/taxonomy/accession2taxid/prot.accession2taxid.FULL.gz
 
 echo Downloading taxdmp.zip
 wget ftp://ftp.ncbi.nlm.nih.gov/pub/taxonomy/taxdmp.zip
 
-echo Checking md5sums for nr.gz
-md5sum -c nr.gz.md5
+echo Unzipping taxdmp.zip
+unzip taxdmp.zip
 

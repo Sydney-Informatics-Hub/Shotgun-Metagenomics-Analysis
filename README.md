@@ -846,7 +846,7 @@ Outputs are per-sample protein fasta and GFF files in the `./Prodigal_CDS` direc
 
 #### 7.2 Annotate genes
 
-Annotate predicted genes using NR protein database and Diamond. The NR database is compiled by the NCBI (National Center for Biotechnology Information) as a non-redundant database for BLAST searches. It contains non-identical sequences from GenBank CDS translations, PDB, Swiss-Prot, PIR, and PRF.
+Annotate predicted genes using NR protein database and Diamond. The NR protein database is compiled by the NCBI (National Center for Biotechnology Information) as a non-redundant database for BLAST searches. It contains non-identical sequences from GenBank CDS translations, PDB, Swiss-Prot, PIR, and PRF.
 
 ##### 7.2.1 Database set up
 
@@ -867,7 +867,7 @@ Open the script `./Scripts/diamond_makedb.pbs` and update the varaible `database
 qsub  ./Scripts/diamond_makedb.pbs
 ```
 
-This will unzip the database file `nr.gz` and run `diamond makedb` (which is not compatible with gz files), and output `nr.dmnd`. 
+This will run `diamond makedb` and output `nr.dmnd` in the location specifed at the `database_dir` variable. 
 
 
 ##### 7.2.2 Run diamond
