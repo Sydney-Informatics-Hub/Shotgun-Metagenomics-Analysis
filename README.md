@@ -805,7 +805,7 @@ Reports a separate R-compatible dataframe for TPM normalised and raw counts. Col
 perl ./Scripts/filter_ARGs_by_coverage_and_identity.pl
 
 ```
-Outputs are `./ARGs/Curated_ARGs/<cohort>_allSamples_curated_ARGs_rawCount_Rdataframe.txt` and `./ARGs/Curated_ARGs/$cohort\_allSamples_curated_ARGs_TPM_Rdataframe.txt`. 
+Outputs are `./ARGs/Curated_ARGs/<cohort>_allSamples_curated_ARGs_rawCount_Rdataframe.txt` and `./ARGs/Curated_ARGs/<cohort>_allSamples_curated_ARGs_TPM_Rdataframe.txt`. 
 
   
 If the cohort has groups (eg treatment groups or timepoints) and these are specified in column 5 of the sample config file, the below script can be run to additionally create a per-group output. Note that 'allSamples' in the cohort-level file name will be replaced by the group name in the output file name:
@@ -819,41 +819,50 @@ Output will be a separate R-compatible dataframe for TPM normalised and raw coun
 
 ### Part 7. Gene prediction
 
-__THIS PART IS UNDER TESTING__: The commands work but the scripts have not been productionized to be consistent with the rest of the pipeline. This is a work in progress!
+This part is used to predict genes that exist in the filtered contigs assembled with MEGAHIT. Gene prediction is performed with Prodigal and annotation is performed with DIAMOND, by using BLAST of the Prodical-predicted genes to NCBI's non-redundant (NR) database. This workflow processes multiple sample assemblies in parallel. The outputs of this part is used downstream in this workflow for Resistome calculation (part 8). 
 
-This part will be used to predict genes that exist in sample MEGAHIT assemblies. Gene prediction is performed with Prodigal and annotation is performed with DIAMOND, by BLAST'ing predicted genes to NCBI's NR database. This workflow processes multiple sample assemblies in parallel. The outputs of this part is used downstream in this workflow for Resistome calculation. 
+Predicted genes are output as protein sequences and annotation is performed using BLASTP as this was slighlty more computationally performant than other configurations tested.
 
 #### 7.1 Predict coding sequences
 
-Predict coding sequences within the filtered MEGAHIT contigs using Prodigal.
+Predict coding sequences within the filtered contigs using Prodigal. By default, protein sequences are generated and `-p meta` is applied. 
 
-Required inputs:
+There is no need to make a parallel inputs file, as the existing file `./Inputs/<cohort>_samples.list` will be used.
 
-```
-./Inputs/samples.list # simple list of sample identifiers, one ID per row. This is used to locate ../Assembly/${sample}/${sample}.filteredContigs.fa
-```
-
-`prodigal_cds_run_parallel.pbs` will run `prodigal_cds.sh` in parallel, taking your list of samples as input. By default, protein sequences are generated and `-p meta` is applied. Change the compute resources in `prodigal_cds_run_parallel.pbs` to scale with the number of samples you are processing. One sample requires 1 CPU, 4GB memory and ~30 minutes walltime.
+Change the compute resources in `prodigal_cds_run_parallel.pbs` to scale with the number of samples you are processing. One sample requires 1 CPU, 4GB memory and ~30 minutes walltime. Then submit:
 
 ```
-qsub prodigal_cds_run_parallel.pbs
+qsub ./Scripts/prodigal_cds_run_parallel.pbs
 ```
 
-Outputs:
+Check that each parallel task completed with exit status zero:
 
 ```
-../Prodigal_CDS/${sample}.CDS.prot.fa
-../Prodical_CDS/${sample}.CDS.gff
+grep "exited with status 0" ./Logs/prodigal_cds.e | wc -l
 ```
-* Note, output protein sequence and use BLASTP because this was slighlty more computationally performant than other configurations tested
+
+Outputs are per-sample protein fasta and GFF files in the `./Prodigal_CDS` directory. 
+
 
 #### 7.2 Annotate genes
 
-Annotate predicted genes using NR (non-redundant) protein database and Diamond. The NR database is compiled by the NCBI (National Center for Biotechnology Information) as a protein database for Blast searches. It contains non-identical sequences from GenBank CDS translations, PDB, Swiss-Prot, PIR, and PRF.
+Annotate predicted genes using NR protein database and Diamond. The NR database is compiled by the NCBI (National Center for Biotechnology Information) as a protein database for BLAST searches. It contains non-identical sequences from GenBank CDS translations, PDB, Swiss-Prot, PIR, and PRF.
 
-#### First time set up
+##### 7.2.1 Database set up
 
-The steps below only need to be performed once per database:
+The steps below only need to be performed once per database. If you already have access to a recent NR database on Gadi, you may skip downloading and just update to that path within the script `diamond_taxon.pbs`. 
+
+If you need to download, first specifiy a download location in the below script at the `download_to` variable, and then submit:
+
+```
+qsub ./Scripts/wget_nr_database.pbs
+```
+
+The download should take around 1 hour using Gadi's copy queue. Check the log file `./Logs/download_NR.o` to confirm that the md5sum for nr.gz matches the source. Resubmit if the sums do not match. 
+
+
+
+
 
 * Download the NR database from NCBI. An example script is provided in `wget.pbs`. I recommend also downloading `.md5` files to perform checksums
 * Perform checksums to confirm that the database was downloaded successfully `md5sum -c nr.gz.md5`

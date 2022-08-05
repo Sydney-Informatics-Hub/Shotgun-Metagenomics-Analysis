@@ -1,13 +1,11 @@
 #!/bin/bash
 
-set -e
-
 #########################################################
 #
 # Platform: NCI Gadi HPC
-# Description: Predict CDS in FASTA using prodigal
-#
-# Author: Tracy Chew
+# Description: see https://github.com/Sydney-Informatics-Hub/Shotgun-Metagenomics-Analysis
+# 
+# Author/s: Tracy Chew
 # tracy.chew@sydney.edu.au
 #
 # If you use this script towards a publication, please acknowledge the
@@ -22,14 +20,17 @@ set -e
 #
 #########################################################
 
+set -e
+
 sample=$1
 
-contig=../Assembly/${sample}/${sample}.filteredContigs.fa
-outdir=../Prodigal_CDS
+contigs=./Assembly/${sample}/${sample}.filteredContigs.fa
+outdir=./Prodigal_CDS
 
 prodigal -p meta \
-        -i ${contig} \
+        -i ${contigs} \
         -f gff \
+	-q \
         -a ${outdir}/${sample}.CDS.prot.fa \
         -o ${outdir}/${sample}.CDS.gff
 
