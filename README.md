@@ -850,52 +850,48 @@ Annotate predicted genes using NR protein database and Diamond. The NR database 
 
 ##### 7.2.1 Database set up
 
-The steps below only need to be performed once per database. If you already have access to a recent NR database on Gadi, you may skip downloading and just update to that path within the script `diamond_taxon.pbs`. 
+The steps below only need to be performed once per database. If you already have access to a recent NR database on Gadi, you may skip downloading. If that database has also been formatted with diamond `makedb` you can skip that step also, and proceed to BLASTP, ensuring you specify the correct database location.  
 
-If you need to download, first specifiy a download location in the below script at the `download_to` variable, and then submit:
+If you need to download, first specifiy a download location (with at least 200 GB free) in the below script at the `database_dir` variable, and then submit:
 
 ```
-qsub ./Scripts/wget_nr_database.pbs
+qsub ./Scripts/download_nr_database.pbs
 ```
 
-The download should take around 1 hour using Gadi's copy queue. Check the log file `./Logs/download_NR.o` to confirm that the md5sum for nr.gz matches the source. Resubmit if the sums do not match. 
+The download should take around 1 hour using Gadi's copy queue. Check the log file `./Logs/download_NR.o` to confirm that the md5sum for nr.gz matches the source (should read "nr.gz: OK"). Resubmit if the sums do not match. 
 
 
+Open the script `./Scripts/diamond_makedb.pbs` and update the varaible `database_dir` to the download location specified in the previous script. Then format the NR database for use with diamond by submitting:
 
+```
+qsub  ./Scripts/diamond_makedb.pbs
+```
 
+This will unzip nr.gz and run `diamond makedb` (which is not compatible with gz files), and output `nr.dmnd`. 
 
-* Download the NR database from NCBI. An example script is provided in `wget.pbs`. I recommend also downloading `.md5` files to perform checksums
-* Perform checksums to confirm that the database was downloaded successfully `md5sum -c nr.gz.md5`
-* Run `diamond_makedb.pbs`. This will unzip and run `diamond makedb` (which is not compatible with gz files). This will output `nr.dmnd`
+#### 7.2.2 Run diamond
 
-#### Run diamond blastp
-
-Use BLASTP to query sample CDS to NCBI NR. One top match per CDS is reported if it meets these cut-off criteria:
+Use BLASTP to query the putative protein sequences predicted with Prodigal against the NCBI NR database. One top match per coding sequence is reported if it meets the following cut-off criteria:
 
 * 75 % identity
 * 75 % query covery
 * 1E-6 Evalue
 
-Required inputs (change to your inputs):
+There is no need to make a parallel inputs file for this step, as the existing file `./Inputs/<cohort>_samples.list` will be used.
+
+Open the script `./Scripts/diamond_taxon.pbs` and update the varaible `database_dir` to the NR database location specified in the previous scripts. If you are using a previously constructed database, please make sure that the script correctly accesses the filepaths for the files `nr.dmnd` and `prot.accession2taxid.FULL.gz`. 
+
+
+Once you have updated the database path/s in the above script, run:
 
 ```
-./Inputs/samples.list # In diamond_submit_jobs.sh. Used to locate prodigal output contig=../Prodigal_CDS/${sample}.CDS.prot.fa
-nr=/scratch/er01/apps/diamond/NCBI/nr.dmnd # edit in diamond_taxon.pbs
-taxonmap=/scratch/er01/apps/diamond/NCBI/prot.accession2taxid.FULL.gz # edit in diamond_taxon.pbs
+bash ./Scripts/diamond_submit_jobs.sh
 ```
 
-Once you have updated the paths to your input files in the above scripts, run:
+This script will submit one `diamond_taxon.pbs` job per sample. Due to the highly variable walltimes that cannot be attributed to any feature of the input data, we do not use nci.parallel or openmpi here. Leave compute resources as default.
 
-```
-sh ./diamond_submit_jobs.sh
-```
-This script will submit one `diamond_taxon.pbs` per sample. Due to the highly variable walltimes that cannot be attributed to any feature of the input data, we do not use nci.parallel or openmpi here. Leave compute resources as default.
+Outputs are per-sample DIAMOND.tsv files within the directory `./Diamond_NCBI`.
 
-Output per sample:
-
-```
-../Diamond_NCBI/${sample}.DIAMOND.tsv
-```
 
 ### Part 8. Resistome calculation
 

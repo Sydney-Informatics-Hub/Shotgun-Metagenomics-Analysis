@@ -1,7 +1,5 @@
 #!/bin/bash
 
-set -e
-
 #########################################################
 #
 # Platform: NCI Gadi HPC
@@ -22,22 +20,30 @@ set -e
 #########################################################
 
 #PBS -P <project>
-#PBS -l walltime=10:00:00
+#PBS -N makedb
+#PBS -l walltime=02:00:00
 #PBS -l ncpus=48
 #PBS -l mem=190GB
 #PBS -W umask=022
 #PBS -q normal
 #PBS -l wd
+#PBS -o ./Logs/diamond_makedb.o
+#PBS -e ./Logs/diamond_makedb.e
 #PBS -lstorage=scratch/<project>
-#PBS -N diamond_makedb
 
 module load diamond/2.0.11
+
+set -e
+
+# Change path to your diamond makedb output and NCBI database:
+database_dir=./NCBI_NR
+
+cd $database_dir
 
 FASTA=nr.gz
 out=diamond_ncbi
 
-# Doesn't seem to work with gzipped files, unzip first
-
+# Doesn't seem to work with gzipped files:
 gunzip ${FASTA}
 
 diamond makedb \
