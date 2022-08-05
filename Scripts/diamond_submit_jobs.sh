@@ -1,15 +1,9 @@
 #!/bin/bash
 
-# BLAST Sample CDS contigs (Prodigal) to
-# NCBI NR protein DB using DIAMOND
-# Due to extremley variable walltimes (that cannot be correlated
-# with any attribute of the data eg size) not using parallel mode
-
-set -e
-
 #########################################################
 #
 # Platform: NCI Gadi HPC
+# Description: see https://github.com/Sydney-Informatics-Hub/Shotgun-Metagenomics-Analysis
 #
 # Author: Tracy Chew
 # tracy.chew@sydney.edu.au
@@ -26,18 +20,20 @@ set -e
 #
 #########################################################
 
-samples=$(awk '{print $1}' ./Inputs/samples.list)
-samples=(${samples})
+set -e
+
+inputs=./Inputs/<cohort>_samples.list
+
 logdir=./Logs/Diamond_NCBI
+script=./Scripts/diamond_taxon.pbs
 
 mkdir -p ${logdir}
-mkdir -p ../Diamond_NCBI
+mkdir -p ./Diamond_NCBI
 
-for (( i = 0; i < ${#samples[@]}; i++ ))
+while read sample
 do
-        sample=${samples[$i]}
         echo Submitting diamond for $sample
-        qsub -N d-${sample} -o ${logdir}/${sample}.o -e ${logdir}/${sample}.e -v sample="$sample" ./diamond_taxon.pbs
+        qsub -N d-${sample} -o ${logdir}/${sample}.diamond.o -e ${logdir}/${sample}.diamond.e -v sample="$sample" ${script}
         sleep 1
         echo
-done
+done < $inputs

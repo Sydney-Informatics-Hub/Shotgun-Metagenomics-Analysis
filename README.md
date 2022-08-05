@@ -819,9 +819,9 @@ Output will be a separate R-compatible dataframe for TPM normalised and raw coun
 
 ### Part 7. Gene prediction
 
-This part is used to predict genes that exist in the filtered contigs assembled with MEGAHIT. Gene prediction is performed with Prodigal and annotation is performed with DIAMOND, by using BLAST of the Prodical-predicted genes to NCBI's non-redundant (NR) database. This workflow processes multiple sample assemblies in parallel. The outputs of this part is used downstream in this workflow for Resistome calculation (part 8). 
+This part is used to predict genes that exist in the filtered contigs assembled with MEGAHIT. Gene prediction is performed with Prodigal and annotation is performed with DIAMOND, by using BLAST of the Prodigal-predicted genes to NCBI's non-redundant (NR) database. This workflow processes multiple sample assemblies in parallel. The outputs of this part are used downstream in this workflow for Resistome calculation (part 8). 
 
-Predicted genes are output as protein sequences and annotation is performed using BLASTP as this was slighlty more computationally performant than other configurations tested.
+Predicted genes are output as protein sequences and annotation is performed using BLASTP as this was slightly more computationally performant than other configurations tested.
 
 #### 7.1 Predict coding sequences
 
@@ -829,7 +829,7 @@ Predict coding sequences within the filtered contigs using Prodigal. By default,
 
 There is no need to make a parallel inputs file, as the existing file `./Inputs/<cohort>_samples.list` will be used.
 
-Change the compute resources in `prodigal_cds_run_parallel.pbs` to scale with the number of samples you are processing. One sample requires 1 CPU, 4GB memory and ~30 minutes walltime. Then submit:
+Change the compute resources in `Scripts/prodigal_cds_run_parallel.pbs` to scale with the number of samples you are processing. One sample requires 1 CPU, 4GB memory and ~30 minutes walltime. Then submit:
 
 ```
 qsub ./Scripts/prodigal_cds_run_parallel.pbs
@@ -846,13 +846,13 @@ Outputs are per-sample protein fasta and GFF files in the `./Prodigal_CDS` direc
 
 #### 7.2 Annotate genes
 
-Annotate predicted genes using NR protein database and Diamond. The NR database is compiled by the NCBI (National Center for Biotechnology Information) as a protein database for BLAST searches. It contains non-identical sequences from GenBank CDS translations, PDB, Swiss-Prot, PIR, and PRF.
+Annotate predicted genes using NR protein database and Diamond. The NR database is compiled by the NCBI (National Center for Biotechnology Information) as a non-redundant database for BLAST searches. It contains non-identical sequences from GenBank CDS translations, PDB, Swiss-Prot, PIR, and PRF.
 
 ##### 7.2.1 Database set up
 
 The steps below only need to be performed once per database. If you already have access to a recent NR database on Gadi, you may skip downloading. If that database has also been formatted with diamond `makedb` you can skip that step also, and proceed to BLASTP, ensuring you specify the correct database location.  
 
-If you need to download, first specifiy a download location (with at least 200 GB free) in the below script at the `database_dir` variable, and then submit:
+If you need to download, first specify a download location with at least ~1 TB GB free; the database is large (and continually growing) and we require space for a .gz copy, an unzipped copy and a diamond-formatted copy. Update the download location in the below script at the `database_dir` variable, and then submit:
 
 ```
 qsub ./Scripts/download_nr_database.pbs
@@ -867,9 +867,10 @@ Open the script `./Scripts/diamond_makedb.pbs` and update the varaible `database
 qsub  ./Scripts/diamond_makedb.pbs
 ```
 
-This will unzip nr.gz and run `diamond makedb` (which is not compatible with gz files), and output `nr.dmnd`. 
+This will unzip the database file `nr.gz` and run `diamond makedb` (which is not compatible with gz files), and output `nr.dmnd`. 
 
-#### 7.2.2 Run diamond
+
+##### 7.2.2 Run diamond
 
 Use BLASTP to query the putative protein sequences predicted with Prodigal against the NCBI NR database. One top match per coding sequence is reported if it meets the following cut-off criteria:
 

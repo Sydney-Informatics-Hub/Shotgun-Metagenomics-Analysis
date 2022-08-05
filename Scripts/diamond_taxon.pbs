@@ -1,14 +1,9 @@
 #!/bin/bash
 
-# Submit multiple jobs with diamond_submit_jobs.sh
-# BLAST contigs to
-# NCBI NR protein DB using DIAMOND
-
-set -e
-
 #########################################################
 #
 # Platform: NCI Gadi HPC
+# Description: see https://github.com/Sydney-Informatics-Hub/Shotgun-Metagenomics-Analysis
 #
 # Author: Tracy Chew
 # tracy.chew@sydney.edu.au
@@ -31,33 +26,34 @@ set -e
 #PBS -l mem=128GB
 #PBS -q normalbw
 #PBS -W umask=022
-#PBS -l wd
-#PBS -lstorage=scratch/qq47+scratch/er01
 #PBS -l jobfs=400GB
+#PBS -l wd
+#PBS -l storage=scratch/<project>
 
 set -e
 
 module load diamond/2.0.11
 
-# sample is parsed with qsub -v
-# Change paths to your diamond makedb output and NCBI database
-nr=/path/to/diamond/NCBI/nr.dmnd
-taxonmap=/path/to/diamond/NCBI/prot.accession2taxid.FULL.gz
+# Change paths to your diamond makedb output and NCBI database:
+database_dir=./NCBI_NR
 
-contig=../Prodigal_CDS/${sample}.CDS.prot.fa
-outdir=../Diamond_NCBI
+nr=${database_dir}/nr.dmnd
+taxonmap=${database_dir}/prot.accession2taxid.FULL.gz
+
+contigs=./Prodigal_CDS/${sample}.CDS.prot.fa
+outdir=./Diamond_NCBI
 TMPDIR=${PBS_JOBFS}/tmp
 PTMPDIR=${PBS_JOBFS}/ptmp
 
 out=${outdir}/${sample}.DIAMOND.tsv
 
-mkdir -p ${TMPDIR} ${PTMPDIR} ${outdir}
+mkdir -p ${TMPDIR} ${PTMPDIR}
 
 diamond blastp \
-	--threads ${PBS_NCPUS} \
+	--threads ${NCPUS} \
 	--db ${nr} \
 	--taxonmap ${taxonmap} \
-	--query ${contig} \
+	--query ${contigs} \
 	--max-target-seqs 1 \
 	--outfmt 6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore staxids sscinames sskingdoms skingdoms sphylums \
 	--evalue 0.00001 \
