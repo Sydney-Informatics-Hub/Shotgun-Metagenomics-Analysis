@@ -786,10 +786,10 @@ Output will be a separate TSV file for every group, `./ARGs/Curated_ARGs/<cohort
 
 ##### 6.4.6 Descriptive statistics  
 
-Print descriptive stats of curated-ARG-containing contigs. 
+Print descriptive statistics (counts and lengths) of curated-ARG-containing contigs. 
 
 ```
-perl ARG_contig_length_stats.pl
+perl ./Scripts/ARG_contig_length_stats.pl
 ```
 Output is a single file for all samples in cohort, containing the count, mean, standard deviation, min and max lengths for all contigs and for ARG-containing contigs, `./ARGs/Curated_ARGs/<cohort>_allSamples_curated_ARGs_contig_length_stats.txt`. 
 
