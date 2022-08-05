@@ -742,7 +742,7 @@ This will convert the HTseq-count output into a 3-column text file per sample (I
 It will also check that the ARGs counted matches the number of ARGs in the the input GFF, printing a fatal error if a mismatch is found. 
 
 ```
-bash reformat_ARG_read_counts.sh
+bash ./Scripts/reformat_ARG_read_counts.sh
 ```
 
 Output files are `./ARGs/ARG_read_counts/<sample>.curated_ARGs.reformat.counts` and are used as input to the normalisation step. 
@@ -972,13 +972,13 @@ The following scripts will annotate the putative IS seqeunces with contig ID and
 Create new per-sample and per-cohort output with contig and species: 
 
 ```
-perl collate_IS_annotation_with_species.pl
+perl ./Scripts/collate_IS_annotation_with_species.pl
 ```
 
 If the cohort has groups (eg treatment groups or timepoints) and these are specified in column 5 of the sample config file, the below script can be run to additionally create a per-group TSV of the IS annotation with species output:
 
 ```
-perl collate_IS_annotation_with_species_by_groups.pl
+perl ./Scripts/collate_IS_annotation_with_species_by_groups.pl
 ```
 
 Output will be TSV files in `./Insertion_sequences/Filtered_IS_with_species`, per sample, per cohort, and per group if relevant. 
