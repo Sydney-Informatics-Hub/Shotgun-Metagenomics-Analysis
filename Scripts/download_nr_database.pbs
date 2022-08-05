@@ -1,16 +1,11 @@
 #!/bin/bash
 
-# Submit this script multiple times automatically
-# with transfer_multiple.pbs
-# This is a Gadi data transfer script
-
-set -e
-
 #########################################################
 #
 # Platform: NCI Gadi HPC
+# Description: see https://github.com/Sydney-Informatics-Hub/Shotgun-Metagenomics-Analysis
 #
-# Author: Tracy Chew
+# Author/s: Tracy Chew
 # tracy.chew@sydney.edu.au
 #
 # If you use this script towards a publication, please acknowledge the
@@ -26,18 +21,36 @@ set -e
 #########################################################
 
 #PBS -P <project>
+#PBS -N get-NR
 #PBS -l walltime=10:00:00
 #PBS -l ncpus=1
 #PBS -l mem=8GB
 #PBS -W umask=022
 #PBS -q copyq
 #PBS -l wd
-#PBS -lstorage=gdata/<project>
-#PBS -N wget
+#PBS -o ./Logs/download_NR.o
+#PBS -e ./Logs/download_NR.e
+#PBS -l storage=scratch/<project>
 
+set -e
+
+download_to=./NCBI_NR
+
+mkdir -p $download_to
+cd $download_to
+
+echo Downloading nr.gz
 wget https://ftp.ncbi.nlm.nih.gov/blast/db/FASTA/nr.gz
+
+echo Downloading nr.gz.md5
 wget https://ftp.ncbi.nlm.nih.gov/blast/db/FASTA/nr.gz.md5
 
-# Optional
+echo Downloading prot.accession2taxid.FULL.gz
 wget ftp://ftp.ncbi.nlm.nih.gov/pub/taxonomy/accession2taxid/prot.accession2taxid.FULL.gz
+
+echo Downloading taxdmp.zip
 wget ftp://ftp.ncbi.nlm.nih.gov/pub/taxonomy/taxdmp.zip
+
+echo Checking md5sums for nr.gz
+md5sum -c nr.gz.md5
+
