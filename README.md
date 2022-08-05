@@ -752,7 +752,7 @@ Output files are `./ARGs/ARG_read_counts/<sample>.curated_ARGs.reformat.counts` 
 Normalise the ARG read count data with transcript per million (TPM) and reads per kilobase million (RPKM).
 
 ```
-perl normalise_ARG_read_counts.pl
+perl ./Scripts/normalise_ARG_read_counts.pl
 ```
 
 Output is `./ARGs/ARG_read_counts/<sample>.curated_ARGs.counts.norm` per sample as well as `./ARGs/ARG_read_counts/<cohort>_allSamples.curated_ARGs.counts.norm` containing all samples in cohort. 
