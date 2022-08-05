@@ -34,10 +34,10 @@
 
 set -e
 
-download_to=./NCBI_NR
+database_dir=./NCBI_NR
 
-mkdir -p $download_to
-cd $download_to
+mkdir -p $database_dir
+cd $database_dir
 
 echo Downloading nr.gz
 wget https://ftp.ncbi.nlm.nih.gov/blast/db/FASTA/nr.gz
