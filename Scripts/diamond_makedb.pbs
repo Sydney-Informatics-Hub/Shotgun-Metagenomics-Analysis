@@ -21,7 +21,7 @@
 
 #PBS -P <project>
 #PBS -N makedb
-#PBS -l walltime=02:00:00
+#PBS -l walltime=05:00:00
 #PBS -l ncpus=48
 #PBS -l mem=190GB
 #PBS -W umask=022
