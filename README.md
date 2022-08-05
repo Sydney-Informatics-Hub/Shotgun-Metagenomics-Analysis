@@ -775,7 +775,7 @@ perl ./Scripts/reformat_norm_ARG_with_species.pl
  
 Output will be `./ARGs/Curated_ARGs/<sample>.curated_ARGs.txt` for each sample, and a cohort level file `./ARGs/Curated_ARGs/<cohort>_allSamples.curated_ARGs.txt`.
   
-If the cohort has groups (eg treatment groups or timepoints) and these are specified in column 5 of the sample config file, the below script can be run to additionally create a per-group output. Note that 'allSamples' in the cohort-level file name will be replaced by the group name in the output:
+If the cohort has groups (eg treatment groups or timepoints) and these are specified in column 5 of the sample config file, the below script can be run to additionally create a per-group output. Note that 'allSamples' in the cohort-level file name will be replaced by the group name in the output file name:
 
 ```
 perl ./Scripts/reformat_norm_ARG_with_species_by_groups.pl
@@ -802,16 +802,16 @@ Reports a separate R-compatible dataframe for TPM normalised and raw counts. Col
 
 
 ```
-perl filter_ARGs_by_coverage_and_identity.pl
+perl ./Scripts/filter_ARGs_by_coverage_and_identity.pl
 
 ```
 Outputs are `./ARGs/Curated_ARGs/<cohort>_allSamples_curated_ARGs_rawCount_Rdataframe.txt` and `./ARGs/Curated_ARGs/$cohort\_allSamples_curated_ARGs_TPM_Rdataframe.txt`. 
 
   
-If the cohort has groups (eg treatment groups or timepoints) and these are specified in column 5 of the sample config file, the below script can be run to additionally create a per-group output. Note that 'allSamples' in the cohort-level file name will be replaced by the group name in the output:
+If the cohort has groups (eg treatment groups or timepoints) and these are specified in column 5 of the sample config file, the below script can be run to additionally create a per-group output. Note that 'allSamples' in the cohort-level file name will be replaced by the group name in the output file name:
 
 ```
-perl filter_ARGs_by_coverage_and_identity_by_groups.pl
+perl ./Scripts/filter_ARGs_by_coverage_and_identity_by_groups.pl
 ```
 
 Output will be a separate R-compatible dataframe for TPM normalised and raw counts per group, also within the `./ARGs/Curated_ARGs` directory. 
