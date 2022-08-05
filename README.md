@@ -757,10 +757,10 @@ perl ./Scripts/normalise_ARG_read_counts.pl
 
 Output is `./ARGs/ARG_read_counts/<sample>.curated_ARGs.counts.norm` per sample as well as `./ARGs/ARG_read_counts/<cohort>_allSamples.curated_ARGs.counts.norm` containing all samples in cohort. 
 
-If the cohort has groups (eg treatment groups or timepoints) and these are specified in column 5 of the sample config file, the below script can be run to additionally create a per-group output. Note that 'allSamples' in the cohort-level file name will be replaced by the group name in the output:
+If the cohort has groups (eg treatment groups or timepoints) and these are specified in column 5 of the sample config file, the below script can be run to additionally create a per-group output. The per-group output files will have the same output name format as above, but 'allSamples' will be replaced by the group names:
 
 ```
-perl collate_normalised_ARG_read_counts_by_groups.pl
+perl ./Scripts/collate_normalised_ARG_read_counts_by_groups.pl
 ```
 
 Output will be a separate normalised counts file for every group, `./ARGs/ARG_read_counts/<cohort>_<group>.curated_ARGs.counts.norm`.
@@ -770,7 +770,7 @@ Output will be a separate normalised counts file for every group, `./ARGs/ARG_re
 For every curated ARG, find the contig that that gene resides on and print out new TSV with gene, species, contig, number of reads mapping to that contig as well as normalised count data. 
  
 ```
-perl reformat_norm_ARG_with_species.pl
+perl ./Scripts/reformat_norm_ARG_with_species.pl
 ```
  
 Output will be `./ARGs/Curated_ARGs/<sample>.curated_ARGs.txt` for each sample, and a cohort level file `./ARGs/Curated_ARGs/<cohort>_allSamples.curated_ARGs.txt`.
@@ -778,7 +778,7 @@ Output will be `./ARGs/Curated_ARGs/<sample>.curated_ARGs.txt` for each sample, 
 If the cohort has groups (eg treatment groups or timepoints) and these are specified in column 5 of the sample config file, the below script can be run to additionally create a per-group output. Note that 'allSamples' in the cohort-level file name will be replaced by the group name in the output:
 
 ```
-perl reformat_norm_ARG_with_species_by_groups.pl
+perl ./Scripts/reformat_norm_ARG_with_species_by_groups.pl
 ```
 
 Output will be a separate TSV file for every group, `./ARGs/Curated_ARGs/<cohort>_<group>.curated_ARGs.txt`.

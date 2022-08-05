@@ -24,10 +24,11 @@ use warnings;
 use strict;
 
 my $cohort = '<cohort>'; 
+`mkdir -p ./ARGs/Curated_ARGs`;	
 
 #1) Collect ARG data from curated list: 
 my $curated = './Inputs/curated_ARGs_list.txt';
-print "Collecting curated ARGs from $curated\n"; 
+print "Collecting curated ARGs from $curated\n\n"; 
 
 my $genehash = {}; 
 my $dup = 0;
@@ -68,8 +69,9 @@ my $all_cat = '';
 my $specieshash = {};
 my $countshash = {}; 
 foreach my $sample (@samples) {
+	print "Working on sample $sample\n"; 
 	# Collect species ID of contigs:
-	print "Collecting species for $sample...\n"; 
+	print "\tCollecting species...\n"; 
 	my $kraken = "./Speciation_contigs/$sample\/$sample\.kraken2.standard.out";
 	undef %{$specieshash}; 
 	undef %{$countshash}; 
@@ -81,12 +83,12 @@ foreach my $sample (@samples) {
 			$specieshash->{$contig}->{species} = $species; 
 		} 
 		else {
-			print "Duplicate entries for $contig - terminating, please fix this script\n"; die; 
+			print "\tDuplicate entries for $contig - terminating, please fix this script\n"; die; 
 		}
 	} close I;	
 	
 	# Collect counts
-	print "Collecting normalised and raw ARG read counts for $sample...\n";
+	print "\tCollecting normalised and raw ARG read counts...\n";
 	my $counts = "./ARGs/ARG_read_counts/$sample\.curated_ARGs.counts.norm";
 	open (C, $counts) || die "$! $counts\n"; 
 	chomp (my $header = <C>);
@@ -106,12 +108,12 @@ foreach my $sample (@samples) {
 		$countshash->{"$gene\_$contig\_$start\_$end\_$strand"}->{rpkm} = $rpkm;	
 	} close C; 
 	
-	print "Writing collated ARG and species data for $sample...\n"; 
+	my $out = "./ARGs/Curated_ARGs/$sample\.curated_ARGs.txt";
+	print "\tWriting collated ARG and species data to $out\n"; 
 	my $args = "./ARGs/Abricate/$sample\/$sample\.ARGs.txt"; # all databases collated previosuly into one TSV per sample
 	open (I, $args) || die "$! $args\n";
-	my $out = "./ARGs/Curated_ARGs/$sample\.curated_ARGs.txt";
 	$all_cat .= " $out"; 
-	open (OUT, ">$out") || "$! write $out\n"; 
+	open (OUT, ">$out") || die "$! write $out\n"; 
 	print OUT "#Sample\tGene\tResistance_mechanism\tDrug_class\tSpecies\tContig\tStart\tEnd\tStrand\tRaw_count\tTPM\tRPKM\tCoverage\tCoverage_map\tGaps\t%Coverage\t%Identity\tDatabase\tAccession\tProduct\tResistance\n"; 	
 	chomp ($header = <I>); 
 	while (my $line = <I>) {
@@ -141,6 +143,7 @@ foreach my $sample (@samples) {
 
 # Print per cohort:	
 my $all_out = "./ARGs/Curated_ARGs/$cohort\_allSamples.curated_ARGs.txt";
+print "\nWriting collated ARG and species data for cohort $cohort to $all_out\n"; 
 open (A, ">$all_out") || die "$! write $all_out\n"; 
 print A "#Sample\tGene\tResistance_mechanism\tDrug_class\tSpecies\tContig\tStart\tEnd\tStrand\tRaw_count\tTMP\tRPKM\tCoverage\tCoverage_map\tGaps\t%Coverage\t%Identity\tDatabase\tAccession\tProduct\tResistance\n"; 	
 close A; 
