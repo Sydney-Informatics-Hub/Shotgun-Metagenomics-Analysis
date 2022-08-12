@@ -874,8 +874,8 @@ This will run `diamond makedb` and output `nr.dmnd` in the location specifed at 
 
 Use BLASTP to query the putative protein sequences predicted with Prodigal against the NCBI NR database. One top match per coding sequence is reported if it meets the following cut-off criteria:
 
-* 75 % identity
-* 75 % query covery
+* 75% identity
+* 75% query covery
 * 1E-6 Evalue
 
 There is no need to make a parallel inputs file for this step, as the existing file `./Inputs/<cohort>_samples.list` will be used.
@@ -891,55 +891,40 @@ bash ./Scripts/diamond_submit_jobs.sh
 
 This script will submit one `diamond_taxon.pbs` job per sample. Due to the highly variable walltimes that cannot be attributed to any feature of the input data, we do not use nci.parallel or openmpi here. Leave compute resources as default.
 
-Outputs are per-sample DIAMOND.tsv files within the directory `./Diamond_NCBI`.
+Outputs are per-sample DIAMOND.tsv files within the directory `./Diamond_NCBI`. Check that all samples have an exit status of 0 in their PBS .o log within the directory `./Logs/Diamond_NCBI`. 
 
 
 ### Part 8. Resistome calculation
 
-__THIS PART IS UNDER TESTING__: The commands work but the scripts have not been productionized to be consistent with the rest of the pipeline. We would also like to make this part more interoperable to other experimental types. This is a work in progress!
+This part is to determine the resistome (%) per sample, defined by: 
 
-This part is to determine the resistome (%) per sample, defined by: __Total ARGs/ Total Genes * 100__
+__Resistome % = Total ARGs/ Total Genes * 100__
 
-Total genes that exist in each sample assembly are identified in "Gene prediction", upstream in this workflow. This was done by matching predicted gene sequences to the NCBI NR database. This step __filters for high quality matches by including only genes with a hit length of > 25__.
+Total genes that exist in each sample assembly are first identified in Part 7 Gene prediction. This was done by matching predicted gene sequences to the NCBI NR database and __filtering for high quality matches by including only genes with a hit length of > 25__.
 
-To detemine which of the total genes above are ARGs, we use the output in "Antimicrobial resistance genes", upstream in this workflow. There is no mechanism to obtain a perfect match - ARGs are determined by matching to a different database (NCBI AMRFinder Plus, Resfinder and CARD using ABRICATE) with different annotations to NCBI NR (e.g. gene names are slightly different, different accession IDs are used). Therefore, high quality matches are determined if:
+To detemine which of the total genes above are ARGs, we use the output from Part 6 Antimicrobial resistance genes. There is no mechanism to obtain a perfect match - ARGs are determined by matching to a different database collection (NCBI AMRFinder Plus, Resfinder, and CARD, identified with ABRicate) with different annotations to NCBI NR (e.g. gene names are slightly different, different accession IDs are used). Therefore, high quality matches are determined if the:
 
-* predicted gene start (determined with Prodigal) matches ABRICATE start; OR
-* predicted gene end (detemined with Prodigal) matches ABRICATE end
+* Predicted gene start (determined with Prodigal) matches ABRicate start; OR
+* Predicted gene end (detemined with Prodigal) matches ABRicate end
 
-for each MEGAHIT contig in the sample. This part is performed for a list of samples with `match_ARGs_to_diamond_cds.pl`.
+There is no need to make an inputs file for this step, as the existing file `./Inputs/<cohort>.config` will be used. If there is timepoint/grouping information specified in column 5 of the sample configuration file, this will be annotated in the output in column 2. If your cohort has no grouping specified, the 'Group' label in column 2 of the output will be 'NA'.
 
-Required inputs:
-
-```
-./Inputs/samples.list # please change in match_ARGs_to_diamond_cds.pl
-./Inputs/*/samples.list # used to obtain analysis set, to find curated ARG output, generated upstream in the workflow ../../$analysis_set\_analysis_Aug21/Curated_ARGs/$sampleid\.curated_ARGs.txt
-./Inputs/$analysis_set\/*_samples.list # Used to identify the timepoint the sample belonged to, *_samples.list should be named T1_samples.list, T2_samples.list, etc and contain a simple list of sample IDs belonging to a timepoint group
-../Diamond_NCBI/$sampleid\.DIAMOND.tsv # output generated in "Gene prediction"
-../Prodigal_CDS/$sampleid\.CDS.gff # output generated in "Gene prediction"
+If you have a small number of samples in your cohort (<100), you can run this on the login node. Processing is around 3 seconds per sample:
 
 ```
-
-Outputs:
-
-```
-../Diamond_NCBI_ARGs/$sampleid\.DIAMOND_ARGs.txt # per sample results, with the headers: Contig\tProdigal_CDS\tSpecies\tGene\tARG_start\tARG_end\tProdigal_start\tProdigal_end
-../Diamond_NCBI_ARGs/Allsamples_resistome.txt # summary of results, with the headers: $sampleid\t$timepoint\t$ARG_match\t$total_diamond\t$failed_length\t$resistome\n
+perl ./Scripts/match_ARGs_to_diamond_cds.pl
 ```
 
-If you have a small number of samples in `samples.list` (<100), you can run this on the login node:
+If you have >100 samples in your cohort, this should be run on the compute nodes. Update the walltime depending on your number of samples (as a guide, 550 samples requires ~ 50 minutes):
+
 ```
-perl match_ARGs_to_diamond_cds.pl
+qsub ./Scripts/match_ARGs_to_diamond_cds.pbs
 ```
 
-If you have a large number of samples in `samples.list` (>100), I would recommend running this in a job as longer walltimes are required:
-```
-qsub match_ARGs_to_diamond_cds.pbs
-```
-By default, the compute settings are sufficient for ~550 samples (1 CPU, 4 Gb mem, ~50 min walltime).
-
+Outputs are per-sample TSV files within `./Diamond_NCBI_ARGs` and an all-cohort summary file `./Diamond_NCBI_ARGs/Allsamples_resistome.txt`.
 
 ### Part 9. Insertion seqeunce (IS) elements
+
 This step annotates putative insertion sequence elements on the filtered assemblies using [Prokka annotation tool](https://github.com/tseemann/prokka) and [ISfinder sequence database](https://github.com/thanhleviet/ISfinder-sequences).
 
 #### 9.1 Download the IS database
