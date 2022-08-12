@@ -29,8 +29,8 @@ awk 'NR>1' ${config} | while read LINE
 do 
         sample=`echo $LINE | cut -d ' ' -f 1`
         labSampleID=`echo $LINE | cut -d ' ' -f 2`
-        platform=`echo $LINE | cut -d ' ' -f 4`
-	centre=`echo $LINE | cut -d ' ' -f 5`
+        platform=`echo $LINE | cut -d ' ' -f 3`
+	centre=`echo $LINE | cut -d ' ' -f 4`
         lib=1
 	
 	printf "${labSampleID},${platform},${centre},${lib}\n" >> $inputs

@@ -34,9 +34,9 @@ my $raw_reads = 0;
 foreach my $pair (@pairs) {
 	chomp $pair; 
 	$pair=`basename $pair`; 
-	chomp $pair;  
-	my $qc_dir = "./FastQC/$pair"; 
-	$qc_dir =~s/\.fastq.gz/\_fastqc/; 
+	chomp $pair;
+	$pair =~s/\.fastq.gz//;  
+	my $qc_dir = "./FastQC/$pair\/$pair\_fastqc"; 
 	my $qc_data = "$qc_dir\/fastqc_data.txt";   
 	my $r1 = `grep "Total Sequences" $qc_dir\/fastqc_data.txt | awk '{print \$(NF)}'`;
 	chomp $r1;

@@ -20,27 +20,23 @@
 #
 #########################################################
 
-set -e
+sample=`echo $1 | cut -d ',' -f 1` 
+mapq=`echo $1 | cut -d ',' -f 2`
+baseQ=`echo $1 | cut -d ',' -f 3`
 
-prefix=$1
+cov_dir=./Align_to_assembly
+ass_dir=./Assembly 
 
-fq1=$(ls ${prefix}*_R1*.f*q.gz)
-fq2=$(ls ${prefix}*_R2*.f*q.gz)
+cov=${cov_dir}/${sample}/${sample}.q${mapq}Q${baseQ}.cov
+list=${cov_dir}/${sample}/${sample}.filtIDs.list
+contigs=${ass_dir}/${sample}/${sample}.contigs.fa
+filtered_contigs=${ass_dir}/${sample}/${sample}.filteredContigs.fa
 
-prefix=$(basename $prefix)
+# Apply filtering criteria to the SAMtools 'coverage' file using awk (adjust the below to suit your desired filtering thresholds):
+awk '$7>=1' $cov | awk '{print $1}' > $list
 
-out=./Target_reads/${prefix}.interleaved.extracted.fq.gz
-log=./Logs/Remove_host/${prefix}.bbmap.log
+# Extract matching IDs to a new contigs fasta:
+seqtk subseq $contigs $list > $filtered_contigs
 
-# BBmap will look in ./ref for the reference index (created by bbmap_prep.pbs)
-# Script tool is  used to force log to end up in the right place
-
-script -c "bbmap.sh \
-	-Xmx42g \
-	in=${fq1} \
-	in2=${fq2} \
-	outu=${out} \
-	threads=$NCPUS \
-	overwrite=t \	
-	usejni=t \
-	unpigz=t" ${log}
+# Clean up:
+rm -rf $list

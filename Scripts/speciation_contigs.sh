@@ -23,9 +23,9 @@
 
 set -e
 
-sample=`echo $1 | cut -d ',' -f 1
+sample=`echo $1 | cut -d ' ' -f 1`
 
-database=./kraken_standard_db_build_<date> # UPDATE THIS PATH TO REFLECT YOUR DATABASE
+database=./kraken2_standard_db_build_25-06-2022 # UPDATE THIS PATH TO REFLECT YOUR DATABASE
 
 input=./Assembly/${sample}/${sample}.filteredContigs.fa
 final_outdir=./Speciation_contigs/${sample}

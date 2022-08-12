@@ -72,6 +72,8 @@ while (my $line = <I>) {
 # Add headers to outfiles
 my $out_raw = "./ARGs/Curated_ARGs/$cohort\_allSamples_curated_ARGs_rawCount_Rdataframe.txt";
 my $out_tpm = "./ARGs/Curated_ARGs/$cohort\_allSamples_curated_ARGs_TPM_Rdataframe.txt";
+print "Printing raw counts to $out_raw\n";
+print "Printing TPM-normalised counts to $out_tpm\n";
 open (OR, ">$out_raw") || die "$! write $out_raw\n"; 
 open (OT, ">$out_tpm") || die "$! write $out_tpm\n"; 
 print OR "Sample_ID";

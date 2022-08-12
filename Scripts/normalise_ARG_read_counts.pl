@@ -23,7 +23,7 @@
 use warnings;
 use strict;
 
-cohort='<cohort>';
+my $cohort='<cohort>';
 
 # Collect the data into structure: 
 print "Collecting counts into memory\n"; 
@@ -92,9 +92,9 @@ foreach my $sample (keys %{$tpmhash}) {
 	}	
 }
 
-# Collate all in cohort:
-print "Collating all in cohort $cohort\n"; 	
+# Collate all in cohort: 	
 my $all_out = "./ARGs/ARG_read_counts/$cohort\.curated_ARGs.counts.norm";
+print "Collating all in cohort $cohort to $all_out\n";
 open (A, ">$all_out") || die "$! write $all_out\n";  
 print A "#Sample\tGene\tContig\tStart\tEnd\tStrand\tLength\tRaw_counts\tRPK\tRPK_sum\tTPM_scale\tTPM\tLibrarySize\tRPKM_scale\tRPKM\n"; 
 close A; 

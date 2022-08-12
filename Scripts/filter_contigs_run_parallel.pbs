@@ -5,8 +5,8 @@
 # Platform: NCI Gadi HPC
 # Description: see https://github.com/Sydney-Informatics-Hub/Shotgun-Metagenomics-Analysis
 #
-# Author/s: Cali Willet
-# cali.willet@sydney.edu.au
+# Author/s: Cali Willet; Tracy Chew
+# cali.willet@sydney.edu.au; tracy.chew@sydney.edu.au
 #
 # If you use this script towards a publication, please acknowledge the
 # Sydney Informatics Hub (or co-authorship, where appropriate).
@@ -21,30 +21,41 @@
 #########################################################
 
 #PBS -P <project>
-#PBS -N IS
-#PBS -l walltime=24:00:00
+#PBS -N filterContigs
+#PBS -l walltime=00:10:00
 #PBS -l ncpus=12
 #PBS -l mem=48GB
 #PBS -q normal
-#PBS -W umask=022 
-#PBS -l wd 
+#PBS -W umask=022
+#PBS -l wd
+#PBS -o ./Logs/filter_contigs.o
+#PBS -e ./Logs/filter_contigs.e
 #PBS -l storage=scratch/<project>
- 
+
 module load openmpi/4.1.0
 module load nci-parallel/1.0.0a
-module load prokka/1.14.5 
-module load java/jdk-8.40
-module load parallel/20191022
+module load seqtk/1.3
 
-contigs=./Assembly/${sample}/${sample}.filteredContigs.fa
-db=./ISfinder-sequences/IS.faa
+set -e
 
-prokka --cpus ${NCPUS} \
-	--outdir ./Insertion_sequences/${sample} \
-	--force \
-	--prefix ${sample} \
-	--addgenes \
-	--kingdom Bacteria \
-	--proteins ${db} \
-	${contigs}
+SCRIPT=./Scripts/filter_contigs.sh  
+INPUTS=./Inputs/contig_coverage.inputs
+ 
+NCPUS=1
+
+
+#########################################################
+# Do not edit below this line
+#########################################################
+
+if [[ $PBS_QUEUE =~ bw-exec ]]; then CPN=28; else CPN=48; fi
+M=$(( CPN / NCPUS )) #tasks per node
+
+sed "s|^|${SCRIPT} |" ${INPUTS} > ${PBS_JOBFS}/input-file
+
+mpirun --np $((M * PBS_NCPUS / PBS_NCI_NCPUS_PER_NODE)) \
+        --map-by node:PE=${NCPUS} \
+        nci-parallel \
+        --verbose \
+        --input-file ${PBS_JOBFS}/input-file
 

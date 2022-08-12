@@ -1,4 +1,4 @@
-#Curated_gene_name	Resistance_Mechanism	Drug_Class	Gene_names_variation	GNV_2	GNV_3	GNV_4	GNV_5	GNV_6	GNV_7	GNV_8	GNV_9	GNV_1	GNV_11	GNV_12
+#Curated_gene_name	Resistance_Mechanism	Drug_Class	Gene_names_variation	GNV_2	GNV_3	GNV_4	GNV_5	GNV_6	GNV_7	GNV_8	GNV_9	GNV_10	GNV_11	GNV_12
 aac(3)-II	inactivation	Aminoglycoside	aac(3)-II											
 AAC(3)-IId	inactivation	Aminoglycoside	aac(3)-IId_1											
 aac(6')_Serra	inactivation	Aminoglycoside	aac(6')_Serra											

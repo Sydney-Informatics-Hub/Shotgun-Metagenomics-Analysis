@@ -1,10 +1,9 @@
 #!/bin/bash
 
-set -e
-
 #########################################################
 #
 # Platform: NCI Gadi HPC
+# Description: see https://github.com/Sydney-Informatics-Hub/Shotgun-Metagenomics-Analysis
 #
 # Author: Tracy Chew
 # tracy.chew@sydney.edu.au
@@ -28,11 +27,10 @@ set -e
 #PBS -q normal
 #PBS -W umask=022
 #PBS -l wd
-#PBS -lstorage=scratch/<project>
-#PBS -l jobfs=400GB
 #PBS -o ./Logs/match_ARGs_to_diamond_cds.o
 #PBS -e ./Logs/match_ARGs_to_diamond_cds.e
+#PBS -l storage=scratch/<project>
 
 set -e
 
-perl ./match_ARGs_to_diamond_cds.pl
+perl ./Scripts/match_ARGs_to_diamond_cds.pl

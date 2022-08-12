@@ -46,7 +46,7 @@ use strict;
 
 #) Collect ARG data from curated list:
 my $curated = './Inputs/curated_ARGs_list.txt';
-my %genehash = (); 
+my $genehash = {}; 
 open (I, $curated) || die "$! $curated\n"; 
 my $dup = 0; 
 while (my $line = <I>) {
@@ -74,15 +74,14 @@ if ( $dup) {
 
 
 #) Open the abricate output, and for any entry that hits the curated genes or their variant names, output as GFF:
-my $list = './Inputs/<cohort>_samples.list';
+my $list = './Inputs/test_samples.list';
 open L, '<', $list;
 chomp (my @samples = <L>);
 close L;
 
 foreach my $sample (@samples) {
 	my $args = "./ARGs/Abricate/$sample\/$sample\.ARGs.txt"; 
-	my $out = "./ARGs/Curated_GFF/$sample\.curated_ARGs.gff";
-	print "Writing $out\n"; 
+	my $out = "./ARGs/Curated_GFF/$sample\.curated_ARGs.gff"; 
 	open (I, $args) || die "$! $args\n";
 	my @lines = (); 
 	chomp (my $header = <I>); 
@@ -98,12 +97,12 @@ foreach my $sample (@samples) {
 			push @lines, $string_to_print; 
 		}
 		else {
-			print "WARN: Could not find $gene in $args in ../Curated_ARGs/curated_ARGs_list.txt\n";
+			print "WARN: Could not find $gene from $args in ../Curated_ARGs/curated_ARGs_list.txt\n";
 		}
 	} close I;
 
 	# ) Print out unique entries
-	open (OUT, ">$out") || "$! write $out\n"; 
+	open (OUT, ">$out") || die "$! write $out\n"; 
 	my @unique = uniq( @lines );
 	foreach my $line (@unique) {
 		print OUT "$line"; 

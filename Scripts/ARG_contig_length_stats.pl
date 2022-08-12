@@ -26,7 +26,7 @@ use strict;
 my $cohort='<cohort>';
 
 # Collect ARG-containing contigs into hash structure: 
-print "Collecting ARG-containing contigs into RAM\n"; 
+print "Collecting ARG-containing contigs\n"; 
 my $args = "./ARGs/Curated_ARGs/$cohort\_allSamples.curated_ARGs.txt";
 my $arg_contig_storehash = {};
 open (S, $args) || die "$! $args\n"; 
@@ -46,7 +46,7 @@ my $samplehash= {};
 open (S, $samples) || die "$! $samples\n"; 
 while (my $sample = <S>) {
 	chomp $sample;
-	print "\tComputing descriptive contig stats for $sample\n"; 
+	print "\tComputing descriptive contig length stats for $sample\n"; 
 	my $assembly = "./Assembly/$sample\/$sample\.filteredContigs.fa"; 
 	open (A, $assembly) || die "$! $assembly\n"; 
 	
@@ -124,7 +124,7 @@ while (my $sample = <S>) {
 my $out = "./ARGs/Curated_ARGs/$cohort\_allSamples_curated_ARGs_contig_length_stats.txt";
 print "Printing results for all samples to $out\n"; 
 open (O, ">$out") || die "$! write $out\n"; 
-print O "#Sample\tAll_contigs_count\tAll_contigs_mean\tAll_contigs_stdev\tAll_contigs_min\tAll_contigs_max\tARG_contigs_count\tARG_contigs_mean\tARG_contigs_stdev\tARG_contigs_min\tARG_contigs_max\n"; 
+print O "#Sample\tAll_contigs_count\tAll_contigs_length_mean\tAll_contigs_length_stdev\tAll_contigs_length_min\tAll_contigs_length_max\tARG_contigs_count\tARG_contigs_length_mean\tARG_contigs_length_stdev\tARG_contigs_length_min\tARG_contigs_length_max\n"; 
 foreach my $sample (sort keys %{$samplehash}) {
 	print O "$sample\t$samplehash->{$sample}->{all_count}\t$samplehash->{$sample}->{all_mean}\t$samplehash->{$sample}->{all_stdev}\t$samplehash->{$sample}->{all_min}\t$samplehash->{$sample}->{all_max}";
 	print O "\t$samplehash->{$sample}->{arg_count}\t$samplehash->{$sample}->{arg_mean}\t$samplehash->{$sample}->{arg_stdev}\t$samplehash->{$sample}->{arg_min}\t$samplehash->{$sample}->{arg_max}\n";  
