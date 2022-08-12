@@ -56,7 +56,7 @@ Analysis of metagenomic shotgun sequences including assembly, speciation, ARG di
     + [9.1 Download the IS database](#91-download-the-is-database)
     + [9.2 Annotate IS on filtered contigs](#92-annotate-is-on-filtered-contigs)
   * [Software used](#software-used)
-  * [Cite us to support us!](#cite-us-to-support-us!)
+  * [Cite us to support us!](#cite-us-to-support-us\!)
 
 <small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
 
