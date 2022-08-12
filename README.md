@@ -259,7 +259,7 @@ Mapping the target reads back to the assembled contigs is a useful way of assess
 
 The number of parallel tasks is equal to the number of samples. A sample may have multiple pairs of input fastq. The `align_reads_to_contigs.sh` script will find all fastq pairs belonging to a sample using the sample ID. So it is critical that your sample IDs are unique within the cohort (see note in 'Configuration/sample info' section above).
 
-Metadata is added to the BAM from 2 places: 1) Platform and sequencing centre are derived from the config, and 2) flowcell and lane are derived from the fastq read IDs. The method of extracting flowcell and lane assumes standard Illumina read ID format (flowcell in field 3 and lane in field 4 of a colon (:) delimited string. If this is not correct, please update the method of extracting flowcell and lane within part 3 'Align' in `align_reads_to_contigs.sh`.
+Metadata is added to the BAM from 2 places: 1) Platform and sequencing centre are derived from the config, and 2) flowcell and lane are derived from the fastq read IDs. The method of extracting flowcell and lane assumes standard Illumina read ID format (flowcell in field 3 and lane in field 4 of a colon (:) delimited string. If this is not correct, please update the method of extracting flowcell and lane at [Part 3 Align target reads to assemblies](#32-align-target-reads-to-assemblies) within `align_reads_to_contigs.sh`.
 
 Make the inputs:
 ```
@@ -359,7 +359,7 @@ bash ./Scripts/target_reads_and_assembly_summaries_collate.sh
 Output will be a TSV file within your base working directory, named `<cohort>_target_reads_and_assembly_summary.txt`.
 
 ## Part 4. Speciation and abundance
-This analysis determines the species present within each sample, and their abundance. The analysis can be performed on the target read (host removed) data, or on the filtered contigs from Part 3 Assembly, or both. Abundance estimation with Bracken is usually performed on reads, as per the guidelines for that software. Performing speciation on contigs is useful for Part 6. Antimicrobial resistance genes and Part 9. Insertion sequence elements, as it enables us to assign a species to genes/elements detected on the contigs. 
+This analysis determines the species present within each sample, and their abundance. The analysis can be performed on the target read (host removed) data from [Part 2 Removal of host DNA contamination](#part-2-removal-of-host-dna-contamination), or on the filtered contigs from [Part 3 Metagenome assembly](#part-3-metagenome-assembly), or both. Abundance estimation with Bracken is usually performed on reads, as per the guidelines for that software. Performing speciation on contigs is useful for [Part 6 Antimicrobial resistance genes](#part-6-antimicrobial-resistance-genes) and [Part 9 Insertion seqeunce (IS) elements](#part-9-insertion-seqeunce--is--elements), as it enables us to assign a species to genes/elements detected on the contigs. 
 
 This part requires kraken2 (tested with v.2.0.8-beta), bracken2 (tested with v.2.6.0) and kronatools (tested with v.2.7.1) (as well as BBtools, used earlier). At the time of writing, **kraken2, bracken2, kronatools and BBtools are not global apps on Gadi** so please self-install and make "module loadable" or update the scripts to use your local installation. 
 
@@ -878,7 +878,7 @@ Output will be a separate R-compatible dataframe for TPM normalised and raw coun
 
 ## Part 7. Gene prediction
 
-This part is used to predict genes that exist in the filtered contigs assembled with MEGAHIT. Gene prediction is performed with Prodigal and annotation is performed with DIAMOND, by using BLAST of the Prodigal-predicted genes to NCBI's non-redundant (NR) database. This workflow processes multiple sample assemblies in parallel. The outputs of this part are used downstream in this workflow for Resistome calculation (part 8). 
+This part is used to predict genes that exist in the filtered contigs assembled with MEGAHIT. Gene prediction is performed with Prodigal and annotation is performed with DIAMOND, by using BLAST of the Prodigal-predicted genes to NCBI's non-redundant (NR) database. This workflow processes multiple sample assemblies in parallel. The outputs of this part are used downstream in this workflow for [Part 8 Resistome calculation](#part-8-resistome-calculation). 
 
 Predicted genes are output as protein sequences and annotation is performed using BLASTP as this was slightly more computationally performant than other configurations tested.
 
@@ -959,9 +959,9 @@ This part is to determine the resistome (%) per sample, defined by:
 
 __Resistome % = Total ARGs/ Total Genes * 100__
 
-Total genes that exist in each sample assembly are first identified in Part 7 Gene prediction. This was done by matching predicted gene sequences to the NCBI NR database and __filtering for high quality matches by including only genes with a hit length of > 25__.
+Total genes that exist in each sample assembly are first identified in [Part 7 Gene prediction](#part-7-gene-prediction). This was done by matching predicted gene sequences to the NCBI NR database and __filtering for high quality matches by including only genes with a hit length of > 25__.
 
-To detemine which of the total genes above are ARGs, we use the output from Part 6 Antimicrobial resistance genes. There is no mechanism to obtain a perfect match - ARGs are determined by matching to a different database collection (NCBI AMRFinder Plus, Resfinder, and CARD, identified with ABRicate) with different annotations to NCBI NR (e.g. gene names are slightly different, different accession IDs are used). Therefore, high quality matches are determined if the:
+To detemine which of the total genes above are ARGs, we use the output from [Part 6. Antimicrobial resistance genes](#part-6-antimicrobial-resistance-genes). There is no mechanism to obtain a perfect match - ARGs are determined by matching to a different database collection (NCBI AMRFinder Plus, Resfinder, and CARD, identified with ABRicate) with different annotations to NCBI NR (e.g. gene names are slightly different, different accession IDs are used). Therefore, high quality matches are determined if the:
 
 * Predicted gene start (determined with Prodigal) matches ABRicate start; OR
 * Predicted gene end (detemined with Prodigal) matches ABRicate end
