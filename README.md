@@ -909,7 +909,7 @@ To detemine which of the total genes above are ARGs, we use the output from Part
 
 There is no need to make an inputs file for this step, as the existing file `./Inputs/<cohort>.config` will be used. If there is timepoint/grouping information specified in column 5 of the sample configuration file, this will be annotated in the output in column 2. If your cohort has no grouping specified, the 'Group' label in column 2 of the output will be 'NA'.
 
-If you have a small number of samples in your cohort (<100), you can run this on the login node. Processing is around 3 seconds per sample:
+If you have a small number of samples in your cohort (<100), you can run this on the login node. Processing is around 5 seconds per sample:
 
 ```
 perl ./Scripts/match_ARGs_to_diamond_cds.pl
@@ -921,7 +921,7 @@ If you have >100 samples in your cohort, this should be run on the compute nodes
 qsub ./Scripts/match_ARGs_to_diamond_cds.pbs
 ```
 
-Outputs are per-sample TSV files within `./Diamond_NCBI_ARGs` and an all-cohort summary file `./Diamond_NCBI_ARGs/Allsamples_resistome.txt`.
+Outputs are per-sample TSV files within `./ARGs/Diamond_NCBI_ARGs` and an all-cohort summary file `./ARGs/Diamond_NCBI_ARGs/Allsamples_resistome.txt`.
 
 ### Part 9. Insertion seqeunce (IS) elements
 
