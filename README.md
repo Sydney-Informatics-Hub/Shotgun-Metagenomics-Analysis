@@ -1,3 +1,62 @@
+- [Shotgun Metagenomics Analysis](#shotgun-metagenomics-analysis)
+  * [Description](#description)
+  * [Workflow diagram](#workflow-diagram)
+    + [Part 1. Setup and QC](#part-1-setup-and-qc)
+      - [1.1 Fastq inputs](#11-fastq-inputs)
+      - [1.2 Configuration/sample info](#12-configuration-sample-info)
+      - [1.3 General setup of scripts](#13-general-setup-of-scripts)
+      - [1.4 QC](#14-qc)
+      - [1.5 Quality filtering and trimming](#15-quality-filtering-and-trimming)
+    + [Part 2. Removal of host DNA contamination](#part-2-removal-of-host-dna-contamination)
+      - [2.1 Prepare the reference](#21-prepare-the-reference)
+      - [2.2 Host contamination removal](#22-host-contamination-removal)
+    + [Part 3. Metagenome assembly](#part-3-metagenome-assembly)
+      - [3.1 Assemble target reads](#31-assemble-target-reads)
+      - [3.2 Align target reads to assemblies](#32-align-target-reads-to-assemblies)
+      - [3.3 Calculate contig read coverage](#33-calculate-contig-read-coverage)
+      - [3.4 Filter contigs](#34-filter-contigs)
+      - [3.5 Create target read and assembly summaries](#35-create-target-read-and-assembly-summaries)
+    + [Part 4. Speciation and abundance](#part-4-speciation-and-abundance)
+      - [4.1 Build the Kraken2 database](#41-build-the-kraken2-database)
+      - [4.2 Speciation](#42-speciation)
+        * [4.2.1 Speciation (reads)](#421-speciation--reads-)
+        * [4.2.2 Speciation (contigs)](#422-speciation--contigs-)
+        * [4.2.3 Collate speciation output](#423-collate-speciation-output)
+      - [4.3 Abundance](#43-abundance)
+        * [4.3.1 Generate the Bracken2 database](#431-generate-the-bracken2-database)
+        * [4.3.2 Abundance (reads)](#432-abundance--reads-)
+        * [4.3.3 Abundance (contigs)](#433-abundance--contigs-)
+        * [4.3.4 Collate abundance output](#434-collate-abundance-output)
+    + [Part 5. Functional profiling](#part-5-functional-profiling)
+      - [5.1 Software and database setup](#51-software-and-database-setup)
+      - [5.2 Run functional profiling](#52-run-functional-profiling)
+    + [Part 6. Antimicrobial resistance genes](#part-6-antimicrobial-resistance-genes)
+      - [6.1 Annotate ARGs](#61-annotate-args)
+      - [6.2 Reformat ARGs](#62-reformat-args)
+      - [6.3 Curated ARG list](#63-curated-arg-list)
+      - [6.4 Count reads mapping to ARGs](#64-count-reads-mapping-to-args)
+        * [6.4.1 Convert Abricate ARG output to GFF](#641-convert-abricate-arg-output-to-gff)
+        * [6.4.2 Mark duplicate reads in the previously created BAM files](#642-mark-duplicate-reads-in-the-previously-created-bam-files)
+        * [6.4.3 Count reads mapping to ARGs with HTseq count](#643-count-reads-mapping-to-args-with-htseq-count)
+        * [6.4.4 Normalise](#644-normalise)
+        * [6.4.4.1 Reformat the ARG read count data for easy parsing](#6441-reformat-the-arg-read-count-data-for-easy-parsing)
+        * [6.4.4.2](#6442)
+        * [6.4.5 Assign species to normalised ARG data](#645-assign-species-to-normalised-arg-data)
+        * [6.4.6 Descriptive statistics](#646-descriptive-statistics)
+        * [6.4.7 Filter ARGs by coverage and identity](#647-filter-args-by-coverage-and-identity)
+    + [Part 7. Gene prediction](#part-7-gene-prediction)
+      - [7.1 Predict coding sequences](#71-predict-coding-sequences)
+      - [7.2 Annotate genes](#72-annotate-genes)
+        * [7.2.1 Database set up](#721-database-set-up)
+        * [7.2.2 Run diamond](#722-run-diamond)
+    + [Part 8. Resistome calculation](#part-8-resistome-calculation)
+    + [Part 9. Insertion seqeunce (IS) elements](#part-9-insertion-seqeunce--is--elements)
+      - [9.1 Download the IS database](#91-download-the-is-database)
+      - [9.2 Annotate IS on filtered contigs](#92-annotate-is-on-filtered-contigs)
+    + [Software used](#software-used)
+  * [Cite us to support us!](#cite-us-to-support-us-)
+
+
 # Shotgun Metagenomics Analysis
 Analysis of metagenomic shotgun sequences including assembly, speciation, ARG discovery and more
 
@@ -1016,3 +1075,7 @@ Output will be TSV files in `./Insertion_sequences/Filtered_IS_with_species`, pe
 
 Willet, C.E., Martinez, E., Sukumar, S., Alder, C., Lydecker, H., Wang, F., Chew, T., & Sadsad, R. Shotgun-Metagenomics-Analysis (Version 1.0) [Computer software]. https://doi.org/10.48546/workflowhub.workflow.327.1
 >>>>>>> 6a80c0ccaa37868ba8638a9998cc833f406a0e9c
+
+=======
+
+<small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
