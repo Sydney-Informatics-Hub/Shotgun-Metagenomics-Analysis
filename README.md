@@ -996,9 +996,13 @@ This step annotates putative insertion sequence elements on the filtered assembl
 
 ### 9.1 Download the IS database
 
-First, download the ISfinder database to your workdir (this is a small database):
+As at August 2022, the lastest verison of the ISfinder database (2020-Oct) has a known [bug](https://github.com/thanhleviet/ISfinder-sequences/issues/5) not yet fixed. Unless this has since been resolved, please ensure to use the 2019-09-25 commit, by checking out that commit with its commit ID/SHA.    
+
+First, download the ISfinder database to your workdir (this is a small database), then checkout the correct commit:
+
 ```
 git clone https://github.com/thanhleviet/ISfinder-sequences.git
+git checkout 2e9162bd5e3448c86ec1549a55315e498bef72fc
 ```
 
 At the time of writing, Prokka is not a global app on Gadi so please install and test. Run `prokka --depends` then ensure you have all listed dependencies. During testing, we found three required perl modules not globally installed (XML::Simple, BioPerl, Bio::SearchIO::hmmer3 ) so if you are using a self-install Prokka app, ensure to also install these Perl modules and add them to the PERL5LIB path in the '.base' module load file, like below:
@@ -1042,8 +1046,6 @@ perl ./Scripts/collate_IS_annotation_with_species_by_groups.pl
 Output will be TSV files in `./Insertion_sequences/Filtered_IS_with_species`, per sample, per cohort, and per group if relevant. 
 
 
-
-
 ## Software used
 * [abricate/0.9.9](https://github.com/tseemann/abricate)
 * [bbtools/37.98](https://jgi.doe.gov/data-and-tools/software-tools/bbtools/)
@@ -1066,18 +1068,8 @@ Output will be TSV files in `./Insertion_sequences/Filtered_IS_with_species`, pe
 * [sambamba/0.7.0](https://github.com/biod/sambamba)
 * [samtools/1.10](https://github.com/samtools/samtools)
 * [seqtk/1.3](https://github.com/lh3/seqtk)
-
-
-
-
  
- 
- 
- 
- 
- 
- 
-
+=======
 
 ## Cite us to support us!
 
