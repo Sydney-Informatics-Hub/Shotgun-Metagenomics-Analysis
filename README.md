@@ -42,15 +42,15 @@ Analysis of metagenomic shotgun sequences including assembly, speciation, ARG di
       - [6.4.3 Count reads mapping to ARGs with HTseq count](#643-count-reads-mapping-to-args-with-htseq-count)
       - [6.4.4 Normalise](#644-normalise)
       - [6.4.4.1 Reformat the ARG read count data for easy parsing](#6441-reformat-the-arg-read-count-data-for-easy-parsing)
-      - [6.4.4.2](#6442)
+      - [6.4.4.2 Run normalisation](#6442-run-normalisation)
       - [6.4.5 Assign species to normalised ARG data](#645-assign-species-to-normalised-arg-data)
       - [6.4.6 Descriptive statistics](#646-descriptive-statistics)
       - [6.4.7 Filter ARGs by coverage and identity](#647-filter-args-by-coverage-and-identity)
   * [Part 7. Gene prediction](#part-7-gene-prediction)
     + [7.1 Predict coding sequences](#71-predict-coding-sequences)
-    + [7.2 Annotate genes](#72-annotate-genes)
+    + [7.2 Annotate genes with diamond](#72-annotate-genes-with-diamond)
       - [7.2.1 Database set up](#721-database-set-up)
-      - [7.2.2 Run diamond](#722-run-diamond)
+      - [7.2.2 Annotate genes](#722-annotate-genes)
   * [Part 8. Resistome calculation](#part-8-resistome-calculation)
   * [Part 9. Insertion seqeunce (IS) elements](#part-9-insertion-seqeunce--is--elements)
     + [9.1 Download the IS database](#91-download-the-is-database)
@@ -69,10 +69,18 @@ These scripts have been written specifically for NCI Gadi HPC, wich runs PBS Pro
 ## Workflow diagram
 
 Some analyses use target (host-removed) reads as input while others use the filtered metagenome assemblies. 
-<img src="https://user-images.githubusercontent.com/7400393/173061647-e27f0637-6f4b-4a52-b070-22451ceb6dfa.png" width="65%" height="65%"> 
+
+<img src="https://user-images.githubusercontent.com/7400393/184279731-0964187d-d884-43dc-bb8a-1380ba8499c0.png" width="65%" height="65%">
 
 ## Part 1. Setup and QC
-Download the repo. You will see directories for `Scripts`, `Fastq`, `Inputs` and `Logs`. You will need to copy or symlink your fastq to `Fastq` and sample configuration file (see below) to `Inputs`. All work scripts are in `Scripts` and all logs (PBS and software logs) are written to `Logs`.
+Download the repository:
+
+```
+git clone https://github.com/Sydney-Informatics-Hub/Shotgun-Metagenomics-Analysis.git
+cd Shotgun-Metagenomics-Analysis
+```
+
+You will see directories for `Scripts`, `Fastq`, `Inputs` and `Logs`. You will need to copy or symlink your fastq to `Fastq` and sample configuration file (see below) to `Inputs`. All work scripts are in `Scripts` and all logs (PBS and software logs) are written to `Logs`.
  
 
 ### 1.1 Fastq inputs
@@ -806,7 +814,7 @@ bash ./Scripts/reformat_ARG_read_counts.sh
 
 Output files are `./ARGs/ARG_read_counts/<sample>.curated_ARGs.reformat.counts` and are used as input to the normalisation step. 
 
-#### 6.4.4.2
+#### 6.4.4.2 Run normalisation
 
 Normalise the ARG read count data with transcript per million (TPM) and reads per kilobase million (RPKM).
 
@@ -903,9 +911,9 @@ grep "exited with status 0" ./Logs/prodigal_cds.e | wc -l
 Outputs are per-sample protein fasta and GFF files in the `./Prodigal_CDS` directory. 
 
 
-### 7.2 Annotate genes
+### 7.2 Annotate genes with diamond
 
-Annotate predicted genes using NR protein database and Diamond. The NR protein database is compiled by the NCBI (National Center for Biotechnology Information) as a non-redundant database for BLAST searches. It contains non-identical sequences from GenBank CDS translations, PDB, Swiss-Prot, PIR, and PRF.
+Annotate predicted genes using NR protein database and DIAMOND. The NR protein database is compiled by the NCBI (National Center for Biotechnology Information) as a non-redundant database for BLAST searches. It contains non-identical sequences from GenBank CDS translations, PDB, Swiss-Prot, PIR, and PRF.
 
 #### 7.2.1 Database set up
 
@@ -929,7 +937,7 @@ qsub  ./Scripts/diamond_makedb.pbs
 This will run `diamond makedb` and output `nr.dmnd` in the location specifed at the `database_dir` variable. 
 
 
-#### 7.2.2 Run diamond
+#### 7.2.2 Annotate genes
 
 Use BLASTP to query the putative protein sequences predicted with Prodigal against the NCBI NR database. One top match per coding sequence is reported if it meets the following cut-off criteria:
 
