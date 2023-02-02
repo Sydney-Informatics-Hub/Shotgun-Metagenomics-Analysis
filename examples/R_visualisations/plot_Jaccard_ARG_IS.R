@@ -14,7 +14,7 @@ jaccard <- function(a, b) {
 library(ggplot2)
 library(reshape2)
 
-dtp<-read.delim("~/Documents/PROJECTS/1_ARG/NatComm/Scripts_AMR/Stats/Tables/updated/jcc_arg_is_sp.txt")
+dtp<-read.delim("jcc_arg_is_sp.txt")
 d_tp<-melt(dtp, id.vars="timepoint")
 names(d_tp) <- c("Timepoint", "variable","Jaccard_index")
 
