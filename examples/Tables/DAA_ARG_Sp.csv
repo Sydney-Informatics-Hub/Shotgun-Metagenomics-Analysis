@@ -1,0 +1,194 @@
+#Sample,Severity_caries,Gene,Resistance_mechanism,Drug_class,Gene_important,Gene_imp_critera,Species,Genus,Contig,TPM
+T1001A_14042014_Q2_Q3,Healthy,erm(F),target alteration,MLS,Yes,sub_pop,Prevotella denticola F0289 (taxid 767031),Prevotella,k141_238280,1880.619273
+T1002A_14042014_Q2_Q3,Healthy,tetA(60),efflux,Tetracycline,Yes,sub_pop,Streptococcus acidominimus (taxid 1326),Streptococcus,k141_22551,908.9813681
+T1006A_16042014_Q2_Q3,Healthy,APH(6)-Id,inactivation,Aminoglycoside,Yes,sub_pop,Haemophilus parainfluenzae T3T1 (taxid 862965),Haemophilus,k141_140943,14335.06559
+T1006A_16042014_Q2_Q3,Healthy,tet(W),target protection,Tetracycline,Yes,"sub_pop, caries/health",Lachnoanaerobaculum umeaense (taxid 617123),Lachnoanaerobaculum,k141_56874,1524.93675
+T1006B_16042014_Q2_Q3,Healthy,APH(6)-Id,inactivation,Aminoglycoside,Yes,sub_pop,Haemophilus parainfluenzae T3T1 (taxid 862965),Haemophilus,k141_74758,3156.787156
+T1006B_16042014_Q2_Q3,Healthy,tetA(60),efflux,Tetracycline,Yes,sub_pop,Streptococcus acidominimus (taxid 1326),Streptococcus,k141_51570,1055.708803
+T1011A_9042015_Q2_Q3,Healthy,erm(F),target alteration,MLS,Yes,sub_pop,Prevotella intermedia (taxid 28131),Prevotella,k141_59071,18955.4801
+T1016B_03102014_Q2_Q3,Healthy,erm(F),target alteration,MLS,Yes,sub_pop,Prevotella intermedia (taxid 28131),Prevotella,k141_21056,6314.111527
+T1018A_15042014_Q2_Q3,Mild,tetA(60),efflux,Tetracycline,Yes,sub_pop,Streptococcus oralis subsp. dentisani (taxid 1458253),Streptococcus,k141_189157,1127.254374
+T1018B_15042014_Q2_Q3,Healthy,APH(6)-Id,inactivation,Aminoglycoside,Yes,sub_pop,Haemophilus parainfluenzae T3T1 (taxid 862965),Haemophilus,k141_110587,2384.289372
+T1018B_15042014_Q2_Q3,Healthy,tetA(60),efflux,Tetracycline,Yes,sub_pop,Streptococcus suis (taxid 1307),Streptococcus,k141_22587,1072.738619
+T1044A_15072014_Q2_Q3,Healthy,catP,inactivation,Chloramphenicol,Yes,"sub_pop, caries/health",Streptococcus milleri (taxid 33040),Streptococcus,k141_55866,232.0715293
+T1044A_15072014_Q2_Q3,Healthy,catP,inactivation,Chloramphenicol,Yes,"sub_pop, caries/health",Streptococcus milleri (taxid 33040),Streptococcus,k141_55866,0
+T1049B_15042014_Q2_Q3,Healthy,catP,inactivation,Chloramphenicol,Yes,"sub_pop, caries/health",Streptococcus pneumoniae (taxid 1313),Streptococcus,k141_254672,729.728622
+T1049B_15042014_Q2_Q3,Healthy,tetA(60),efflux,Tetracycline,Yes,sub_pop,Lactobacillus buchneri CD034 (taxid 1071400),Lactobacillus,k141_79728,664.6866804
+T1060A_16042014_Q2_Q3,Healthy,APH(6)-Id,inactivation,Aminoglycoside,Yes,sub_pop,Haemophilus haemolyticus (taxid 726),Haemophilus,k141_55141,1826.194578
+T1060A_16042014_Q2_Q3,Healthy,tetA(60),efflux,Tetracycline,Yes,sub_pop,Streptococcus suis (taxid 1307),Streptococcus,k141_345976,1135.238247
+T1062A_30092014_Q2_Q3,Severe,tetA(60),efflux,Tetracycline,Yes,sub_pop,Streptococcus gordonii (taxid 1302),Streptococcus,k141_167082,1606.968709
+T1062B_30092014_Q2_Q3,Severe,tet(W),target protection,Tetracycline,Yes,"sub_pop, caries/health",Lachnoanaerobaculum umeaense (taxid 617123),Lachnoanaerobaculum,k141_191797,2083.300506
+T1123A_8042015_Q2_Q3,Mild,erm(F),target alteration,MLS,Yes,sub_pop,Prevotella intermedia (taxid 28131),Prevotella,k141_44142,1180.341389
+T1123B_8042015_Q2_Q3,Healthy,APH(6)-Id,inactivation,Aminoglycoside,Yes,sub_pop,Neisseria sp. KEM232 (taxid 655307),Neisseria,k141_42603,1312.656223
+T1123B_8042015_Q2_Q3,Healthy,erm(F),target alteration,MLS,Yes,sub_pop,Prevotella sp. oral taxon 299 str. F0039 (taxid 575614),Prevotella,k141_105987,3101.293007
+T1136B_02102014_Q2_Q3,Severe,erm(F),target alteration,MLS,Yes,sub_pop,Prevotella intermedia ATCC 25611 = DSM 20706 (taxid 1122984),Prevotella,k141_97144,5263.278018
+T1198B_15072014_Q2_Q3,Healthy,tetA(60),efflux,Tetracycline,Yes,sub_pop,Streptococcus merionis (taxid 400065),Streptococcus,k141_100387,881.7079322
+T1229B_16042014_Q2_Q3,Healthy,erm(F),target alteration,MLS,Yes,sub_pop,Prevotella intermedia (taxid 28131),Prevotella,k141_299675,727.216467
+T1236A_15042014_Q2_Q3,Healthy,tetA(60),efflux,Tetracycline,Yes,sub_pop,Streptococcus suis (taxid 1307),Streptococcus,k141_59450,1465.54807
+T1246A_14042014_Q2_Q3,Healthy,erm(F),target alteration,MLS,Yes,sub_pop,Prevotella intermedia (taxid 28131),Prevotella,k141_139006,6581.390335
+T1246A_14042014_Q2_Q3,Healthy,tetA(60),efflux,Tetracycline,Yes,sub_pop,Streptococcus acidominimus (taxid 1326),Streptococcus,k141_29868,1496.398717
+T1246B_14042014_Q2_Q3,Healthy,catP,inactivation,Chloramphenicol,Yes,"sub_pop, caries/health",Streptococcus pneumoniae Hungary19A-6 (taxid 487214),Streptococcus,k141_6917,9930.665066
+T1246B_14042014_Q2_Q3,Healthy,erm(F),target alteration,MLS,Yes,sub_pop,Prevotella intermedia (taxid 28131),Prevotella,k141_125168,12776.18256
+T1246B_14042014_Q2_Q3,Healthy,tetA(60),efflux,Tetracycline,Yes,sub_pop,Lactobacillus buchneri CD034 (taxid 1071400),Lactobacillus,k141_32163,948.8316248
+T1270B_8042015_Q2_Q3,Healthy,erm(F),target alteration,MLS,Yes,sub_pop,Prevotella enoeca (taxid 76123),Prevotella,k141_49733,3752.537833
+T1297A_01102014_Q2_Q3,Healthy,APH(6)-Id,inactivation,Aminoglycoside,Yes,sub_pop,Haemophilus parainfluenzae T3T1 (taxid 862965),Haemophilus,k141_18226,15464.53574
+T1297B_01102014_Q2_Q3,Healthy,APH(6)-Id,inactivation,Aminoglycoside,Yes,sub_pop,Haemophilus parainfluenzae T3T1 (taxid 862965),Haemophilus,k141_82263,2050.872587
+T1310A_30092014_Q2_Q3,Mild,erm(F),target alteration,MLS,Yes,sub_pop,Capnocytophaga sputigena (taxid 1019),Capnocytophaga,k141_100439,17184.69369
+T1317A_15042014_Q2_Q3,Healthy,tetA(60),efflux,Tetracycline,Yes,sub_pop,Lachnospiraceae bacterium KM106-2 (taxid 2093742),Lachnospiraceae,k141_10769,1091.589032
+T1317B_15042014_Q2_Q3,Healthy,tetA(60),efflux,Tetracycline,Yes,sub_pop,Streptococcus suis (taxid 1307),Streptococcus,k141_92878,2600.950711
+T1321A_11042015_Q2_Q3,Healthy,catP,inactivation,Chloramphenicol,Yes,"sub_pop, caries/health",Haemophilus parainfluenzae T3T1 (taxid 862965),Haemophilus,k141_220479,315.568451
+T1321A_11042015_Q2_Q3,Healthy,catP,inactivation,Chloramphenicol,Yes,"sub_pop, caries/health",Haemophilus parainfluenzae T3T1 (taxid 862965),Haemophilus,k141_220479,0
+T1321A_11042015_Q2_Q3,Healthy,tetA(60),efflux,Tetracycline,Yes,sub_pop,Streptococcus (taxid 1301),Streptococcus,k141_141754,1645.549038
+T1321A_11042015_Q2_Q3,Healthy,tetA(60),efflux,Tetracycline,Yes,sub_pop,Streptococcus acidominimus (taxid 1326),Streptococcus,k141_141753,1720.917696
+T1327C_29092014_Q2_Q3,Healthy,erm(F),target alteration,MLS,Yes,sub_pop,Prevotella intermedia ATCC 25611 = DSM 20706 (taxid 1122984),Prevotella,k141_194799,20043.55854
+T1337B_16042014_Q2_Q3,Mild,tetA(60),efflux,Tetracycline,Yes,sub_pop,Lactobacillus buchneri CD034 (taxid 1071400),Lactobacillus,k141_76775,2896.414927
+T1338A_29092014_Q2_Q3,Healthy,APH(6)-Id,inactivation,Aminoglycoside,Yes,sub_pop,Neisseria elongata subsp. glycolytica (taxid 88719),Neisseria,k141_36403,1819.382495
+T1338B_29092014_Q2_Q3,Moderate,catP,inactivation,Chloramphenicol,Yes,"sub_pop, caries/health",Haemophilus parainfluenzae (taxid 729),Haemophilus,k141_117293,0
+T1338B_29092014_Q2_Q3,Moderate,catP,inactivation,Chloramphenicol,Yes,"sub_pop, caries/health",Haemophilus parainfluenzae (taxid 729),Haemophilus,k141_117293,0
+T1338B_29092014_Q2_Q3,Moderate,erm(F),target alteration,MLS,Yes,sub_pop,Prevotella (taxid 838),Prevotella,k141_80726,1347.679275
+T1338B_29092014_Q2_Q3,Moderate,tetA(60),efflux,Tetracycline,Yes,sub_pop,Streptococcus urinalis (taxid 149016),Streptococcus,k141_51642,1376.274161
+T1351A_03102014_Q2_Q3,Severe,erm(F),target alteration,MLS,Yes,sub_pop,Prevotella scopos JCM 17725 (taxid 1236518),Prevotella,k141_131271,15027.28135
+T1357A_14042014_Q2_Q3,Healthy,tetA(60),efflux,Tetracycline,Yes,sub_pop,Streptococcus suis (taxid 1307),Streptococcus,k141_15926,379.3325922
+T1357B_14042014_Q2_Q3,Healthy,APH(6)-Id,inactivation,Aminoglycoside,Yes,sub_pop,Haemophilus parainfluenzae T3T1 (taxid 862965),Haemophilus,k141_29517,1340.58259
+T1374A_02102014_Q2_Q3,Healthy,erm(F),target alteration,MLS,Yes,sub_pop,Bacteroides fragilis (taxid 817),Bacteroides,k141_74303,4348.98481
+T1374B_02102014_Q2_Q3,Healthy,catP,inactivation,Chloramphenicol,Yes,"sub_pop, caries/health",Streptococcus milleri (taxid 33040),Streptococcus,k141_142384,645.5594617
+T1374B_02102014_Q2_Q3,Healthy,catP,inactivation,Chloramphenicol,Yes,"sub_pop, caries/health",Streptococcus milleri (taxid 33040),Streptococcus,k141_142384,0
+T1398A_01102014_Q2_Q3,Healthy,erm(F),target alteration,MLS,Yes,sub_pop,Bacteroides fragilis (taxid 817),Bacteroides,k141_72690,6884.123696
+T1398B_01102014_Q2_Q3,Healthy,tetA(60),efflux,Tetracycline,Yes,sub_pop,Lactobacillus buchneri CD034 (taxid 1071400),Lactobacillus,k141_196,742.5823713
+T1412B_14042014_Q2_Q3,Healthy,tetA(60),efflux,Tetracycline,Yes,sub_pop,Streptococcus acidominimus (taxid 1326),Streptococcus,k141_182532,2080.152565
+T1420B_16042014_Q2_Q3,Healthy,catP,inactivation,Chloramphenicol,Yes,"sub_pop, caries/health",Streptococcus pneumoniae (taxid 1313),Streptococcus,k141_200383,528.6211183
+T1472A_15042014_Q2_Q3,Mild,APH(6)-Id,inactivation,Aminoglycoside,Yes,sub_pop,Haemophilus parainfluenzae T3T1 (taxid 862965),Haemophilus,k141_128975,2858.828627
+T1472A_15042014_Q2_Q3,Mild,tetA(60),efflux,Tetracycline,Yes,sub_pop,Streptococcus merionis (taxid 400065),Streptococcus,k141_95071,578.6878285
+T1472B_15042014_Q2_Q3,Moderate,APH(6)-Id,inactivation,Aminoglycoside,Yes,sub_pop,Neisseria subflava (taxid 28449),Neisseria,k141_195579,318.0285479
+T1488A_15072014_Q2_Q3,Healthy,APH(6)-Id,inactivation,Aminoglycoside,Yes,sub_pop,Neisseria mucosa (taxid 488),Neisseria,k141_58259,879.4843378
+T1500A_29092014_Q2_Q3,Healthy,erm(F),target alteration,MLS,Yes,sub_pop,Prevotella intermedia (taxid 28131),Prevotella,k141_44603,637.6079203
+T1500B_29092014_Q2_Q3,Healthy,catP,inactivation,Chloramphenicol,Yes,"sub_pop, caries/health",Streptococcus (taxid 1301),Streptococcus,k141_71353,0
+T1522A_12042015_Q2_Q3,Healthy,APH(6)-Id,inactivation,Aminoglycoside,Yes,sub_pop,Neisseria chenwenguii (taxid 1853278),Neisseria,k141_195756,2725.15069
+T1522A_12042015_Q2_Q3,Healthy,erm(F),target alteration,MLS,Yes,sub_pop,Prevotella fusca JCM 17724 (taxid 1236517),Prevotella,k141_66147,2066.038263
+T1522A_12042015_Q2_Q3,Healthy,tetA(60),efflux,Tetracycline,Yes,sub_pop,Lactobacillus buchneri CD034 (taxid 1071400),Lactobacillus,k141_173101,684.3761468
+T1529A_01102014_Q2_Q3,Healthy,erm(F),target alteration,MLS,Yes,sub_pop,Prevotella intermedia (taxid 28131),Prevotella,k141_117874,5437.934974
+T1529B_01102014_Q2_Q3,Moderate,erm(F),target alteration,MLS,Yes,sub_pop,Prevotella scopos JCM 17725 (taxid 1236518),Prevotella,k141_27381,6595.110068
+T1535A_14042014_Q2_Q3,Healthy,erm(F),target alteration,MLS,Yes,sub_pop,Prevotella oris (taxid 28135),Prevotella,k141_107350,727.6287443
+T1560A_02102014_Q2_Q3,Healthy,tetA(60),efflux,Tetracycline,Yes,sub_pop,Streptococcus suis (taxid 1307),Streptococcus,k141_38249,3273.71387
+T1604A_15042014_Q2_Q3,Healthy,catP,inactivation,Chloramphenicol,Yes,"sub_pop, caries/health",Streptococcus pneumoniae Hungary19A-6 (taxid 487214),Streptococcus,k141_144519,7959.79788
+T1604B_15042014_Q2_Q3,Healthy,catP,inactivation,Chloramphenicol,Yes,"sub_pop, caries/health",Streptococcus pneumoniae Hungary19A-6 (taxid 487214),Streptococcus,k141_231394,5115.811021
+T1604B_15042014_Q2_Q3,Healthy,erm(F),target alteration,MLS,Yes,sub_pop,Prevotella intermedia ATCC 25611 = DSM 20706 (taxid 1122984),Prevotella,k141_159877,3092.87174
+T1604B_15042014_Q2_Q3,Healthy,tetA(60),efflux,Tetracycline,Yes,sub_pop,Streptococcus vestibularis (taxid 1343),Streptococcus,k141_232411,441.3352427
+T1620A_9042015_Q2_Q3,Healthy,tetA(60),efflux,Tetracycline,Yes,sub_pop,Streptococcus suis (taxid 1307),Streptococcus,k141_104646,1773.60783
+T1620B_9042015_Q2_Q3,Healthy,erm(F),target alteration,MLS,Yes,sub_pop,Prevotella intermedia (taxid 28131),Prevotella,k141_1399,6055.644298
+T1622A_30092014_Q2_Q3,Healthy,APH(6)-Id,inactivation,Aminoglycoside,Yes,sub_pop,Haemophilus parainfluenzae T3T1 (taxid 862965),Haemophilus,k141_48332,8383.486952
+T1634A_01102014_Q2_Q3,Healthy,tetA(60),efflux,Tetracycline,Yes,sub_pop,Streptococcus merionis (taxid 400065),Streptococcus,k141_66807,1445.552033
+T1644A_30092014_Q2_Q3,Healthy,tetA(60),efflux,Tetracycline,Yes,sub_pop,Lactobacillus buchneri CD034 (taxid 1071400),Lactobacillus,k141_4120,4378.627404
+T1648B_03102014_Q2_Q3,Healthy,catP,inactivation,Chloramphenicol,Yes,"sub_pop, caries/health",Streptococcus milleri (taxid 33040),Streptococcus,k141_78524,430.1765869
+T1648B_03102014_Q2_Q3,Healthy,catP,inactivation,Chloramphenicol,Yes,"sub_pop, caries/health",Streptococcus milleri (taxid 33040),Streptococcus,k141_78524,0
+T1659A_29092014_Q2_Q3,Healthy,erm(F),target alteration,MLS,Yes,sub_pop,Capnocytophaga sputigena (taxid 1019),Capnocytophaga,k141_13163,6578.526568
+T1659B_29092014_Q2_Q3,Healthy,erm(F),target alteration,MLS,Yes,sub_pop,Capnocytophaga sputigena (taxid 1019),Capnocytophaga,k141_104196,11784.39996
+T1659B_29092014_Q2_Q3,Healthy,tetA(60),efflux,Tetracycline,Yes,sub_pop,Streptococcus merionis (taxid 400065),Streptococcus,k141_129564,2346.853063
+T1662B_14042014_Q2_Q3,Healthy,APH(6)-Id,inactivation,Aminoglycoside,Yes,sub_pop,Neisseria sp. KEM232 (taxid 655307),Neisseria,k141_5253,625.805302
+T1662B_14042014_Q2_Q3,Healthy,tet(W),target protection,Tetracycline,Yes,"sub_pop, caries/health",Lachnospiraceae bacterium GAM79 (taxid 2109691),Lachnospiraceae,k141_1447,764.3089247
+T1664A_30092014_Q2_Q3,Healthy,APH(6)-Id,inactivation,Aminoglycoside,Yes,sub_pop,Neisseria meningitidis 8013 (taxid 604162),Neisseria,k141_78269,15568.76335
+T1664A_30092014_Q2_Q3,Healthy,erm(F),target alteration,MLS,Yes,sub_pop,Prevotella intermedia (taxid 28131),Prevotella,k141_91931,5236.917715
+T1664B_30092014_Q2_Q3,Healthy,APH(6)-Id,inactivation,Aminoglycoside,Yes,sub_pop,Haemophilus parainfluenzae T3T1 (taxid 862965),Haemophilus,k141_80120,28818.86509
+T1664B_30092014_Q2_Q3,Healthy,catP,inactivation,Chloramphenicol,Yes,"sub_pop, caries/health",Streptococcus (taxid 1301),Streptococcus,k141_46262,1923.097958
+T1669A_16042014_Q2_Q3,Healthy,catP,inactivation,Chloramphenicol,Yes,"sub_pop, caries/health",Streptococcus pneumoniae Hungary19A-6 (taxid 487214),Streptococcus,k141_5507,2973.386498
+T1669B_16042014_Q2_Q3,Healthy,catP,inactivation,Chloramphenicol,Yes,"sub_pop, caries/health",Streptococcus pneumoniae (taxid 1313),Streptococcus,k141_26792,460.6941659
+T1023B_30062015_Q2_Q3,Mild,tet(W),target,protection,Yes,"sub_pop, caries/health",Lachnoanaerobaculum umeaense (taxid 617123),Lachnoanaerobaculum,k141_144928,1494.868074
+T1023B_30062015_Q2_Q3,Mild,tet(W),target,protection,Yes,"sub_pop, caries/health",Lachnoanaerobaculum umeaense (taxid 617123),Lachnoanaerobaculum,k141_144928,1494.868074
+T1023B_30062015_Q2_Q3,Mild,tet(W),target,protection,Yes,"sub_pop, caries/health",Lachnoanaerobaculum umeaense (taxid 617123),Lachnoanaerobaculum,k141_144928,1494.868074
+T1051A_2072015_Q2_Q3,Healthy,APH(6)-Id,inactivation,Aminoglycoside,Yes,sub_pop,Haemophilus parainfluenzae T3T1 (taxid 862965),Haemophilus,k141_131716,8569.823685
+T1051A_2072015_Q2_Q3,Healthy,APH(6)-Id,inactivation,Aminoglycoside,Yes,sub_pop,Haemophilus parainfluenzae T3T1 (taxid 862965),Haemophilus,k141_131716,8569.823685
+T1051A_2072015_Q2_Q3,Healthy,APH(6)-Id,inactivation,Aminoglycoside,Yes,sub_pop,Haemophilus parainfluenzae T3T1 (taxid 862965),Haemophilus,k141_131716,8569.823685
+T1051A_2072015_Q2_Q3,Healthy,erm(F),target alteration,MLS,Yes,sub_pop,Prevotella intermedia (taxid 28131),Prevotella,k141_159339,8529.015
+T1051A_2072015_Q2_Q3,Healthy,erm(F),target alteration,MLS,Yes,sub_pop,Prevotella intermedia (taxid 28131),Prevotella,k141_159339,8529.015
+T1051A_2072015_Q2_Q3,Healthy,erm(F),target alteration,MLS,Yes,sub_pop,Prevotella intermedia (taxid 28131),Prevotella,k141_159339,8529.015
+T1051A_2072015_Q2_Q3,Healthy,tet(W),target,protection,Yes,"sub_pop, caries/health",Lachnoanaerobaculum umeaense (taxid 617123),Lachnoanaerobaculum,k141_201355,8609.651113
+T1051A_2072015_Q2_Q3,Healthy,tet(W),target,protection,Yes,"sub_pop, caries/health",Lachnoanaerobaculum umeaense (taxid 617123),Lachnoanaerobaculum,k141_201355,8609.651113
+T1051A_2072015_Q2_Q3,Healthy,tet(W),target,protection,Yes,"sub_pop, caries/health",Lachnoanaerobaculum umeaense (taxid 617123),Lachnoanaerobaculum,k141_201355,8609.651113
+T1051A_2072015_Q2_Q3,Healthy,tetA(60),efflux,Tetracycline,Yes,sub_pop,Lachnospiraceae bacterium KM106-2 (taxid 2093742),Lachnospiraceae,k141_50505,1400.111902
+T1051A_2072015_Q2_Q3,Healthy,tetA(60),efflux,Tetracycline,Yes,sub_pop,Lachnospiraceae bacterium KM106-2 (taxid 2093742),Lachnospiraceae,k141_50505,1400.111902
+T1051A_2072015_Q2_Q3,Healthy,tetA(60),efflux,Tetracycline,Yes,sub_pop,Lachnospiraceae bacterium KM106-2 (taxid 2093742),Lachnospiraceae,k141_50505,1400.111902
+T1056B_30092014_Q2_Q3,Severe,APH(6)-Id,inactivation,Aminoglycoside,Yes,sub_pop,Haemophilus parainfluenzae T3T1 (taxid 862965),Haemophilus,k141_42121,3715.085595
+T1056B_30092014_Q2_Q3,Severe,APH(6)-Id,inactivation,Aminoglycoside,Yes,sub_pop,Haemophilus parainfluenzae T3T1 (taxid 862965),Haemophilus,k141_42121,3715.085595
+T1056B_30092014_Q2_Q3,Severe,APH(6)-Id,inactivation,Aminoglycoside,Yes,sub_pop,Haemophilus parainfluenzae T3T1 (taxid 862965),Haemophilus,k141_42121,3715.085595
+T1066A_6072015_Q2_Q3,Healthy,erm(F),target alteration,MLS,Yes,sub_pop,Prevotella enoeca (taxid 76123),Prevotella,k141_14892,6679.399444
+T1066A_6072015_Q2_Q3,Healthy,erm(F),target alteration,MLS,Yes,sub_pop,Prevotella enoeca (taxid 76123),Prevotella,k141_14892,6679.399444
+T1066A_6072015_Q2_Q3,Healthy,erm(F),target alteration,MLS,Yes,sub_pop,Prevotella enoeca (taxid 76123),Prevotella,k141_14892,6679.399444
+T1066B_6072015_Q2_Q3,Severe,tetA(60),efflux,Tetracycline,Yes,sub_pop,Lactobacillus buchneri CD034 (taxid 1071400),Lactobacillus,k141_93185,1237.285244
+T1066B_6072015_Q2_Q3,Severe,tetA(60),efflux,Tetracycline,Yes,sub_pop,Lactobacillus buchneri CD034 (taxid 1071400),Lactobacillus,k141_93185,1237.285244
+T1066B_6072015_Q2_Q3,Severe,tetA(60),efflux,Tetracycline,Yes,sub_pop,Lactobacillus buchneri CD034 (taxid 1071400),Lactobacillus,k141_93185,1237.285244
+T1121A_3072015_Q2_Q3,Healthy,tetA(60),efflux,Tetracycline,Yes,sub_pop,Streptococcus suis (taxid 1307),Streptococcus,k141_161868,1286.034967
+T1121A_3072015_Q2_Q3,Healthy,tetA(60),efflux,Tetracycline,Yes,sub_pop,Streptococcus suis (taxid 1307),Streptococcus,k141_161868,1286.034967
+T1121A_3072015_Q2_Q3,Healthy,tetA(60),efflux,Tetracycline,Yes,sub_pop,Streptococcus suis (taxid 1307),Streptococcus,k141_161868,1286.034967
+T1215B_1072015_Q2_Q3,Healthy,tetA(60),efflux,Tetracycline,Yes,sub_pop,Streptococcus (taxid 1301),Streptococcus,k141_110263,1150.726327
+T1215B_1072015_Q2_Q3,Healthy,tetA(60),efflux,Tetracycline,Yes,sub_pop,Streptococcus (taxid 1301),Streptococcus,k141_110263,1150.726327
+T1215B_1072015_Q2_Q3,Healthy,tetA(60),efflux,Tetracycline,Yes,sub_pop,Streptococcus (taxid 1301),Streptococcus,k141_110263,1150.726327
+T1284A_8072015_Q2_Q3,Severe,erm(F),target alteration,MLS,Yes,sub_pop,Bacteroides fragilis (taxid 817),Bacteroides,k141_178853,855.8380483
+T1284A_8072015_Q2_Q3,Severe,erm(F),target alteration,MLS,Yes,sub_pop,Bacteroides fragilis (taxid 817),Bacteroides,k141_178853,855.8380483
+T1284A_8072015_Q2_Q3,Severe,erm(F),target alteration,MLS,Yes,sub_pop,Bacteroides fragilis (taxid 817),Bacteroides,k141_178853,855.8380483
+T1284B_8072015_Q2_Q3,Moderate,erm(F),target alteration,MLS,Yes,sub_pop,Bacteroides fragilis (taxid 817),Bacteroides,k141_163059,2588.838709
+T1284B_8072015_Q2_Q3,Moderate,erm(F),target alteration,MLS,Yes,sub_pop,Bacteroides fragilis (taxid 817),Bacteroides,k141_163059,2588.838709
+T1284B_8072015_Q2_Q3,Moderate,erm(F),target alteration,MLS,Yes,sub_pop,Bacteroides fragilis (taxid 817),Bacteroides,k141_163059,2588.838709
+T1291B_14042014_Q2_Q3,Healthy,tet(W),target,protection,Yes,"sub_pop, caries/health",Lachnospiraceae bacterium GAM79 (taxid 2109691),Lachnospiraceae,k141_146087,3368.292842
+T1291B_14042014_Q2_Q3,Healthy,tet(W),target,protection,Yes,"sub_pop, caries/health",Lachnospiraceae bacterium GAM79 (taxid 2109691),Lachnospiraceae,k141_146087,3368.292842
+T1291B_14042014_Q2_Q3,Healthy,tet(W),target,protection,Yes,"sub_pop, caries/health",Lachnospiraceae bacterium GAM79 (taxid 2109691),Lachnospiraceae,k141_146087,3368.292842
+T1366A_30062015_Q2_Q3,Mild,tetA(60),efflux,Tetracycline,Yes,sub_pop,Streptococcus sp. I-P16 (taxid 1156433),Streptococcus,k141_238692,562.9402948
+T1366A_30062015_Q2_Q3,Mild,tetA(60),efflux,Tetracycline,Yes,sub_pop,Streptococcus sp. I-P16 (taxid 1156433),Streptococcus,k141_238692,562.9402948
+T1366A_30062015_Q2_Q3,Mild,tetA(60),efflux,Tetracycline,Yes,sub_pop,Streptococcus sp. I-P16 (taxid 1156433),Streptococcus,k141_238692,562.9402948
+T1393A_3072015_Q2_Q3,Mild,APH(6)-Id,inactivation,Aminoglycoside,Yes,sub_pop,Neisseria elongata (taxid 495),Neisseria,k141_191535,1812.96334
+T1393A_3072015_Q2_Q3,Mild,APH(6)-Id,inactivation,Aminoglycoside,Yes,sub_pop,Neisseria elongata (taxid 495),Neisseria,k141_191535,1812.96334
+T1393A_3072015_Q2_Q3,Mild,APH(6)-Id,inactivation,Aminoglycoside,Yes,sub_pop,Neisseria elongata (taxid 495),Neisseria,k141_191535,1812.96334
+T1416A_15042014_Q2_Q3,Mild,APH(6)-Id,inactivation,Aminoglycoside,Yes,sub_pop,Haemophilus parainfluenzae T3T1 (taxid 862965),Haemophilus,k141_43641,42963.65066
+T1416A_15042014_Q2_Q3,Mild,APH(6)-Id,inactivation,Aminoglycoside,Yes,sub_pop,Haemophilus parainfluenzae T3T1 (taxid 862965),Haemophilus,k141_43641,42963.65066
+T1416A_15042014_Q2_Q3,Mild,APH(6)-Id,inactivation,Aminoglycoside,Yes,sub_pop,Haemophilus parainfluenzae T3T1 (taxid 862965),Haemophilus,k141_43641,42963.65066
+T1416A_15042014_Q2_Q3,Mild,tetA(60),efflux,Tetracycline,Yes,sub_pop,Lactobacillus buchneri CD034 (taxid 1071400),Lactobacillus,k141_71329,1218.638162
+T1416A_15042014_Q2_Q3,Mild,tetA(60),efflux,Tetracycline,Yes,sub_pop,Lactobacillus buchneri CD034 (taxid 1071400),Lactobacillus,k141_71329,1218.638162
+T1416A_15042014_Q2_Q3,Mild,tetA(60),efflux,Tetracycline,Yes,sub_pop,Lactobacillus buchneri CD034 (taxid 1071400),Lactobacillus,k141_71329,1218.638162
+T1416A_15042014_Q2_Q3,Mild,tetA(60),efflux,Tetracycline,Yes,sub_pop,Streptococcus gordonii (taxid 1302),Streptococcus,k141_84062,355.1459787
+T1416A_15042014_Q2_Q3,Mild,tetA(60),efflux,Tetracycline,Yes,sub_pop,Streptococcus gordonii (taxid 1302),Streptococcus,k141_84062,355.1459787
+T1416A_15042014_Q2_Q3,Mild,tetA(60),efflux,Tetracycline,Yes,sub_pop,Streptococcus gordonii (taxid 1302),Streptococcus,k141_84062,355.1459787
+T1459A_22052015_Q2_Q3,Healthy,tetA(60),efflux,Tetracycline,Yes,sub_pop,Streptococcus suis (taxid 1307),Streptococcus,k141_191332,1324.893178
+T1459A_22052015_Q2_Q3,Healthy,tetA(60),efflux,Tetracycline,Yes,sub_pop,Streptococcus suis (taxid 1307),Streptococcus,k141_191332,1324.893178
+T1459A_22052015_Q2_Q3,Healthy,tetA(60),efflux,Tetracycline,Yes,sub_pop,Streptococcus suis (taxid 1307),Streptococcus,k141_191332,1324.893178
+T1593A_15042014_Q2_Q3,Healthy,catP,inactivation,Chloramphenicol,Yes,"sub_pop, caries/health",Streptococcus pneumoniae Hungary19A-6 (taxid 487214),Streptococcus,k141_182731,2134.890177
+T1593A_15042014_Q2_Q3,Healthy,erm(F),target alteration,MLS,Yes,sub_pop,Prevotella intermedia (taxid 28131),Prevotella,k141_181752,209.5965111
+T1593A_15042014_Q2_Q3,Healthy,erm(F),target alteration,MLS,Yes,sub_pop,Prevotella intermedia (taxid 28131),Prevotella,k141_181752,209.5965111
+T1593A_15042014_Q2_Q3,Healthy,erm(F),target alteration,MLS,Yes,sub_pop,Prevotella intermedia (taxid 28131),Prevotella,k141_181752,209.5965111
+T1593B_15042014_Q2_Q3,Healthy,tetA(60),efflux,Tetracycline,Yes,sub_pop,Streptococcus australis (taxid 113107),Streptococcus,k141_281447,344.5004819
+T1593B_15042014_Q2_Q3,Healthy,tetA(60),efflux,Tetracycline,Yes,sub_pop,Streptococcus australis (taxid 113107),Streptococcus,k141_281447,344.5004819
+T1593B_15042014_Q2_Q3,Healthy,tetA(60),efflux,Tetracycline,Yes,sub_pop,Streptococcus australis (taxid 113107),Streptococcus,k141_281447,344.5004819
+T1602A_18072014_Q2_Q3,Healthy,catP,inactivation,Chloramphenicol,Yes,"sub_pop, caries/health",Streptococcus pneumoniae Hungary19A-6 (taxid 487214),Streptococcus,k141_130896,1213.416328
+T1602A_18072014_Q2_Q3,Healthy,erm(F),target alteration,MLS,Yes,sub_pop,Prevotella intermedia ATCC 25611 = DSM 20706 (taxid 1122984),Prevotella,k141_116786,1092.074695
+T1602A_18072014_Q2_Q3,Healthy,erm(F),target alteration,MLS,Yes,sub_pop,Prevotella intermedia ATCC 25611 = DSM 20706 (taxid 1122984),Prevotella,k141_116786,1092.074695
+T1602A_18072014_Q2_Q3,Healthy,erm(F),target alteration,MLS,Yes,sub_pop,Prevotella intermedia ATCC 25611 = DSM 20706 (taxid 1122984),Prevotella,k141_116786,1092.074695
+T1602B_18072014_Q2_Q3,Healthy,catP,inactivation,Chloramphenicol,Yes,"sub_pop, caries/health",Streptococcus pneumoniae Hungary19A-6 (taxid 487214),Streptococcus,k141_40483,3459.071979
+T1636A_30062015_Q2_Q3,Healthy,erm(F),target alteration,MLS,Yes,sub_pop,Prevotella intermedia (taxid 28131),Prevotella,k141_214212,13601.0795
+T1636A_30062015_Q2_Q3,Healthy,erm(F),target alteration,MLS,Yes,sub_pop,Prevotella intermedia (taxid 28131),Prevotella,k141_214212,13601.0795
+T1636A_30062015_Q2_Q3,Healthy,erm(F),target alteration,MLS,Yes,sub_pop,Prevotella intermedia (taxid 28131),Prevotella,k141_214212,13601.0795
+T1636A_30062015_Q2_Q3,Healthy,tetA(60),efflux,Tetracycline,Yes,sub_pop,Lactobacillus buchneri CD034 (taxid 1071400),Lactobacillus,k141_200753,540.3182261
+T1636A_30062015_Q2_Q3,Healthy,tetA(60),efflux,Tetracycline,Yes,sub_pop,Lactobacillus buchneri CD034 (taxid 1071400),Lactobacillus,k141_200753,540.3182261
+T1636A_30062015_Q2_Q3,Healthy,tetA(60),efflux,Tetracycline,Yes,sub_pop,Lactobacillus buchneri CD034 (taxid 1071400),Lactobacillus,k141_200753,540.3182261
+T1636A_30062015_Q2_Q3,Healthy,tetA(60),efflux,Tetracycline,Yes,sub_pop,Streptococcus (taxid 1301),Streptococcus,k141_248007,630.2680511
+T1636A_30062015_Q2_Q3,Healthy,tetA(60),efflux,Tetracycline,Yes,sub_pop,Streptococcus (taxid 1301),Streptococcus,k141_248007,630.2680511
+T1636A_30062015_Q2_Q3,Healthy,tetA(60),efflux,Tetracycline,Yes,sub_pop,Streptococcus (taxid 1301),Streptococcus,k141_248007,630.2680511
+T1653A_15042014_Q2_Q3,Healthy,tet(W),target,protection,Yes,"sub_pop, caries/health",Lachnospiraceae bacterium GAM79 (taxid 2109691),Lachnospiraceae,k141_211277,634.4538189
+T1653A_15042014_Q2_Q3,Healthy,tet(W),target,protection,Yes,"sub_pop, caries/health",Lachnospiraceae bacterium GAM79 (taxid 2109691),Lachnospiraceae,k141_211277,634.4538189
+T1653A_15042014_Q2_Q3,Healthy,tet(W),target,protection,Yes,"sub_pop, caries/health",Lachnospiraceae bacterium GAM79 (taxid 2109691),Lachnospiraceae,k141_211277,634.4538189
+T1653A_15042014_Q2_Q3,Healthy,tetA(60),efflux,Tetracycline,Yes,sub_pop,Streptococcus (taxid 1301),Streptococcus,k141_302625,619.3313094
+T1653A_15042014_Q2_Q3,Healthy,tetA(60),efflux,Tetracycline,Yes,sub_pop,Streptococcus (taxid 1301),Streptococcus,k141_302625,619.3313094
+T1653A_15042014_Q2_Q3,Healthy,tetA(60),efflux,Tetracycline,Yes,sub_pop,Streptococcus (taxid 1301),Streptococcus,k141_302625,619.3313094
+T1653B_15042014_Q2_Q3,Healthy,catP,inactivation,Chloramphenicol,Yes,"sub_pop, caries/health",Haemophilus parainfluenzae T3T1 (taxid 862965),Haemophilus,k141_180722,204.1820916
+T1653B_15042014_Q2_Q3,Healthy,catP,inactivation,Chloramphenicol,Yes,"sub_pop, caries/health",Haemophilus parainfluenzae T3T1 (taxid 862965),Haemophilus,k141_180722,0
+T1657A_14042014_Q2_Q3,Healthy,tetA(60),efflux,Tetracycline,Yes,sub_pop,Neisseria mucosa (taxid 488),Neisseria,k141_143921,786.7039576
+T1657A_14042014_Q2_Q3,Healthy,tetA(60),efflux,Tetracycline,Yes,sub_pop,Neisseria mucosa (taxid 488),Neisseria,k141_143921,786.7039576
+T1657A_14042014_Q2_Q3,Healthy,tetA(60),efflux,Tetracycline,Yes,sub_pop,Neisseria mucosa (taxid 488),Neisseria,k141_143921,786.7039576
+T1185B_02102014_Q2_Q3,Healthy,APH(6)-Id,inactivation,Aminoglycoside,Yes,sub_pop,Acinetobacter nosocomialis (taxid 106654),Acinetobacter,k141_42281,12697.8527
+T1444B_03102014_Q2_Q3,Healthy,APH(6)-Id,inactivation,Aminoglycoside,Yes,sub_pop,Acinetobacter nosocomialis (taxid 106654),Acinetobacter,k141_92157,5521.009545
+T1469A_16042014_Q2_Q3,Healthy,APH(6)-Id,inactivation,Aminoglycoside,Yes,sub_pop,Acinetobacter nosocomialis (taxid 106654),Acinetobacter,k141_195592,217.2722781
+T1607B_01102014_Q2_Q3,Mild,APH(6)-Id,inactivation,Aminoglycoside,Yes,sub_pop,Acinetobacter nosocomialis (taxid 106654),Acinetobacter,k141_22259,1328.912751
+T1654B_29092014_Q2_Q3,Healthy,APH(6)-Id,inactivation,Aminoglycoside,Yes,sub_pop,Acinetobacter nosocomialis (taxid 106654),Acinetobacter,k141_16291,1765.988851
+T1028A_8072015_Q2_Q3,Healthy,APH(6)-Id,inactivation,Aminoglycoside,Yes,sub_pop,Acinetobacter nosocomialis (taxid 106654),Acinetobacter,k141_113385,39684.53217
+T1028A_8072015_Q2_Q3,Healthy,APH(6)-Id,inactivation,Aminoglycoside,Yes,sub_pop,Acinetobacter nosocomialis (taxid 106654),Acinetobacter,k141_113385,39684.53217
+T1028A_8072015_Q2_Q3,Healthy,APH(6)-Id,inactivation,Aminoglycoside,Yes,sub_pop,Acinetobacter nosocomialis (taxid 106654),Acinetobacter,k141_113385,39684.53217
+T1653A_15042014_Q2_Q3,Healthy,APH(6)-Id,inactivation,Aminoglycoside,Yes,sub_pop,Acinetobacter nosocomialis (taxid 106654),Acinetobacter,k141_26278,595.7835964
+T1653A_15042014_Q2_Q3,Healthy,APH(6)-Id,inactivation,Aminoglycoside,Yes,sub_pop,Acinetobacter nosocomialis (taxid 106654),Acinetobacter,k141_26278,595.7835964
+T1653A_15042014_Q2_Q3,Healthy,APH(6)-Id,inactivation,Aminoglycoside,Yes,sub_pop,Acinetobacter nosocomialis (taxid 106654),Acinetobacter,k141_26278,595.7835964
