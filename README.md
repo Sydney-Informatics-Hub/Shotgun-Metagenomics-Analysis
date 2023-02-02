@@ -1074,4 +1074,4 @@ Output will be TSV files in `./Insertion_sequences/Filtered_IS_with_species`, pe
 ## Cite us to support us!
 
 Willet, C.E., Martinez, E., Sukumar, S., Alder, C., Lydecker, H., Wang, F., Chew, T., & Sadsad, R. Shotgun-Metagenomics-Analysis (Version 1.0) [Computer software]. https://doi.org/10.48546/workflowhub.workflow.327.1
->>>>>>> 6a80c0ccaa37868ba8638a9998cc833f406a0e9c
+
